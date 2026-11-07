@@ -3,7 +3,7 @@
 > **AI-Powered Web Threat Detection & Digital Trust Intelligence**  
 > *Built for 48-Hour Hackathon • AI | Cybersecurity | Web3*
 
----
+-----
 
 ## 📖 Overview
 

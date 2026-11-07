@@ -10,6 +10,10 @@ MEMORY.md
 Problem Statement.md
 SETUP.md
 
+# Local dev/test client & scratch scripts
+test-client/
+models_list.py
+
 # Python artifacts
 __pycache__/
 *.py[cod]
