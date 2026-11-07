@@ -30,7 +30,7 @@ export const mockStatMetrics: StatMetric[] = [
     change: '-3.1%',
     trend: 'down',
     caption: 'Homoglyph spoofs & unverified TLDs flagged',
-    variant: 'purple',
+    variant: 'copper',
   },
   {
     id: 'verified-reports',
@@ -424,7 +424,7 @@ export const mockActivityTimeline = [
 // 7-Layer Defense Threat Distribution
 export const mockLayerDistribution = [
   { layer: 'Layer 1: Perimeter', count: 342, percentage: 40, color: '#06b6d4' },
-  { layer: 'Layer 2: Network', count: 185, percentage: 22, color: '#a855f7' },
+  { layer: 'Layer 2: Network', count: 185, percentage: 22, color: '#A95636' },
   { layer: 'Layer 3: Identity', count: 142, percentage: 17, color: '#10b981' },
   { layer: 'Layer 4: Endpoint', count: 88, percentage: 10, color: '#f59e0b' },
   { layer: 'Layer 5: Application', count: 54, percentage: 6, color: '#38bdf8' },
@@ -445,7 +445,7 @@ export const mockCategoryDistribution = [
   { category: 'Credential Phishing', count: 420, percent: 36, color: '#ef4444' },
   { category: 'Web3 & Crypto Scams', count: 285, percent: 24, color: '#f97316' },
   { category: 'Brand Impersonation', count: 210, percent: 18, color: '#f59e0b' },
-  { category: 'Malware & Stagers', count: 145, percent: 12, color: '#a855f7' },
+  { category: 'Malware & Stagers', count: 145, percent: 12, color: '#A95636' },
   { category: 'Adversary C2 Beacons', count: 80, percent: 7, color: '#06b6d4' },
   { category: 'Adware & Trackers', count: 35, percent: 3, color: '#64748b' },
 ];

@@ -1,6 +1,6 @@
 import { cn } from '../../utils/cn.ts';
 
-export type ProgressVariant = 'cyan' | 'emerald' | 'purple' | 'threat' | 'rose' | 'amber';
+export type ProgressVariant = 'copper' | 'spruce' | 'cyan' | 'emerald' | 'purple' | 'threat' | 'rose' | 'amber';
 export type ProgressSize = 'sm' | 'md' | 'lg';
 
 export interface ProgressProps {
@@ -19,9 +19,9 @@ export function Progress({
   max = 100,
   label,
   showValue = true,
-  variant = 'cyan',
+  variant = 'copper',
   size = 'md',
-  isAnimated = true,
+  isAnimated = false,
   className,
 }: ProgressProps) {
   const percentage = Math.min(100, Math.max(0, (value / max) * 100));
@@ -37,38 +37,40 @@ export function Progress({
       : variant;
 
   const barColors: Record<string, string> = {
-    cyan: 'bg-cyan-500 shadow-[0_0_12px_rgba(6,182,212,0.6)]',
-    emerald: 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.6)]',
-    purple: 'bg-purple-500 shadow-[0_0_12px_rgba(168,85,247,0.6)]',
-    rose: 'bg-rose-500 shadow-[0_0_12px_rgba(239,68,68,0.6)]',
-    amber: 'bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.6)]',
+    copper: 'bg-[#A95636] dark:bg-[#C47A52]',
+    spruce: 'bg-[#356D68] dark:bg-[#79A99C]',
+    cyan: 'bg-[#356D68] dark:bg-[#79A99C]',
+    purple: 'bg-[#A95636] dark:bg-[#C47A52]',
+    emerald: 'bg-[#36745F] dark:bg-[#79B69A]',
+    rose: 'bg-[#B64B46] dark:bg-[#E17B70]',
+    amber: 'bg-[#A87532] dark:bg-[#D7AA61]',
   };
 
   const heightStyles: Record<ProgressSize, string> = {
     sm: 'h-1.5',
-    md: 'h-2.5',
-    lg: 'h-4',
+    md: 'h-2',
+    lg: 'h-3',
   };
 
   return (
-    <div className={cn('w-full space-y-1.5', className)}>
+    <div className={cn('w-full space-y-1.5 font-sans', className)}>
       {(label || showValue) && (
         <div className="flex items-center justify-between text-xs">
-          {label && <span className="font-medium text-slate-300 uppercase tracking-wider">{label}</span>}
-          {showValue && <span className="font-mono text-cyan-400 font-semibold">{Math.round(percentage)}%</span>}
+          {label && <span className="font-semibold text-[#647477] dark:text-[#A6B3AE] uppercase tracking-wider font-mono text-[11px]">{label}</span>}
+          {showValue && <span className="font-mono text-[#182629] dark:text-[#E8E6DC] font-bold">{Math.round(percentage)}%</span>}
         </div>
       )}
 
       <div
         className={cn(
-          'w-full rounded-full bg-[#070d1e] border border-white/10 overflow-hidden relative p-0.5',
+          'w-full rounded bg-[#EAECE6] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] overflow-hidden relative',
           heightStyles[size]
         )}
       >
         <div
           className={cn(
-            'h-full rounded-full transition-all duration-500 ease-out relative',
-            barColors[resolvedVariant] || barColors.cyan,
+            'h-full rounded transition-all duration-300 ease-out relative',
+            barColors[resolvedVariant] || barColors.copper,
             isAnimated && 'after:absolute after:inset-0 after:bg-white/20 after:animate-pulse'
           )}
           style={{ width: `${percentage}%` }}
@@ -91,10 +93,10 @@ export interface RadialProgressProps {
 export function RadialProgress({
   value,
   size = 120,
-  strokeWidth = 10,
+  strokeWidth = 8,
   label,
   sublabel,
-  variant = 'cyan',
+  variant = 'copper',
   className,
 }: RadialProgressProps) {
   const percentage = Math.min(100, Math.max(0, value));
@@ -103,25 +105,28 @@ export function RadialProgress({
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   const strokeColors: Record<ProgressVariant, string> = {
-    cyan: '#06b6d4',
-    emerald: '#10b981',
-    purple: '#a855f7',
-    rose: '#ef4444',
-    amber: '#f59e0b',
-    threat: percentage > 75 ? '#ef4444' : percentage > 45 ? '#f59e0b' : '#10b981',
+    copper: '#A95636',
+    spruce: '#356D68',
+    cyan: '#356D68',
+    emerald: '#36745F',
+    purple: '#A95636',
+    rose: '#B64B46',
+    amber: '#A87532',
+    threat: percentage > 75 ? '#B64B46' : percentage > 45 ? '#A87532' : '#36745F',
   };
 
-  const currentColor = strokeColors[variant];
+  const currentColor = strokeColors[variant] || '#A95636';
 
   return (
-    <div className={cn('inline-flex flex-col items-center justify-center relative select-none', className)}>
+    <div className={cn('inline-flex flex-col items-center justify-center relative select-none font-mono', className)}>
       <svg width={size} height={size} className="transform -rotate-90">
         {/* Track circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="rgba(255, 255, 255, 0.08)"
+          stroke="currentColor"
+          className="text-[#D9DED7] dark:text-[#304144]"
           strokeWidth={strokeWidth}
           fill="transparent"
         />
@@ -136,19 +141,18 @@ export function RadialProgress({
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
           fill="transparent"
-          className="transition-all duration-700 ease-out"
-          style={{ filter: `drop-shadow(0 0 6px ${currentColor})` }}
+          className="transition-all duration-500 ease-out"
         />
       </svg>
 
       {/* Central content */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2">
-        <span className="text-xl font-bold font-mono tracking-tight text-white">{Math.round(percentage)}%</span>
-        {label && <span className="text-[10px] uppercase font-mono tracking-wider text-slate-400 mt-0.5">{label}</span>}
+        <span className="text-xl font-bold tracking-tight text-[#182629] dark:text-[#E8E6DC]">{Math.round(percentage)}%</span>
+        {label && <span className="text-[10px] uppercase tracking-wider text-[#647477] dark:text-[#A6B3AE] mt-0.5">{label}</span>}
       </div>
 
       {sublabel && (
-        <span className="text-xs text-slate-400 font-mono mt-2 tracking-wide">{sublabel}</span>
+        <span className="text-xs text-[#647477] dark:text-[#A6B3AE] mt-2 tracking-wide font-sans">{sublabel}</span>
       )}
     </div>
   );

@@ -22,8 +22,8 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center p-8 sm:p-12 text-center rounded-2xl border border-cyan-500/15',
-        'bg-[#0b152d]/60 backdrop-blur-md relative overflow-hidden',
+        'flex flex-col items-center justify-center p-8 sm:p-12 text-center rounded-2xl border border-[#D9DED7] dark:border-[#304144]',
+        'bg-white dark:bg-[#19272A] shadow-sm relative overflow-hidden',
         className
       )}
     >
@@ -36,14 +36,14 @@ export function EmptyState({
 
       {/* Center Icon badge */}
       <div className="relative mb-4">
-        <div className="w-14 h-14 rounded-2xl bg-[#060d1f] border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.25)]">
+        <div className="w-14 h-14 rounded-2xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex items-center justify-center text-[#A95636] dark:text-[#C47A52]">
           {icon || <ShieldCheck className="w-7 h-7 text-cyan-400" />}
         </div>
       </div>
 
       {/* Content */}
-      <h3 className="text-base font-semibold text-white tracking-wide mb-1.5">{title}</h3>
-      <p className="text-xs text-slate-400 max-w-sm leading-relaxed mb-6">{description}</p>
+      <h3 className="text-base font-semibold text-[#182629] dark:text-[#E8E6DC] tracking-wide mb-1.5">{title}</h3>
+      <p className="text-xs text-[#647477] dark:text-[#A6B3AE] max-w-sm leading-relaxed mb-6">{description}</p>
 
       {/* Actions */}
       {(action || secondaryAction) && (

@@ -44,6 +44,6 @@ export interface StatMetric {
   change: string;
   trend: 'up' | 'down' | 'neutral';
   caption: string;
-  variant: 'cyan' | 'purple' | 'emerald' | 'rose';
+  variant: 'copper' | 'spruce' | 'cyan' | 'purple' | 'emerald' | 'rose';
 }
 

@@ -14,7 +14,7 @@ import { BlockchainVerificationTab } from '../components/dashboard/BlockchainVer
 import { InvestigationHistoryTab } from '../components/dashboard/InvestigationHistoryTab.tsx';
 import { SettingsTab } from '../components/dashboard/SettingsTab.tsx';
 import { ForensicReportModal } from '../components/dashboard/ForensicReportModal.tsx';
-import { NetworkBackground, Modal, Button, Badge } from '../components/common/index.ts';
+import { Modal, Button, Badge } from '../components/common/index.ts';
 import { mockInvestigations } from '../utils/dashboardMockData.ts';
 import type { InvestigationRecord } from '../types/dashboard.ts';
 
@@ -68,14 +68,11 @@ export function DashboardPage({
   };
 
   const handleMitigateThreat = (record: InvestigationRecord) => {
-    alert(`Mitigation protocol executed for ${record.id}. Target URL ${record.url} sinkholed at Saptarishi gateway.`);
+    alert(`Mitigation alert registered for ${record.id}. Host ${record.url} flagged on perimeter threat feeds.`);
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 flex flex-col relative selection:bg-cyan-500/30 selection:text-cyan-200">
-      {/* Background Subtle Cyber Network Constellation */}
-      <NetworkBackground opacity={0.3} nodeCount={36} />
-
+    <div className="min-h-screen bg-[#F3F1E9] dark:bg-[#101A1D] text-[#182629] dark:text-[#E8E6DC] flex flex-col relative selection:bg-[#A95636]/20 dark:selection:bg-[#C47A52]/30 selection:text-[#A95636] dark:selection:text-[#C47A52] transition-colors duration-200">
       {/* Top SOC Navigation Bar */}
       <DashboardTopNav
         onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
@@ -98,28 +95,28 @@ export function DashboardPage({
         {/* Main Operational Workspace */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
           {/* Top Operational Status Bar & Evaluator State Switcher */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl bg-[#0b152d]/80 border border-white/[0.06] backdrop-blur-md">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] shadow-sm">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">
-                Active View:
+              <span className="text-xs font-mono font-bold text-[#182629] dark:text-[#E8E6DC] uppercase tracking-wider">
+                Active Console:
               </span>
-              <Badge variant="cyan" size="sm">
+              <span className="px-2.5 py-0.5 rounded-md text-xs font-mono font-bold bg-[#A95636]/10 dark:bg-[#C47A52]/15 text-[#A95636] dark:text-[#C47A52] border border-[#A95636]/20 dark:border-[#C47A52]/30">
                 {activeTab.replace('-', ' ').toUpperCase()}
-              </Badge>
+              </span>
             </div>
 
             {/* Evaluator State Controls */}
             {activeTab === 'overview' && (
               <div className="flex items-center gap-1.5 text-xs font-mono">
-                <span className="text-slate-400 text-[11px] mr-1 hidden md:inline">State Tester:</span>
+                <span className="text-[#647477] dark:text-[#A6B3AE] text-[11px] mr-1 hidden md:inline">State Tester:</span>
                 {(['ready', 'loading', 'empty', 'error'] as const).map((mode) => (
                   <button
                     key={mode}
                     onClick={() => setStateMode(mode)}
                     className={`px-2 py-0.5 rounded text-[11px] uppercase transition-colors cursor-pointer ${
                       stateMode === mode
-                        ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-400/40'
-                        : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
+                        ? 'bg-[#A95636] dark:bg-[#C47A52] text-white font-bold'
+                        : 'bg-[#EAECE6] dark:bg-[#293A3C] text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC]'
                     }`}
                   >
                     {mode}
@@ -201,16 +198,16 @@ export function DashboardPage({
                 setIsNotificationsOpen(false);
                 handleViewReport(item);
               }}
-              className="p-3 rounded-lg bg-slate-900/80 border border-white/5 hover:border-cyan-500/40 transition-colors cursor-pointer space-y-1"
+              className="p-3 rounded-xl bg-[#F3F1E9] dark:bg-[#223336] border border-[#D9DED7] dark:border-[#304144] hover:border-[#A95636] dark:hover:border-[#C47A52] transition-colors cursor-pointer space-y-1"
             >
               <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold text-cyan-400">{item.id}</span>
-                <Badge variant={item.riskLevel === 'critical' ? 'rose' : item.riskLevel === 'high' ? 'amber' : 'cyan'} size="sm">
+                <span className="font-mono text-xs font-bold text-[#A95636] dark:text-[#C47A52]">{item.id}</span>
+                <Badge variant={item.riskLevel === 'critical' ? 'rose' : item.riskLevel === 'high' ? 'amber' : 'copper'} size="sm">
                   {item.riskLevel.toUpperCase()}
                 </Badge>
               </div>
-              <p className="text-xs text-slate-200 truncate font-mono">{item.url}</p>
-              <p className="text-[11px] text-slate-400 truncate">{item.details}</p>
+              <p className="text-xs text-[#182629] dark:text-[#E8E6DC] truncate font-mono">{item.url}</p>
+              <p className="text-[11px] text-[#647477] dark:text-[#A6B3AE] truncate">{item.details}</p>
             </div>
           ))}
         </div>
@@ -218,4 +215,3 @@ export function DashboardPage({
     </div>
   );
 }
-

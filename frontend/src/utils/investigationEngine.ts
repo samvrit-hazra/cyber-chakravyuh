@@ -20,7 +20,7 @@ export const EXAMPLE_URL_SUGGESTIONS = [
     label: 'Okta SSO Lure (Suspicious)',
     url: 'https://internal-sso.okta.enterprise-auth.cloud/step2',
     expectedClassification: 'Suspicious' as RiskClassification,
-    color: 'purple',
+    color: 'copper',
   },
   {
     label: 'Google Auth (Low Risk)',

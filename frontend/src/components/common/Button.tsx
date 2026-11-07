@@ -29,29 +29,29 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium transition-all duration-200 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#030712] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none active:scale-[0.98] cursor-pointer relative overflow-hidden';
+      'inline-flex items-center justify-center font-medium transition-all duration-200 select-none focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none active:scale-[0.98] cursor-pointer relative font-sans';
 
     const variants: Record<ButtonVariant, string> = {
       primary:
-        'bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold shadow-[0_0_15px_rgba(6,182,212,0.35)] hover:shadow-[0_0_22px_rgba(6,182,212,0.55)] focus-visible:ring-cyan-400 border border-cyan-300/40',
+        'bg-[#A95636] hover:bg-[#8F472C] dark:bg-[#C47A52] dark:hover:bg-[#B06A44] text-white shadow-sm',
       secondary:
-        'bg-purple-600/90 hover:bg-purple-500 text-white shadow-[0_0_12px_rgba(168,85,247,0.3)] hover:shadow-[0_0_18px_rgba(168,85,247,0.5)] focus-visible:ring-purple-400 border border-purple-400/40',
+        'bg-[#EAECE6] hover:bg-[#D9DED7] dark:bg-[#223336] dark:hover:bg-[#293A3C] text-[#182629] dark:text-[#E8E6DC] border border-[#D9DED7] dark:border-[#304144]',
       outline:
-        'bg-slate-900/60 hover:bg-cyan-950/40 text-cyan-400 border border-cyan-500/30 hover:border-cyan-400/80 hover:text-cyan-300 focus-visible:ring-cyan-400 backdrop-blur-sm',
+        'bg-transparent hover:bg-[#EAECE6] dark:hover:bg-[#223336] text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC] border border-[#D9DED7] dark:border-[#304144]',
       ghost:
-        'bg-transparent hover:bg-slate-800/60 text-slate-300 hover:text-white focus-visible:ring-slate-500',
+        'bg-transparent hover:bg-[#EAECE6] dark:hover:bg-[#223336] text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC]',
       danger:
-        'bg-rose-600/90 hover:bg-rose-500 text-white shadow-[0_0_14px_rgba(244,63,94,0.35)] hover:shadow-[0_0_20px_rgba(244,63,94,0.55)] focus-visible:ring-rose-400 border border-rose-400/40',
+        'bg-[#B64B46]/10 hover:bg-[#B64B46]/20 dark:bg-[#E17B70]/15 dark:hover:bg-[#E17B70]/25 text-[#B64B46] dark:text-[#E17B70] border border-[#B64B46]/30 dark:border-[#E17B70]/40',
       success:
-        'bg-emerald-600/90 hover:bg-emerald-500 text-white shadow-[0_0_14px_rgba(16,185,129,0.35)] hover:shadow-[0_0_20px_rgba(16,185,129,0.55)] focus-visible:ring-emerald-400 border border-emerald-400/40',
+        'bg-[#36745F]/10 hover:bg-[#36745F]/20 dark:bg-[#79B69A]/15 dark:hover:bg-[#79B69A]/25 text-[#36745F] dark:text-[#79B69A] border border-[#36745F]/30 dark:border-[#79B69A]/40',
     };
 
     const sizes: Record<ButtonSize, string> = {
-      xs: 'h-7 px-2.5 text-xs rounded-md gap-1.5',
+      xs: 'h-7 px-2.5 text-xs rounded gap-1.5',
       sm: 'h-8 px-3 text-xs rounded-md gap-1.5',
-      md: 'h-9 px-4 text-sm rounded-lg gap-2',
-      lg: 'h-11 px-5 text-base rounded-lg gap-2.5',
-      icon: 'h-9 w-9 p-0 rounded-lg',
+      md: 'h-9 px-4 text-xs sm:text-sm rounded-md gap-2',
+      lg: 'h-11 px-5 text-sm sm:text-base rounded-md gap-2.5',
+      icon: 'h-9 w-9 p-0 rounded-md',
     };
 
     return (
@@ -68,9 +68,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           </>
         ) : (
           <>
-            {leftIcon && <span className="inline-flex shrink-0">{leftIcon}</span>}
+            {leftIcon && <span className="shrink-0">{leftIcon}</span>}
             {children}
-            {rightIcon && <span className="inline-flex shrink-0">{rightIcon}</span>}
+            {rightIcon && <span className="shrink-0">{rightIcon}</span>}
           </>
         )}
       </button>
@@ -79,4 +79,3 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 Button.displayName = 'Button';
-

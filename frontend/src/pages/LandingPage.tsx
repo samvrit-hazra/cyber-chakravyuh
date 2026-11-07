@@ -2,127 +2,91 @@ import { useState } from 'react';
 import {
   LandingNavbar,
   HeroSection,
-  ThreatStatistics,
-  CoreFeatures,
-  HowItWorks,
-  TrustAndSecurity,
+  ThreatEducationEditorial,
+  EmergencyChecklistSection,
+  FaqSection,
   LandingFooter,
-  FeatureDetailModal,
   AuthModal,
-  type FeatureDetail,
 } from '../components/landing/index.ts';
-import { NetworkBackground, Modal, Button } from '../components/common/index.ts';
+import { ScanHistoryView } from '../components/analyzer/ScanHistoryView.tsx';
+import { Modal, Button } from '../components/common/index.ts';
+import { useNavigation } from '../context/NavigationContext.tsx';
 
-interface LandingPageProps {
-  onStartInvestigation: (url?: string) => void;
-  onLaunchDashboard: () => void;
-  onOpenDesignSystem?: () => void;
-}
-
-export function LandingPage({
-  onStartInvestigation,
-  onLaunchDashboard,
-}: LandingPageProps) {
-  const [selectedFeature, setSelectedFeature] = useState<FeatureDetail | null>(null);
-  const [isFeatureModalOpen, setIsFeatureModalOpen] = useState(false);
+export function LandingPage() {
+  const { navigateTo, isHistoryOpen, closeHistory } = useNavigation();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-
-  // Documentation / Policy modal for footer links
   const [docModalInfo, setDocModalInfo] = useState<{ title: string; content: string } | null>(null);
 
-  const handleLearnMore = (feature: FeatureDetail) => {
-    setSelectedFeature(feature);
-    setIsFeatureModalOpen(true);
-  };
-
-  const handleExplorePlatform = () => {
-    const el = document.getElementById('features');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+  const handleStartInvestigation = (url?: string) => {
+    navigateTo('url-analyzer', url);
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 flex flex-col relative selection:bg-cyan-500/30 selection:text-cyan-200">
-      {/* Background Animated Particle Constellation */}
-      <NetworkBackground opacity={0.35} nodeCount={42} />
+    <div className="min-h-screen bg-[#F3F1E9] dark:bg-[#101A1D] text-[#182629] dark:text-[#E8E6DC] flex flex-col relative selection:bg-[#A95636]/20 dark:selection:bg-[#C47A52]/25 selection:text-[#A95636] dark:selection:text-[#C47A52] font-sans transition-colors duration-200">
+      {/* Universal Top Nav */}
+      <LandingNavbar />
 
-      {/* Section 1: Navigation */}
-      <LandingNavbar
-        onLoginClick={() => setIsAuthModalOpen(true)}
-        onLaunchDashboard={onLaunchDashboard}
-      />
-
-      {/* Main Landing Sections */}
-      <main className="flex-1 relative z-10">
-        {/* Section 2: Hero */}
+      {/* Main Home Presentation Surfaces */}
+      <main className="flex-1 relative z-10 space-y-0">
+        {/* Section 1: Hero & Prominent URL Analyzer Public Bar (Image 1 Layout) */}
         <HeroSection
-          onStartInvestigation={onStartInvestigation}
-          onExplorePlatform={handleExplorePlatform}
+          onStartInvestigation={handleStartInvestigation}
         />
 
-        {/* Section 3: Threat Statistics */}
-        <ThreatStatistics />
+        {/* Section 2: Capability Cards & Editorial Threat Guide (Image 2 Layout) */}
+        <ThreatEducationEditorial
+          onOpenMessageScanner={() => navigateTo('sms-scanner')}
+          onLaunchDashboard={() => navigateTo('threat-registry')}
+          onOpenThreatIntel={() => navigateTo('threat-intel')}
+        />
+        {/* Section 3: Emergency Containment Playbook */}
+        <EmergencyChecklistSection />
 
-        {/* Section 4: Core Features */}
-        <CoreFeatures onLearnMore={handleLearnMore} />
-
-        {/* Section 5: How It Works */}
-        <HowItWorks />
-
-        {/* Section 6: Trust & Security */}
-        <TrustAndSecurity />
+        {/* Section 4: Security FAQ */}
+        <FaqSection />
       </main>
 
-      {/* Section 7: Footer */}
+      {/* Persistent Scan History Drawer */}
+      <ScanHistoryView
+        isOpen={isHistoryOpen}
+        onClose={closeHistory}
+        onSelectScan={(url) => navigateTo('url-analyzer', url)}
+      />
+
+      {/* Corporate Security Footer (Image 2 Layout) */}
       <LandingFooter
-        onStartInvestigation={() => onStartInvestigation()}
-        onLaunchDashboard={onLaunchDashboard}
+        onStartInvestigation={() => navigateTo('url-analyzer')}
+        onLaunchDashboard={() => navigateTo('threat-registry')}
         onOpenDocModal={(title, content) => setDocModalInfo({ title, content })}
       />
 
-      {/* Feature Deep-Dive Modal ("Learn More" interaction) */}
-      <FeatureDetailModal
-        feature={selectedFeature}
-        isOpen={isFeatureModalOpen}
-        onClose={() => setIsFeatureModalOpen(false)}
-        onStartInvestigation={() => {
-          setIsFeatureModalOpen(false);
-          onStartInvestigation();
-        }}
-      />
-
-      {/* Authentication Modal ("Login" interaction) */}
+      {/* Authentication Modal */}
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
-        onSuccess={() => onLaunchDashboard()}
+        onSuccess={() => navigateTo('analyst-console')}
       />
 
-      {/* Documentation / Verification Modal (Zero Dead Links) */}
+      {/* Documentation / Verification Modal */}
       <Modal
         isOpen={Boolean(docModalInfo)}
         onClose={() => setDocModalInfo(null)}
-        title={docModalInfo?.title || 'Documentation & Reference'}
-        subtitle="Cyber Chakravyuha Architecture & Verification Protocols"
-        size="md"
-        footer={
-          <Button variant="outline" size="sm" onClick={() => setDocModalInfo(null)}>
-            Dismiss
-          </Button>
-        }
+        title={docModalInfo?.title || 'Documentation'}
       >
-        <div className="space-y-4 text-xs text-slate-300 leading-relaxed font-mono">
-          <div className="p-4 rounded-xl bg-slate-900 border border-white/5 space-y-2">
-            <span className="text-cyan-400 font-bold block">[OFFICIAL SPECIFICATION]</span>
-            <p>{docModalInfo?.content}</p>
+        <div className="space-y-4 text-xs font-sans text-[#647477] dark:text-[#A6B3AE] leading-relaxed">
+          <p>{docModalInfo?.content}</p>
+          <div className="pt-2 border-t border-[#D9DED7] dark:border-[#304144] flex justify-end">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setDocModalInfo(null)}
+              className="text-xs"
+            >
+              Close
+            </Button>
           </div>
-          <p className="text-slate-400 text-[11px]">
-            For full cryptographic verification tools and enterprise CLI integrations, visit the SecOps Workbench.
-          </p>
         </div>
       </Modal>
     </div>
   );
 }
-

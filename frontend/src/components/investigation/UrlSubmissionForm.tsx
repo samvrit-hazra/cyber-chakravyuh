@@ -63,45 +63,42 @@ export function UrlSubmissionForm({
   const getPillBadgeStyle = (classification: RiskClassification) => {
     switch (classification) {
       case 'Confirmed Malicious':
-        return 'border-rose-500/40 text-rose-300 hover:bg-rose-500/20 hover:border-rose-400';
+        return 'border-[#B64B46]/40 text-[#B64B46] dark:text-[#E17B70] hover:bg-[#B64B46]/10';
       case 'High Risk':
-        return 'border-amber-500/40 text-amber-300 hover:bg-amber-500/20 hover:border-amber-400';
+        return 'border-[#A87532]/40 text-[#A87532] dark:text-[#D7AA61] hover:bg-[#A87532]/10';
       case 'Suspicious':
-        return 'border-purple-500/40 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400';
+        return 'border-[#A95636]/40 text-[#A95636] dark:text-[#C47A52] hover:bg-[#A95636]/10';
       case 'Low Risk':
-        return 'border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-400';
+        return 'border-[#36745F]/40 text-[#36745F] dark:text-[#79B69A] hover:bg-[#36745F]/10';
       case 'Inconclusive':
       default:
-        return 'border-slate-500/40 text-slate-300 hover:bg-slate-500/20 hover:border-slate-400';
+        return 'border-[#D9DED7] dark:border-[#304144] text-[#647477] dark:text-[#A6B3AE] hover:bg-[#EAECE6] dark:hover:bg-[#223336]';
     }
   };
 
   return (
-    <div className="relative rounded-2xl bg-gradient-to-b from-[#0b162c] to-[#070e1f] border border-cyan-500/25 p-5 md:p-7 shadow-[0_0_30px_rgba(6,182,212,0.12)]">
-      {/* Decorative cyber grid accent */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-bl-full pointer-events-none blur-xl" />
-
+    <div className="relative rounded-2xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] p-5 md:p-7 shadow-sm dark:shadow-2xl">
       <div className="space-y-4 relative z-10">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-lg md:text-xl font-bold font-mono tracking-tight text-white flex items-center gap-2.5">
-              <span className="inline-block w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#22d3ee]" />
+            <h2 className="text-lg md:text-xl font-bold font-mono tracking-tight text-[#182629] dark:text-[#E8E6DC] flex items-center gap-2.5">
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#A95636] dark:bg-[#C47A52] animate-pulse" />
               INTELLIGENT URL & DOMAIN FORENSICS
             </h2>
-            <p className="text-xs text-slate-400 font-mono mt-0.5">
+            <p className="text-xs text-[#647477] dark:text-[#A6B3AE] font-mono mt-0.5">
               Multi-vector heuristics, DNS correlation, homograph detection & real-time threat mesh
             </p>
           </div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-cyan-950/60 border border-cyan-500/30 text-[11px] font-mono text-cyan-300">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#A95636]/10 dark:bg-[#C47A52]/15 border border-[#A95636]/20 dark:border-[#C47A52]/30 text-[11px] font-mono text-[#A95636] dark:text-[#C47A52]">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Saptarishi AI Core v4.2</span>
+            <span>Chakravyuh AI Core v4.2</span>
           </div>
         </div>
 
         {/* Large Investigation Input */}
         <div className="relative flex flex-col sm:flex-row items-stretch gap-2.5">
           <div className="relative flex-1 group">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-cyan-400">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#A95636] dark:text-[#C47A52]">
               <Search className="w-5 h-5 transition-transform group-focus-within:scale-110" />
             </div>
 
@@ -115,10 +112,10 @@ export function UrlSubmissionForm({
               onKeyDown={handleKeyDown}
               placeholder="Paste suspicious target URL, IP, or domain (e.g. https://security-paypal.phish-alert.net/login)..."
               disabled={isLoading}
-              className={`w-full pl-11 pr-11 py-3.5 rounded-xl bg-[#030712]/90 border font-mono text-sm sm:text-base text-slate-100 placeholder-slate-500 outline-none transition-all duration-200 ${
+              className={`w-full pl-11 pr-11 py-3.5 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border font-mono text-sm sm:text-base text-[#182629] dark:text-[#E8E6DC] placeholder-[#647477] dark:placeholder-[#A6B3AE]/60 outline-none transition-all duration-200 ${
                 validationError
-                  ? 'border-rose-500/80 ring-2 ring-rose-500/20'
-                  : 'border-cyan-500/40 hover:border-cyan-400/70 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30'
+                  ? 'border-[#B64B46] dark:border-[#E17B70] ring-2 ring-[#E17B70]/20'
+                  : 'border-[#D9DED7] dark:border-[#304144] hover:border-[#A95636]/60 dark:hover:border-[#C47A52]/60 focus:border-[#A95636] dark:focus:border-[#C47A52] focus:ring-2 focus:ring-[#C47A52]/20'
               }`}
             />
 
@@ -128,9 +125,9 @@ export function UrlSubmissionForm({
                 onClick={handleClear}
                 disabled={isLoading}
                 title="Clear input"
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC] transition-colors cursor-pointer"
               >
-                <X className="w-4 h-4 p-0.5 rounded-full bg-slate-800 hover:bg-slate-700" />
+                <X className="w-4 h-4 p-0.5 rounded-full bg-[#D9DED7] dark:bg-[#304144]" />
               </button>
             )}
           </div>
@@ -141,7 +138,7 @@ export function UrlSubmissionForm({
               size="lg"
               onClick={handleSubmit}
               isLoading={isLoading}
-              className="px-6 font-mono font-bold tracking-wider uppercase text-sm shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:shadow-[0_0_20px_rgba(6,182,212,0.5)]"
+              className="px-6 font-mono font-bold tracking-wider uppercase text-sm shadow-md"
             >
               <span>INVESTIGATE</span>
               {!isLoading && <ArrowRight className="w-4 h-4 ml-1.5" />}
@@ -151,15 +148,15 @@ export function UrlSubmissionForm({
 
         {/* Validation Error Message */}
         {validationError && (
-          <div className="flex items-center gap-2 text-xs font-mono text-rose-400 bg-rose-500/10 border border-rose-500/20 px-3 py-2 rounded-lg">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#B64B46] dark:text-[#E17B70] bg-[#B64B46]/10 dark:bg-[#E17B70]/10 border border-[#B64B46]/20 dark:border-[#E17B70]/20 px-3 py-2 rounded-lg">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{validationError}</span>
           </div>
         )}
 
         {/* Example URL Suggestions */}
-        <div className="pt-2 border-t border-white/[0.06] flex flex-col md:flex-row md:items-center gap-2 text-xs font-mono">
-          <span className="text-slate-400 font-semibold shrink-0">Sample Telemetry Dossiers:</span>
+        <div className="pt-2 border-t border-[#D9DED7] dark:border-[#304144] flex flex-col md:flex-row md:items-center gap-2 text-xs font-mono">
+          <span className="text-[#647477] dark:text-[#A6B3AE] font-semibold shrink-0">Sample Telemetry Dossiers:</span>
           <div className="flex flex-wrap items-center gap-1.5">
             {EXAMPLE_URL_SUGGESTIONS.map((suggestion) => (
               <button
@@ -167,7 +164,7 @@ export function UrlSubmissionForm({
                 type="button"
                 onClick={() => handleSelectPreset(suggestion.url)}
                 disabled={isLoading}
-                className={`px-2.5 py-1 rounded-lg text-[11px] font-mono border transition-all cursor-pointer bg-slate-900/70 backdrop-blur-sm ${getPillBadgeStyle(
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-mono border transition-all cursor-pointer bg-[#EAECE6] dark:bg-[#223336] ${getPillBadgeStyle(
                   suggestion.expectedClassification
                 )}`}
               >
@@ -180,4 +177,3 @@ export function UrlSubmissionForm({
     </div>
   );
 }
-

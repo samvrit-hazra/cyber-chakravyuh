@@ -49,26 +49,26 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     };
 
     const sizeStyles = {
-      sm: 'h-8 px-2.5 text-xs rounded-md',
-      md: 'h-9 px-3 text-sm rounded-lg',
-      lg: 'h-11 px-4 text-base rounded-lg',
+      sm: 'h-8 px-2.5 text-xs rounded',
+      md: 'h-9 px-3 text-xs sm:text-sm rounded-md',
+      lg: 'h-11 px-4 text-sm sm:text-base rounded-md',
     };
 
     return (
-      <div className="w-full space-y-1.5">
+      <div className="w-full space-y-1.5 font-sans">
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-xs font-medium text-slate-300 tracking-wide uppercase"
+            className="block text-xs font-semibold text-[#182629] dark:text-[#E8E6DC] tracking-wide uppercase font-mono"
           >
             {label}
-            {props.required && <span className="ml-1 text-cyan-400">*</span>}
+            {props.required && <span className="ml-1 text-[#A95636] dark:text-[#C47A52]">*</span>}
           </label>
         )}
 
         <div className="relative flex items-center w-full">
           {leftIcon && (
-            <div className="absolute left-3 text-slate-400 pointer-events-none flex items-center justify-center">
+            <div className="absolute left-3 text-[#647477] dark:text-[#A6B3AE] pointer-events-none flex items-center justify-center">
               {leftIcon}
             </div>
           )}
@@ -83,11 +83,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               onChange?.(e);
             }}
             className={cn(
-              'w-full bg-[#0b152d]/80 text-slate-100 placeholder-slate-500',
-              'border border-cyan-500/20 backdrop-blur-md transition-all duration-200',
-              'focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 focus:shadow-[0_0_12px_rgba(6,182,212,0.25)]',
+              'w-full bg-[#EAECE6]/50 dark:bg-[#101A1D] text-[#182629] dark:text-[#E8E6DC] placeholder-[#647477] dark:placeholder-[#A6B3AE]/60',
+              'border border-[#D9DED7] dark:border-[#304144] transition-all duration-200',
+              'focus:outline-none focus:border-[#A95636] dark:focus:border-[#C47A52] focus:ring-1 focus:ring-[#A95636]/30',
               'disabled:opacity-50 disabled:cursor-not-allowed',
-              errorMessage && 'border-rose-500/80 focus:border-rose-500 focus:ring-rose-500/40 focus:shadow-[0_0_12px_rgba(244,63,94,0.25)]',
+              errorMessage &&
+                'border-[#B64B46] dark:border-[#E17B70] focus:border-[#B64B46] dark:focus:border-[#E17B70] focus:ring-[#B64B46]/20',
               leftIcon && 'pl-9',
               (rightIcon || (isClearable && currentVal)) && 'pr-9',
               isMonospace && 'font-mono tracking-tight',
@@ -97,12 +98,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
 
-          <div className="absolute right-2.5 flex items-center gap-1.5 text-slate-400">
+          <div className="absolute right-2.5 flex items-center gap-1.5 text-[#647477] dark:text-[#A6B3AE]">
             {isClearable && currentVal && !disabled && (
               <button
                 type="button"
                 onClick={handleClear}
-                className="p-1 hover:text-slate-200 transition-colors rounded hover:bg-slate-800/80"
+                className="p-1 hover:text-[#182629] dark:hover:text-[#E8E6DC] transition-colors rounded hover:bg-[#D9DED7] dark:hover:bg-[#223336]"
                 aria-label="Clear input"
               >
                 <X className="w-3.5 h-3.5" />
@@ -113,12 +114,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {errorMessage ? (
-          <p className="flex items-center gap-1.5 text-xs text-rose-400 font-medium mt-1">
+          <p className="flex items-center gap-1.5 text-xs text-[#B64B46] dark:text-[#E17B70] font-medium mt-1">
             <AlertCircle className="w-3.5 h-3.5 shrink-0" />
             <span>{errorMessage}</span>
           </p>
         ) : helperText ? (
-          <p className="text-xs text-slate-400 mt-1">{helperText}</p>
+          <p className="text-xs text-[#647477] dark:text-[#A6B3AE] mt-1">{helperText}</p>
         ) : null}
       </div>
     );
@@ -126,4 +127,3 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 );
 
 Input.displayName = 'Input';
-

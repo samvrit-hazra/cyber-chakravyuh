@@ -174,7 +174,7 @@ export function DesignSystemShowcase({ onBackToLanding }: DesignSystemShowcasePr
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 flex flex-col relative selection:bg-cyan-500/30 selection:text-cyan-200">
+    <div className="min-h-screen bg-[#F3F1E9] dark:bg-[#101A1D] text-slate-100 flex flex-col relative selection:bg-cyan-500/30 selection:text-cyan-200">
       <NetworkBackground opacity={0.4} nodeCount={40} />
 
       <Navbar
@@ -209,14 +209,14 @@ export function DesignSystemShowcase({ onBackToLanding }: DesignSystemShowcasePr
             </Badge>
           </div>
 
-          <section className="relative rounded-2xl border border-cyan-500/20 bg-gradient-to-r from-[#070d1e]/90 via-[#0b152d]/85 to-[#060d1f]/90 backdrop-blur-xl p-6 sm:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.6)] overflow-hidden">
+          <section className="relative rounded-2xl border border-cyan-500/20 bg-gradient-to-r from-white/90 dark:from-[#19272A]/90 via-[#0b152d]/85 to-[#060d1f]/90 backdrop-blur-xl p-6 sm:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.6)] overflow-hidden">
             <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div className="space-y-3 max-w-2xl">
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge variant="cyan" size="md" hasDot pulseDot>
                     AI Cybersecurity
                   </Badge>
-                  <Badge variant="purple" size="md">
+                  <Badge variant="copper" size="md">
                     Digital Trust Intelligence
                   </Badge>
                   <span className="text-xs font-mono text-slate-400">Phase 1 Design System</span>
@@ -236,7 +236,7 @@ export function DesignSystemShowcase({ onBackToLanding }: DesignSystemShowcasePr
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center gap-4 bg-[#060d1f]/80 border border-white/[0.08] p-4 rounded-xl shrink-0">
+              <div className="flex flex-col sm:flex-row items-center gap-4 bg-[#EAECE6] dark:bg-[#223336]/80 border border-white/[0.08] p-4 rounded-xl shrink-0">
                 <RadialProgress
                   value={simulatedScore}
                   size={100}
@@ -336,9 +336,9 @@ export function DesignSystemShowcase({ onBackToLanding }: DesignSystemShowcasePr
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-slate-400 uppercase font-mono">AI Confidence</p>
-                  <p className="text-xl font-bold text-purple-400 mt-1">98.2%</p>
+                  <p className="text-xl font-bold text-[#C47A52] mt-1">98.2%</p>
                 </div>
-                <div className="p-2.5 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-400">
+                <div className="p-2.5 rounded-lg bg-[#A95636]/10 border border-[#A95636]/30 text-[#C47A52]">
                   <Activity className="w-5 h-5" />
                 </div>
               </div>
@@ -377,12 +377,12 @@ export function DesignSystemShowcase({ onBackToLanding }: DesignSystemShowcasePr
               <Card variant="default">
                 <CardHeader>
                   <CardTitle>Button Variants</CardTitle>
-                  <CardDescription>Primary electric cyan, secondary purple, outline hairline, ghost, threat alert red, and verified trust emerald.</CardDescription>
+                  <CardDescription>Primary electric cyan, secondary copper, outline hairline, ghost, threat alert red, and verified trust emerald.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex flex-wrap items-center gap-3">
                     <Button variant="primary">Primary Cyan</Button>
-                    <Button variant="secondary">Secondary Purple</Button>
+                    <Button variant="secondary">Secondary Copper</Button>
                     <Button variant="outline">Outline Hairline</Button>
                     <Button variant="ghost">Ghost Neutral</Button>
                     <Button variant="danger" leftIcon={<ShieldAlert className="w-4 h-4" />}>Threat Alert</Button>
@@ -488,7 +488,7 @@ export function DesignSystemShowcase({ onBackToLanding }: DesignSystemShowcasePr
                   />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <RiskIndicator score={simulatedScore} mode="detailed" />
-                    <div className="p-4 rounded-xl border border-white/10 bg-[#0b152d]">
+                    <div className="p-4 rounded-xl border border-white/10 bg-white dark:bg-[#19272A]">
                       <RiskIndicator score={simulatedScore} mode="segmented" />
                     </div>
                   </div>
@@ -540,15 +540,15 @@ export function DesignSystemShowcase({ onBackToLanding }: DesignSystemShowcasePr
                 <CardTitle>Design Tokens Swatches</CardTitle>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {[
-                    { name: 'Cyan 500', hex: colors.cyan[500] },
-                    { name: 'Purple 500', hex: colors.purple[500] },
+                    { name: 'Copper Accent', hex: colors.copper.primary },
+                    { name: 'Spruce Accent', hex: colors.spruce.primary },
                     { name: 'Verified Emerald', hex: colors.verified.primary },
-                    { name: 'Critical Crimson', hex: colors.threat.critical },
+                    { name: 'Critical Crimson', hex: colors.danger.primary },
                   ].map((s) => (
                     <div
                       key={s.name}
                       onClick={() => copyToClipboard(s.hex)}
-                      className="p-3 rounded-lg border border-white/10 bg-[#070d1e] cursor-pointer hover:border-cyan-400"
+                      className="p-3 rounded-lg border border-white/10 bg-[#F3F1E9] dark:bg-[#101A1D] cursor-pointer hover:border-cyan-400"
                     >
                       <div className="h-8 rounded mb-2" style={{ backgroundColor: s.hex }} />
                       <p className="text-xs font-semibold">{s.name}</p>
@@ -562,7 +562,7 @@ export function DesignSystemShowcase({ onBackToLanding }: DesignSystemShowcasePr
 
           <section className="space-y-4">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <Radio className="w-5 h-5 text-purple-400" />
+              <Radio className="w-5 h-5 text-[#C47A52]" />
               7-Layer Chakravyuha Architecture
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -58,14 +58,14 @@ export function ReportVerificationProver({
   };
 
   return (
-    <div className="rounded-2xl bg-[#091224] border border-white/10 p-5 md:p-6 space-y-6 shadow-xl font-mono text-xs">
+    <div className="rounded-2xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] p-5 md:p-6 space-y-6 shadow-sm font-mono text-xs">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D9DED7] dark:border-[#304144] pb-4">
         <div>
-          <span className="text-[11px] uppercase tracking-widest text-emerald-400 font-bold">
+          <span className="text-[11px] uppercase tracking-widest text-emerald-700 dark:text-emerald-400 font-bold">
             STEP 2 • CRYPTOGRAPHIC INTEGRITY PROVER
           </span>
-          <h3 className="text-lg md:text-xl font-bold text-white flex items-center gap-2 mt-0.5">
+          <h3 className="text-lg md:text-xl font-bold text-[#182629] dark:text-[#E8E6DC] flex items-center gap-2 mt-0.5">
             <Shield className="w-5 h-5 text-emerald-400" />
             <span>Verify Report Integrity Against Blockchain Registry</span>
           </h3>
@@ -74,7 +74,7 @@ export function ReportVerificationProver({
 
       {/* Prover Input */}
       <div className="space-y-2">
-        <label className="text-slate-400 block uppercase font-bold text-[11px]">
+        <label className="text-[#647477] dark:text-[#A6B3AE] block uppercase font-bold text-[11px]">
           Enter Report Fingerprint (Hash), Transaction Hash, Report ID, or Raw JSON Payload:
         </label>
         <div className="flex flex-col sm:flex-row gap-2">
@@ -83,7 +83,7 @@ export function ReportVerificationProver({
             value={queryInput}
             onChange={(e) => setQueryInput(e.target.value)}
             placeholder="0x8f49b1a20c384df9e... or REP-941029..."
-            className="flex-1 p-3 rounded-xl bg-[#030712] border border-cyan-500/40 text-slate-100 font-mono text-xs outline-none focus:border-cyan-400"
+            className="flex-1 p-3 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-[#182629] dark:text-[#E8E6DC] font-mono text-xs outline-none focus:border-[#A95636] dark:focus:border-[#C47A52]"
           />
           <Button
             variant="primary"
@@ -107,16 +107,16 @@ export function ReportVerificationProver({
               <div
                 className={`p-4 rounded-xl border space-y-3 ${
                   proverResult.status === 'Verified On-Chain'
-                    ? 'bg-emerald-950/20 border-emerald-500/30'
+                    ? 'bg-emerald-500/10 dark:bg-emerald-950/20 border-emerald-500/30'
                     : proverResult.status === 'Tamper Detected'
-                    ? 'bg-rose-950/30 border-rose-500/40'
-                    : 'bg-slate-900/60 border-white/10'
+                    ? 'bg-rose-500/10 dark:bg-rose-950/30 border-rose-500/40'
+                    : 'bg-amber-500/10 dark:bg-amber-950/20 border-amber-500/30'
                 }`}
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <Icon className="w-5 h-5 text-emerald-400 shrink-0" />
-                    <span className="font-bold text-sm text-slate-100">{meta.text}</span>
+                    <span className="font-bold text-sm text-[#182629] dark:text-[#E8E6DC]">{meta.text}</span>
                   </div>
 
                   <span className={`px-2.5 py-0.5 rounded text-[11px] font-bold uppercase border ${meta.pill}`}>
@@ -127,24 +127,24 @@ export function ReportVerificationProver({
                 {/* If Verified, show detailed metrics */}
                 {proverResult.matchedRecord && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-2 text-[11px]">
-                    <div className="p-2.5 rounded bg-black/50 border border-white/5 space-y-0.5">
-                      <span className="text-slate-400 block text-[10px]">REPORT ID</span>
-                      <span className="text-slate-100 font-bold">{proverResult.matchedRecord.reportId}</span>
+                    <div className="p-2.5 rounded bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] space-y-0.5">
+                      <span className="text-[#647477] dark:text-[#A6B3AE] block text-[10px]">REPORT ID</span>
+                      <span className="text-[#182629] dark:text-[#E8E6DC] font-bold">{proverResult.matchedRecord.reportId}</span>
                     </div>
 
-                    <div className="p-2.5 rounded bg-black/50 border border-white/5 space-y-0.5">
-                      <span className="text-slate-400 block text-[10px]">BLOCK NUMBER</span>
-                      <span className="text-slate-100 font-bold">#{proverResult.matchedRecord.blockNumber}</span>
+                    <div className="p-2.5 rounded bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] space-y-0.5">
+                      <span className="text-[#647477] dark:text-[#A6B3AE] block text-[10px]">BLOCK NUMBER</span>
+                      <span className="text-[#182629] dark:text-[#E8E6DC] font-bold">#{proverResult.matchedRecord.blockNumber}</span>
                     </div>
 
-                    <div className="p-2.5 rounded bg-black/50 border border-white/5 space-y-0.5">
-                      <span className="text-slate-400 block text-[10px]">TIMESTAMP</span>
-                      <span className="text-slate-200">{proverResult.matchedRecord.registrationTimestamp}</span>
+                    <div className="p-2.5 rounded bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] space-y-0.5">
+                      <span className="text-[#647477] dark:text-[#A6B3AE] block text-[10px]">TIMESTAMP</span>
+                      <span className="text-[#182629] dark:text-[#E8E6DC]">{proverResult.matchedRecord.registrationTimestamp}</span>
                     </div>
 
-                    <div className="p-2.5 rounded bg-black/50 border border-white/5 space-y-0.5">
-                      <span className="text-slate-400 block text-[10px]">CONFIRMATIONS</span>
-                      <span className="text-emerald-400 font-bold">
+                    <div className="p-2.5 rounded bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] space-y-0.5">
+                      <span className="text-[#647477] dark:text-[#A6B3AE] block text-[10px]">CONFIRMATIONS</span>
+                      <span className="text-emerald-700 dark:text-emerald-400 font-bold">
                         {proverResult.matchedRecord.integrityVerdict.blockConfirmations} Blocks
                       </span>
                     </div>
@@ -158,7 +158,7 @@ export function ReportVerificationProver({
                       size="sm"
                       onClick={() => onViewRecordDetails(proverResult.matchedRecord!)}
                       rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
-                      className="font-mono text-xs border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/10"
+                      className="font-mono text-xs border-[#A95636]/30 text-[#A95636] dark:text-[#C47A52] hover:bg-[#A95636]/10"
                     >
                       View Comprehensive Report Dossier
                     </Button>

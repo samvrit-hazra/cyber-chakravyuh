@@ -24,7 +24,7 @@ export function HowItWorks() {
       step: '02',
       title: 'Investigate',
       subtitle: 'Passive Telemetry Gathering',
-      icon: <Search className="w-5 h-5 text-purple-400" />,
+      icon: <Search className="w-5 h-5 text-[#C47A52]" />,
       description:
         'Passive telemetry scanners query global DNS records, WHOIS registration chronology, IP ASN routing, and TLS certificate transparency logs.',
       details: [
@@ -79,17 +79,17 @@ export function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" className="py-24 relative border-t border-white/[0.06] bg-[#070d1e]/50">
+    <section id="how-it-works" className="py-24 relative border-t border-[#D9DED7] dark:border-[#304144] bg-[#F3F1E9] dark:bg-[#101A1D]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <Badge variant="purple" size="md">
+          <Badge variant="copper" size="md">
             WORKFLOW PIPELINE
           </Badge>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#182629] dark:text-[#E8E6DC]">
             How Cyber Chakravyuha Operates
           </h2>
-          <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
+          <p className="text-sm sm:text-base text-[#647477] dark:text-[#A6B3AE] leading-relaxed">
             From initial URL submission to immutable report attestation in under 50 milliseconds.
           </p>
         </div>
@@ -97,7 +97,7 @@ export function HowItWorks() {
         {/* Desktop Horizontal Timeline */}
         <div className="hidden lg:block relative">
           {/* Continuous Glowing Cyber Connecting Line */}
-          <div className="absolute top-1/2 left-10 right-10 -translate-y-8 h-0.5 bg-gradient-to-r from-cyan-500/30 via-purple-500/40 to-emerald-500/30 z-0" />
+          <div className="absolute top-1/2 left-10 right-10 -translate-y-8 h-0.5 bg-gradient-to-r from-cyan-500/30 via-[#C47A52]/40 to-emerald-500/30 z-0" />
 
           <div className="grid grid-cols-5 gap-4 relative z-10">
             {stages.map((stage, idx) => {
@@ -113,7 +113,7 @@ export function HowItWorks() {
                     className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 mb-4 border ${
                       isSelected
                         ? 'bg-cyan-500/20 border-cyan-400 shadow-[0_0_25px_rgba(6,182,212,0.6)] scale-110'
-                        : 'bg-[#0b152d] border-white/10 group-hover:border-cyan-500/40 group-hover:scale-105'
+                        : 'bg-white dark:bg-[#19272A] border-[#D9DED7] dark:border-[#304144] group-hover:border-[#A95636] dark:group-hover:border-[#C47A52] group-hover:scale-105'
                     }`}
                   >
                     {stage.icon}
@@ -143,9 +143,9 @@ export function HowItWorks() {
 
         {/* Selected Stage Detail Card (Desktop Highlight) */}
         <div className="hidden lg:block">
-          <Card variant="glass" className="p-6 border-cyan-500/30 bg-[#0b152d]/90 shadow-[0_8px_35px_rgba(0,0,0,0.6)]">
+          <Card variant="glass" className="p-6">
             <div className="grid grid-cols-12 gap-6 items-center">
-              <div className="col-span-4 space-y-3 border-r border-white/10 pr-6">
+              <div className="col-span-4 space-y-3 border-r border-[#D9DED7] dark:border-[#304144] pr-6">
                 <div className="flex items-center gap-2">
                   <Badge variant="cyan" size="sm">
                     STAGE {stages[activeStage].step}
@@ -154,10 +154,10 @@ export function HowItWorks() {
                     {stages[activeStage].timeframe}
                   </span>
                 </div>
-                <h4 className="text-xl font-bold text-white">
+                <h4 className="text-xl font-bold text-[#182629] dark:text-[#E8E6DC]">
                   {stages[activeStage].title}
                 </h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-xs text-[#647477] dark:text-[#A6B3AE] leading-relaxed">
                   {stages[activeStage].description}
                 </p>
               </div>
@@ -183,11 +183,11 @@ export function HowItWorks() {
         </div>
 
         {/* Mobile / Tablet Vertical Timeline */}
-        <div className="lg:hidden relative space-y-6 before:absolute before:left-6 before:top-4 before:bottom-4 before:w-0.5 before:bg-gradient-to-b before:from-cyan-500/50 before:via-purple-500/40 before:to-emerald-500/50">
+        <div className="lg:hidden relative space-y-6 before:absolute before:left-6 before:top-4 before:bottom-4 before:w-0.5 before:bg-gradient-to-b before:from-cyan-500/50 before:via-[#C47A52]/40 before:to-emerald-500/50">
           {stages.map((stage) => (
             <div key={stage.step} className="relative flex items-start gap-4 pl-2">
               {/* Step Icon Badge */}
-              <div className="w-10 h-10 rounded-xl bg-[#0b152d] border border-cyan-500/40 flex items-center justify-center shrink-0 z-10 shadow-[0_0_12px_rgba(6,182,212,0.3)]">
+              <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] flex items-center justify-center shrink-0 z-10 text-[#A95636] dark:text-[#C47A52]">
                 {stage.icon}
               </div>
 
@@ -203,7 +203,7 @@ export function HowItWorks() {
                   <span className="text-[10px] font-mono text-emerald-400">{stage.timeframe}</span>
                 </div>
 
-                <p className="text-xs text-slate-400 leading-relaxed">{stage.description}</p>
+                <p className="text-xs text-[#647477] dark:text-[#A6B3AE] leading-relaxed">{stage.description}</p>
 
                 <div className="pt-2 border-t border-white/5 space-y-1.5">
                   {stage.details.map((item, idx) => (
