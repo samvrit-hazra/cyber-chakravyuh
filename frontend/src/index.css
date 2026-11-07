@@ -1,0 +1,183 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-void: #030712;
+    --bg-canvas: #060d1f;
+    --bg-surface: #0b152d;
+    --bg-surface-alt: #0f1d3d;
+    --bg-elevated: #14254b;
+    --border-cyber: rgba(56, 189, 248, 0.16);
+    --border-cyber-subtle: rgba(255, 255, 255, 0.08);
+    --border-cyber-glow: rgba(6, 182, 212, 0.45);
+    --cyan-primary: #06b6d4;
+    --cyan-electric: #00f2fe;
+    --purple-electric: #a855f7;
+    --emerald-verified: #10b981;
+    --threat-critical: #ef4444;
+    --threat-high: #f97316;
+    --threat-medium: #f59e0b;
+    --threat-low: #38bdf8;
+  }
+
+  * {
+    box-sizing: border-box;
+    border-color: var(--border-cyber-subtle);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-void);
+    background-image: 
+      radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.08) 0%, transparent 60%),
+      radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.05) 0%, transparent 50%),
+      linear-gradient(to bottom, #030712 0%, #060d1f 100%);
+    color: #f1f5f9;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom Cyber Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #030712;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #06b6d4;
+  }
+}
+
+/* Glassmorphism & Cyber Command Panels */
+.glass-panel {
+  background: rgba(11, 21, 45, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+}
+
+.glass-card {
+  background: rgba(11, 21, 45, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(6, 182, 212, 0.38);
+  box-shadow: 0 10px 30px -5px rgba(6, 182, 212, 0.12);
+  transform: translateY(-1px);
+}
+
+/* Controlled Glow Utilities */
+.glow-cyan-sm {
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+}
+
+.glow-cyan-md {
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.45);
+}
+
+.glow-purple-sm {
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.35);
+}
+
+.glow-emerald-sm {
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+}
+
+.glow-threat-sm {
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.4);
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 8px rgba(6, 182, 212, 0.6);
+}
+
+.text-glow-emerald {
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.text-glow-threat {
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+/* Background Cyber Patterns */
+.cyber-grid-bg {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+}
+
+.cyber-dots-bg {
+  background-size: 24px 24px;
+  background-image: radial-gradient(rgba(56, 189, 248, 0.12) 1px, transparent 1px);
+}
+
+/* Scanline micro-effect */
+.cyber-scanline {
+  position: relative;
+  overflow: hidden;
+}
+
+.cyber-scanline::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(6, 182, 212, 0.02) 51%,
+    transparent 52%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+}
+
+/* Cyber Pulse Animation */
+@keyframes cyber-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.96);
+  }
+}
+
+.animate-cyber-pulse {
+  animation: cyber-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes radar-sweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-radar-sweep {
+  animation: radar-sweep 4s linear infinite;
+}
