@@ -30,12 +30,11 @@ app = FastAPI(
     description="AI-Powered Web Threat Detection & Digital Trust Intelligence API"
 )
 
-# CORS Middleware (Local dev + Vercel frontend)
+# CORS Middleware — Permissive for local testing (file://, localhost, custom ports) + Vercel
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
-    allow_origin_regex=r"https://.*\.vercel\.app",  # Permits all Vercel previews & production
-    allow_credentials=True,
+    allow_origins=["*"],  # Allows file:// (origin: null) and all local/remote test environments
+    allow_credentials=False,  # Set to False when allow_origins is wildcard
     allow_methods=["*"],
     allow_headers=["*"],
 )
