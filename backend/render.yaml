@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: cyber-chakravyuh-backend
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+      - key: MONGODB_URI
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: VIRUSTOTAL_API_KEY
+        sync: false
+      - key: SEPOLIA_RPC_URL
+        sync: false
+      - key: CONTRACT_ADDRESS
+        sync: false

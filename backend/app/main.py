@@ -1,0 +1,59 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+
+from app.core.config import settings
+from app.core.database import connect_to_mongo, close_mongo_connection
+
+# Feature Routers
+from app.features.url_scanner.router import router as url_router
+from app.features.cert_analyzer.router import router as cert_router
+from app.features.scam_detector.router import router as scam_router
+from app.features.security_auditor.router import router as security_router
+from app.features.threat_intel.router import router as threat_router
+from app.features.web3_registry.router import router as web3_router
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Connect to MongoDB
+    await connect_to_mongo()
+    yield
+    # Shutdown: Close MongoDB
+    await close_mongo_connection()
+
+
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    version=settings.VERSION,
+    lifespan=lifespan,
+    description="AI-Powered Web Threat Detection & Digital Trust Intelligence API"
+)
+
+# CORS Middleware (Local dev + Vercel frontend)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_origin_regex=r"https://.*\.vercel\.app",  # Permits all Vercel previews & production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Mount Feature Routers (Plug-and-play vertical slices)
+app.include_router(url_router, prefix="/api/url", tags=["URL & Phishing Analysis"])
+app.include_router(cert_router, prefix="/api/cert", tags=["TLS & Digital Trust"])
+app.include_router(scam_router, prefix="/api/scam", tags=["AI Scam Analysis"])
+app.include_router(security_router, prefix="/api/security", tags=["Website Security Audit"])
+app.include_router(threat_router, prefix="/api/threats", tags=["Threat Correlation"])
+app.include_router(web3_router, prefix="/api/web3", tags=["Web3 Threat Registry"])
+
+
+@app.get("/health", tags=["Health"])
+async def health_check():
+    return {
+        "status": "healthy",
+        "project": settings.PROJECT_NAME,
+        "version": settings.VERSION,
+        "environment": "render" if settings.PORT != 8000 else "development"
+    }
