@@ -3,4 +3,4 @@ export { ReportSubmissionCard } from './ReportSubmissionCard.tsx';
 export { ReportVerificationProver } from './ReportVerificationProver.tsx';
 export { OnChainRegistryTable } from './OnChainRegistryTable.tsx';
 export { ReportDetailModal } from './ReportDetailModal.tsx';
-
+export { DisputeTrackerPanel } from './DisputeTrackerPanel.tsx';

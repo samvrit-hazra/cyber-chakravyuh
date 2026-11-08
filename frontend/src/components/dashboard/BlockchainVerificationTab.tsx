@@ -8,7 +8,7 @@ import {
   OnChainRegistryTable,
   ReportDetailModal,
 } from '../blockchain/index.ts';
-import { INITIAL_ONCHAIN_RECORDS } from '../../utils/blockchainRegistryEngine.ts';
+import { INITIAL_ONCHAIN_RECORDS, fileReportDispute } from '../../utils/blockchainRegistryEngine.ts';
 import type { BlockchainReportRecord } from '../../types/blockchainVerification.ts';
 
 interface BlockchainVerificationTabProps {
@@ -29,22 +29,30 @@ export function BlockchainVerificationTab({ initialVerificationHash }: Blockchai
     setIsDetailModalOpen(true);
   };
 
+  const handleFileDispute = (reportId: string, challengerDid: string, reason: string, evidenceUri?: string) => {
+    setRecords((prev) => fileReportDispute(prev, reportId, challengerDid, reason, evidenceUri));
+    if (selectedRecord && selectedRecord.reportId === reportId) {
+      const updated = records.find((r) => r.reportId === reportId);
+      if (updated) setSelectedRecord(updated);
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {/* Module B Header */}
+      {/* Header */}
       <Card variant="glass" className="p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
             <h3 className="text-sm font-mono font-bold text-[#356D68] dark:text-[#79A99C] uppercase tracking-wider flex items-center gap-2">
               <Fingerprint className="w-4 h-4" />
-              DECENTRALIZED THREAT REGISTRY & WEB3 VERIFICATION (MODULE B)
+              DECENTRALIZED THREAT REGISTRY & WEB3 VERIFICATION (MODULE 6)
             </h3>
             <p className="text-xs text-[#647477] dark:text-[#A6B3AE]">
               Cryptographic report attestation, immutable revision history, zero-knowledge privacy commitments & Merkle proof auditing.
             </p>
           </div>
           <Badge variant="cyan" size="sm">
-            LAYER 6: DATA VAULT ACTIVE
+            ETHEREUM SEPOLIA ANCHORED
           </Badge>
         </div>
       </Card>
@@ -70,6 +78,7 @@ export function BlockchainVerificationTab({ initialVerificationHash }: Blockchai
         record={selectedRecord}
         isOpen={isDetailModalOpen}
         onClose={() => setIsDetailModalOpen(false)}
+        onFileDispute={handleFileDispute}
       />
     </div>
   );

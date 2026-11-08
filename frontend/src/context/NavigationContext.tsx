@@ -6,14 +6,25 @@ export type PageId =
   | 'tls-inspector'
   | 'sms-scanner'
   | 'security-auditor'
+  | 'threat-correlation'
   | 'threat-intel'
   | 'threat-registry'
   | 'analyst-console';
 
+export interface PendingThreatReport {
+  title?: string;
+  targetSubject?: string;
+  campaignName?: string;
+  findingsSummary?: string;
+  evidenceUri?: string;
+}
+
 interface NavigationContextType {
   currentPage: PageId;
   targetUrl: string;
-  navigateTo: (page: PageId, targetUrl?: string) => void;
+  pendingReport: PendingThreatReport | null;
+  navigateTo: (page: PageId, targetUrl?: string, pendingReport?: PendingThreatReport) => void;
+  clearPendingReport: () => void;
   isHistoryOpen: boolean;
   openHistory: () => void;
   closeHistory: () => void;
@@ -27,7 +38,7 @@ const parseHash = (): PageId => {
   if (hash === 'tls-inspector') return 'tls-inspector';
   if (hash === 'sms-scanner') return 'sms-scanner';
   if (hash === 'security-auditor') return 'security-auditor';
-  if (hash === 'threat-intel') return 'threat-intel';
+  if (hash === 'threat-correlation' || hash === 'threat-intel') return 'threat-correlation';
   if (hash === 'threat-registry' || hash === 'analyst-console') return 'threat-registry';
   return 'home';
 };
@@ -35,6 +46,7 @@ const parseHash = (): PageId => {
 export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentPage, setCurrentPage] = useState<PageId>(parseHash);
   const [targetUrl, setTargetUrl] = useState<string>('');
+  const [pendingReport, setPendingReport] = useState<PendingThreatReport | null>(null);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   useEffect(() => {
@@ -47,15 +59,19 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const navigateTo = (page: PageId, newTargetUrl?: string) => {
-    if (newTargetUrl) {
+  const navigateTo = (page: PageId, newTargetUrl?: string, newPendingReport?: PendingThreatReport) => {
+    if (newTargetUrl !== undefined) {
       setTargetUrl(newTargetUrl);
+    }
+    if (newPendingReport !== undefined) {
+      setPendingReport(newPendingReport);
     }
     setCurrentPage(page);
     window.location.hash = page === 'home' ? '' : `#${page}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const clearPendingReport = () => setPendingReport(null);
   const openHistory = () => setIsHistoryOpen(true);
   const closeHistory = () => setIsHistoryOpen(false);
 
@@ -64,7 +80,9 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       value={{
         currentPage,
         targetUrl,
+        pendingReport,
         navigateTo,
+        clearPendingReport,
         isHistoryOpen,
         openHistory,
         closeHistory,

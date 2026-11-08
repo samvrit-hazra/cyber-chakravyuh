@@ -17,6 +17,7 @@ import {
   Radar,
   ShieldCheck,
   Sparkles,
+  Fingerprint,
 } from 'lucide-react';
 import {
   performUrlInvestigation,
@@ -25,6 +26,7 @@ import {
 } from '../../utils/investigationEngine.ts';
 import type { UrlInvestigationResult } from '../../types/investigation.ts';
 import { ScanHistoryService } from '../../services/scanHistoryService.ts';
+import { useNavigation } from '../../context/NavigationContext.tsx';
 import { RiskBadge } from './RiskBadge.tsx';
 import { ThreatScoreGauge } from './ThreatScoreGauge.tsx';
 import { SecurityFindingsList } from './SecurityFindingsList.tsx';
@@ -42,6 +44,7 @@ export function URLAnalyzer({
   onOpenHistory,
   onOpenAnalystConsole,
 }: URLAnalyzerProps) {
+  const { navigateTo } = useNavigation();
   const [url, setUrl] = useState(initialUrl);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
@@ -155,6 +158,18 @@ Do not enter credentials, financial information, or execute downloads.`;
     a.download = `cyber-chakravyuh-report-${result.investigationId || 'investigation'}.json`;
     a.click();
     URL.revokeObjectURL(u);
+  };
+
+  const handleAnchorToBlockchain = () => {
+    if (!result) return;
+    const targetDomain = extractDomain(result.targetUrl);
+    navigateTo('threat-registry', undefined, {
+      title: `Malicious Infrastructure: ${targetDomain}`,
+      targetSubject: result.targetUrl,
+      campaignName: `${targetDomain} Phishing Operation`,
+      findingsSummary: `Risk Level: ${result.riskClassification} (Score: ${result.riskScore}/100). Technical flags: ${result.technicalFindings.slice(0, 3).map((f) => f.title).join('; ')}`,
+      evidenceUri: `ipfs://bafybei${result.investigationId.toLowerCase().replace(/[^a-z0-9]/g, '')}/evidence.json`,
+    });
   };
 
   return (
@@ -451,6 +466,32 @@ Do not enter credentials, financial information, or execute downloads.`;
                 </button>
               </div>
             </div>
+
+            {/* Step 5: Report and Verify on Blockchain Hand-off Card */}
+            <div className="mt-4 p-3.5 rounded-xl bg-[#356D68]/10 dark:bg-[#79A99C]/15 border border-[#356D68]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-lg bg-[#356D68] text-white shrink-0">
+                  <Fingerprint className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#356D68] dark:text-[#79A99C] font-bold block">
+                    STEP 5 • ON-CHAIN ATTESTATION HAND-OFF
+                  </span>
+                  <p className="text-xs text-[#182629] dark:text-[#E8E6DC] font-sans">
+                    Anchor this incident report's cryptographic fingerprint onto the Ethereum Sepolia ledger.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleAnchorToBlockchain}
+                className="px-3.5 py-1.5 rounded-lg bg-[#356D68] hover:bg-[#2b5955] text-white text-xs font-bold font-mono tracking-wide flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs active:scale-95 transition-all whitespace-nowrap"
+              >
+                <span>Anchor to Web3 Registry</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
 
           {/* 4 Essential Indicator Cards */}
@@ -701,16 +742,26 @@ Do not enter credentials, financial information, or execute downloads.`;
                   <span className="text-[11px] text-[#647477] dark:text-[#A6B3AE]">
                     Deterministic RFC 3986 Heuristic Output
                   </span>
-                  {onOpenAnalystConsole && (
+                  <div className="flex items-center gap-3">
                     <button
                       type="button"
-                      onClick={() => onOpenAnalystConsole(result.targetUrl)}
-                      className="text-xs text-[#A95636] dark:text-[#C47A52] hover:underline flex items-center gap-1 cursor-pointer font-semibold"
+                      onClick={handleAnchorToBlockchain}
+                      className="text-xs text-[#356D68] dark:text-[#79A99C] hover:underline flex items-center gap-1 cursor-pointer font-semibold"
                     >
-                      <span>Deep Forensic Audit</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <Fingerprint className="w-3.5 h-3.5" />
+                      <span>Anchor on Web3</span>
                     </button>
-                  )}
+                    {onOpenAnalystConsole && (
+                      <button
+                        type="button"
+                        onClick={() => onOpenAnalystConsole(result.targetUrl)}
+                        className="text-xs text-[#A95636] dark:text-[#C47A52] hover:underline flex items-center gap-1 cursor-pointer font-semibold"
+                      >
+                        <span>Deep Forensic Audit</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             )}

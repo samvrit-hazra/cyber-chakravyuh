@@ -5,18 +5,21 @@ import {
   ShieldAlert,
   ArrowRight,
   Clipboard,
+  Fingerprint,
 } from 'lucide-react';
 import {
   performScamAnalysis,
   SCAM_EXAMPLE_PRESETS,
 } from '../../utils/scamAnalysisEngine.ts';
 import type { ScamAnalysisResult } from '../../types/scam.ts';
+import { useNavigation } from '../../context/NavigationContext.tsx';
 
 interface ScamMessageScannerProps {
   onScanUrl?: (url: string) => void;
 }
 
 export function ScamMessageScanner({ onScanUrl }: ScamMessageScannerProps) {
+  const { navigateTo } = useNavigation();
   const [messageText, setMessageText] = useState(SCAM_EXAMPLE_PRESETS[0].sampleText);
   const [selectedPresetId, setSelectedPresetId] = useState(SCAM_EXAMPLE_PRESETS[0].id);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -52,6 +55,25 @@ export function ScamMessageScanner({ onScanUrl }: ScamMessageScannerProps) {
     } catch {
       // Clipboard denied
     }
+  };
+
+  const handleAnchorToBlockchain = () => {
+    if (!result) return;
+    const targetIndicator =
+      (result.extractedUrls && result.extractedUrls[0]?.url) ||
+      result.impersonation?.impersonatedEntity ||
+      'Social Engineering Ingress Text';
+    const campaign = result.impersonation?.impersonatedEntity
+      ? `${result.impersonation.impersonatedEntity} Impersonation Lure`
+      : `${result.scamCategory || 'SMS / Email'} Fraud Campaign`;
+
+    navigateTo('threat-registry', undefined, {
+      title: `Scam Incident: ${result.scamCategory || 'Social Engineering Attempt'}`,
+      targetSubject: targetIndicator,
+      campaignName: campaign,
+      findingsSummary: `Risk Level: ${result.riskClassification} (Score: ${result.riskScore}/100). Urgency Score: ${result.urgencyAndManipulation?.urgencyScore || 0}. Impersonated: ${result.impersonation?.impersonatedEntity || 'None'}. ${result.aiExplanation.summaryRationale.slice(0, 160)}`,
+      evidenceUri: `ipfs://bafybei${result.analysisId.toLowerCase().replace(/[^a-z0-9]/g, '')}/scam-proof.eml`,
+    });
   };
 
   return (
@@ -235,6 +257,32 @@ export function ScamMessageScanner({ onScanUrl }: ScamMessageScannerProps) {
                     ))}
                   </div>
                 )}
+
+                {/* Step 5: Anchor to Web3 Registry */}
+                <div className="mt-3 p-3 rounded-lg bg-[#356D68]/10 dark:bg-[#79A99C]/15 border border-[#356D68]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 rounded bg-[#356D68] text-white shrink-0">
+                      <Fingerprint className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-[#356D68] dark:text-[#79A99C] font-bold block">
+                        STEP 5 • DECENTRALIZED VERIFICATION
+                      </span>
+                      <p className="text-[11px] text-[#182629] dark:text-[#E8E6DC] font-sans">
+                        Submit this scam footprint to the Web3 Threat Registry without revealing sensitive personal data.
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleAnchorToBlockchain}
+                    className="px-3 py-1.5 rounded bg-[#356D68] hover:bg-[#2b5955] text-white text-xs font-bold font-mono tracking-wide flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs active:scale-95 transition-all whitespace-nowrap"
+                  >
+                    <span>Anchor to Web3</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="h-full min-h-[220px] rounded-md border border-dashed border-[#D9DED7] dark:border-[#304144] flex flex-col items-center justify-center p-6 text-center text-[#647477] dark:text-[#A6B3AE] space-y-2">

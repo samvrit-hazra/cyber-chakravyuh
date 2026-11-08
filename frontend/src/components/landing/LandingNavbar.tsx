@@ -4,7 +4,7 @@ import {
   Lock,
   MessageSquare,
   Shield,
-  Radio,
+  Share2,
   Fingerprint,
   Clock,
   Menu,
@@ -53,7 +53,7 @@ export function LandingNavbar({ onOpenHistory }: LandingNavbarProps) {
     { id: 'tls-inspector', label: 'SSL Analyzer', icon: Lock },
     { id: 'sms-scanner', label: 'Scam Detector', icon: MessageSquare },
     { id: 'security-auditor', label: 'Security Auditor', icon: Shield },
-    { id: 'threat-intel', label: 'Threat Radar', icon: Radio },
+    { id: 'threat-correlation', label: 'Threat Correlation', icon: Share2 },
     { id: 'threat-registry', label: 'Web3 Registry', icon: Fingerprint },
   ];
 
@@ -192,7 +192,7 @@ export function LandingNavbar({ onOpenHistory }: LandingNavbarProps) {
                     : 'text-[#647477] dark:text-[#A6B3AE] hover:bg-[#EAECE6] dark:hover:bg-[#223336]'
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="w-3.5 h-3.5" />
                 <span>{item.label}</span>
               </button>
             );

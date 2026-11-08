@@ -3,7 +3,7 @@ import {
   Lock,
   MessageSquare,
   Shield,
-  Radio,
+  Share2,
   Fingerprint,
   ArrowRight,
   ExternalLink,
@@ -74,27 +74,27 @@ const TOOLS: ToolCard[] = [
     ctaText: 'Open Security Auditor',
   },
   {
-    id: 'threat-intel',
-    title: 'Threat Intelligence Radar',
+    id: 'threat-correlation',
+    title: 'Intelligent Threat Correlation',
     description:
-      'Monitor real-time adversary infrastructure, active phishing campaigns, MITRE ATT&CK mapping, and cross-correlated Indicators of Compromise.',
-    icon: Radio,
-    iconBg: 'bg-[#B64B46]/10 dark:bg-[#E17B70]/15',
-    iconColor: 'text-[#B64B46] dark:text-[#E17B70]',
-    accentBorder: 'hover:border-[#B64B46] dark:hover:border-[#E17B70]',
-    tags: ['Live Threat Feeds', 'MITRE ATT&CK', 'Adversary IOC Stream'],
-    ctaText: 'Open Threat Radar',
+      'Correlate disparate phishing indicators, uncover repeated infrastructure & bulletproof ASNs, and trace multi-entity campaign relationship graphs.',
+    icon: Share2,
+    iconBg: 'bg-[#A95636]/10 dark:bg-[#C47A52]/15',
+    iconColor: 'text-[#A95636] dark:text-[#C47A52]',
+    accentBorder: 'hover:border-[#A95636] dark:hover:border-[#C47A52]',
+    tags: ['Infrastructure Mapping', 'Campaign Clusters', 'Entity Relationship Graph'],
+    ctaText: 'Open Threat Correlation',
   },
   {
     id: 'threat-registry',
-    title: 'Web3 Threat Registry',
+    title: 'Decentralized Threat Intelligence',
     description:
-      'Decentralized immutable threat incident ledger and cryptographic attestation console anchored on-chain with SHA-256 evidence validation.',
+      'Web3 tamper-evident security repository with cryptographic commitments on Ethereum Sepolia, independent integrity verification, and dispute tracking.',
     icon: Fingerprint,
-    iconBg: 'bg-[#2A5753]/10 dark:bg-[#669387]/15',
-    iconColor: 'text-[#2A5753] dark:text-[#669387]',
-    accentBorder: 'hover:border-[#2A5753] dark:hover:border-[#669387]',
-    tags: ['Smart Contract Ledger', 'Tamper-Evident SHA-256', 'Merkle Proofs'],
+    iconBg: 'bg-[#356D68]/10 dark:bg-[#79A99C]/15',
+    iconColor: 'text-[#356D68] dark:text-[#79A99C]',
+    accentBorder: 'hover:border-[#356D68] dark:hover:border-[#79A99C]',
+    tags: ['Ethereum Sepolia', 'Zero-PII Commitments', 'Independent Integrity Prover'],
     ctaText: 'Open Threat Registry',
   },
 ];
@@ -116,7 +116,7 @@ export function LandingPage() {
           </h1>
 
           <p className="text-sm sm:text-base text-[#647477] dark:text-[#A6B3AE] max-w-2xl mx-auto leading-relaxed">
-            Select an investigation tool below to analyze web addresses, inspect SSL certificates, evaluate scam messages, or audit website security.
+            Select an investigation tool below to analyze web addresses, inspect SSL certificates, evaluate scam messages, audit website security, correlate threat infrastructure, or verify decentralized threat intelligence.
           </p>
         </div>
 
