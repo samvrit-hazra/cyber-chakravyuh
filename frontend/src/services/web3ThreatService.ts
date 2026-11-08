@@ -7,13 +7,7 @@ import type {
   MLFeature,
   AMLFlag,
 } from '../types/web3Threat.ts';
-
-const BACKEND_URLS = [
-  (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) || '',
-  'http://localhost:8000',
-  'http://127.0.0.1:8000',
-  'http://localhost:5000/api/v1',
-].filter(Boolean);
+import { ThreatApiService } from './threatApi.ts';
 
 export const DEMO_WALLETS: DemoWallet[] = [
   {
@@ -67,15 +61,11 @@ function shortAddr(addr: string): string {
 
 export const web3ThreatService = {
   async getDemoWallets(): Promise<DemoWallet[]> {
-    for (const base of BACKEND_URLS) {
-      try {
-        const res = await fetch(`${base}/api/web3-threat/demo-wallets`, { signal: AbortSignal.timeout(2000) });
-        if (res.ok) {
-          return await res.json();
-        }
-      } catch {
-        // try next
-      }
+    try {
+      const data = await ThreatApiService.getWeb3DemoWallets();
+      if (Array.isArray(data) && data.length > 0) return data;
+    } catch {
+      // fallback
     }
     return DEMO_WALLETS;
   },
@@ -83,27 +73,17 @@ export const web3ThreatService = {
   async analyzeWallet(address: string, depth = 2): Promise<Web3ThreatAnalysisResult> {
     const cleaned = address.trim().toLowerCase();
 
-    // 1. Attempt live backend API call
-    for (const base of BACKEND_URLS) {
-      try {
-        const url = base.endsWith('/api/v1') ? `${base}/web3-threat/analyze` : `${base}/api/web3-threat/analyze`;
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ address: cleaned, chain: 'ethereum', depth }),
-          signal: AbortSignal.timeout(4000),
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          return data as Web3ThreatAnalysisResult;
-        }
-      } catch {
-        // Fall through to next candidate or standalone simulation
+    // 1. Live API call to FastAPI backend via ThreatApiService
+    try {
+      const result = await ThreatApiService.analyzeWeb3Threat(cleaned, depth);
+      if (result && result.graph && result.ml_features) {
+        return result;
       }
+    } catch (err) {
+      console.warn('Live Web3 Threat API request failed; executing client fallback engine:', err);
     }
 
-    // 2. Standalone Client-Side Fallback Engine (Zero dependency, accurate deterministic simulation)
+    // 2. Standalone Client-Side Fallback Engine
     return this.generateStandaloneAssessment(cleaned, depth);
   },
 
@@ -167,14 +147,14 @@ export const web3ThreatService = {
       else riskLevel = 'SAFE';
     }
 
-    const overallFlagged = overallScore >= 0.50;
+    const overallFlagged = overallScore >= 0.5;
 
     // ML 9 Features
     const mlFeatures: MLFeature[] = [
       {
         key: 'tx_frequency',
         name: 'Transaction Frequency',
-        value: isFanout ? 84 : (isLazarus ? 42 : (isVitalik ? 18 : 26)),
+        value: isFanout ? 84 : isLazarus ? 42 : isVitalik ? 18 : 26,
         benchmark: '< 20 normal',
         description: 'Total count of transactions recorded across the analysis window.',
         is_suspicious: isFanout || isLazarus,
@@ -182,7 +162,7 @@ export const web3ThreatService = {
       {
         key: 'amount_mean',
         name: 'Average Transfer Value',
-        value: isLazarus ? 124.5 : (isMule ? 49.25 : (isVitalik ? 14.3 : 3.8)),
+        value: isLazarus ? 124.5 : isMule ? 49.25 : isVitalik ? 14.3 : 3.8,
         benchmark: '< 5.0 ETH typical',
         description: 'Mean ETH transferred per transaction.',
         is_suspicious: isLazarus || isMule,
@@ -198,7 +178,7 @@ export const web3ThreatService = {
       {
         key: 'round_number_ratio',
         name: 'Round-Number Structuring Ratio',
-        value: isTornado ? 0.85 : (isFanout ? 0.72 : 0.11),
+        value: isTornado ? 0.85 : isFanout ? 0.72 : 0.11,
         benchmark: '< 0.15 normal',
         description: 'Fraction of transactions with exact round amounts (e.g. 10.0, 100.0 ETH).',
         is_suspicious: isTornado || isFanout,
@@ -206,7 +186,7 @@ export const web3ThreatService = {
       {
         key: 'timing_gap_mean',
         name: 'Mean Inter-Transaction Timing',
-        value: isMule ? 180 : (isFanout ? 420 : 7200),
+        value: isMule ? 180 : isFanout ? 420 : 7200,
         benchmark: '> 1800s normal',
         description: 'Average seconds elapsed between consecutive transactions.',
         is_suspicious: isMule || isFanout,
@@ -222,7 +202,7 @@ export const web3ThreatService = {
       {
         key: 'fan_out_ratio',
         name: 'Fan-Out Dispersion Ratio',
-        value: isFanout ? 0.94 : (isLazarus ? 0.78 : 0.32),
+        value: isFanout ? 0.94 : isLazarus ? 0.78 : 0.32,
         benchmark: '< 0.50 normal',
         description: 'Ratio of distinct destination addresses to total outbound transfers.',
         is_suspicious: isFanout || isLazarus,
@@ -230,7 +210,7 @@ export const web3ThreatService = {
       {
         key: 'fan_in_ratio',
         name: 'Fan-In Aggregation Ratio',
-        value: isMule ? 0.98 : 0.40,
+        value: isMule ? 0.98 : 0.4,
         benchmark: '< 0.50 normal',
         description: 'Ratio of distinct funding sources to total inbound transfers.',
         is_suspicious: isMule,
@@ -252,18 +232,20 @@ export const web3ThreatService = {
         title: 'Fan-Out Fund Dispersion',
         severity: 'HIGH',
         triggered: isFanout || isLazarus,
-        reason: (isFanout || isLazarus)
-          ? 'Detected rapid fan-out dispersion across 10+ distinct destination wallets within a short operational window.'
-          : 'Standard counterparty distribution; no automated fan-out pattern.',
+        reason:
+          isFanout || isLazarus
+            ? 'Detected rapid fan-out dispersion across 10+ distinct destination wallets within a short operational window.'
+            : 'Standard counterparty distribution; no automated fan-out pattern.',
       },
       {
         type: 'round_amount',
         title: 'Round-Number Structuring / Smurfing',
         severity: 'MEDIUM',
         triggered: isTornado || isFanout,
-        reason: (isTornado || isFanout)
-          ? 'Found multiple transactions with exact integer amounts (10.0, 100.0 ETH), consistent with structuring.'
-          : 'Normal decimal amounts consistent with regular DeFi / gas interactions.',
+        reason:
+          isTornado || isFanout
+            ? 'Found multiple transactions with exact integer amounts (10.0, 100.0 ETH), consistent with structuring.'
+            : 'Normal decimal amounts consistent with regular DeFi / gas interactions.',
       },
       {
         type: 'rapid_passthrough',
@@ -279,9 +261,10 @@ export const web3ThreatService = {
         title: 'OFAC Sanctioned / Blacklisted Counterparty',
         severity: 'CRITICAL',
         triggered: isLazarus || isTornado,
-        reason: (isLazarus || isTornado)
-          ? 'Direct match with U.S. Treasury OFAC sanctions list or known state-sponsored threat group.'
-          : 'Zero transactions recorded with designated sanction targets or blacklisted darknet addresses.',
+        reason:
+          isLazarus || isTornado
+            ? 'Direct match with U.S. Treasury OFAC sanctions list or known state-sponsored threat group.'
+            : 'Zero transactions recorded with designated sanction targets or blacklisted darknet addresses.',
       },
     ];
 
@@ -296,7 +279,7 @@ export const web3ThreatService = {
         risk_level: riskLevel,
         is_flagged: overallFlagged,
         is_root: true,
-        balance_eth: isLazarus ? 173600.0 : (isVitalik ? 245.8 : 50.0),
+        balance_eth: isLazarus ? 173600.0 : isVitalik ? 245.8 : 50.0,
         tx_count: mlFeatures[0].value,
         hop_distance: 0,
       },
@@ -304,7 +287,6 @@ export const web3ThreatService = {
 
     const edges: GraphEdge[] = [];
 
-    // Counterparty simulated cluster
     const counterparties = isLazarus
       ? [
           { addr: '0x1a2a1c938ce3ec39b6d47113c7955ba9be814f91', name: 'Ronin Bridge Contract', score: 0.1, role: 'Victim Contract', amt: 173600, dir: 'in', flag: false },
@@ -341,7 +323,7 @@ export const web3ThreatService = {
         short_address: shortAddr(cp.addr),
         classification: cp.name,
         risk_score: cp.score,
-        risk_level: cp.score >= 0.8 ? 'CRITICAL' : (cp.score >= 0.5 ? 'HIGH' : 'LOW'),
+        risk_level: cp.score >= 0.8 ? 'CRITICAL' : cp.score >= 0.5 ? 'HIGH' : 'LOW',
         is_flagged: cp.flag,
         is_root: false,
         balance_eth: cp.amt * 1.2,
@@ -390,14 +372,16 @@ export const web3ThreatService = {
         entity_name: entityName,
         category,
         tags,
-        sources: entityName ? [
-          {
-            title: `Forensic Intelligence Report: ${entityName}`,
-            snippet: `Historical on-chain clustering verifies direct link with ${category}.`,
-            link: `https://etherscan.io/address/${address}`,
-            domain: 'etherscan.io',
-          },
-        ] : [],
+        sources: entityName
+          ? [
+              {
+                title: `Forensic Intelligence Report: ${entityName}`,
+                snippet: `Historical on-chain clustering verifies direct link with ${category}.`,
+                link: `https://etherscan.io/address/${address}`,
+                domain: 'etherscan.io',
+              },
+            ]
+          : [],
       },
       graph,
       executive_summary: overallFlagged

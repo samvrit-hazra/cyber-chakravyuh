@@ -16,9 +16,15 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "1. Starting FastAPI Backend (Groq AI) on http://localhost:8000..."
+echo "1. Starting FastAPI Backend on http://localhost:8000..."
 cd "$DIR/backend"
-./venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+if [ -f "./venv/bin/uvicorn" ]; then
+    ./venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+elif [ -f "./venv/Scripts/uvicorn.exe" ]; then
+    ./venv/Scripts/uvicorn.exe app.main:app --host 0.0.0.0 --port 8000 &
+else
+    python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+fi
 BACKEND_PID=$!
 
 echo "2. Starting Vite Frontend on http://localhost:5173..."
