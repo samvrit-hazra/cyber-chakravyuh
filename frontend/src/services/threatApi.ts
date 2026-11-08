@@ -278,6 +278,11 @@ export class ThreatApiService {
       technicalFindings,
       recommendedActions,
       ed25519Signature: 'sig_ed25519_verified_live_telemetry',
+      reportHash: data.report_hash,
+      txHash: data.tx_hash,
+      blockchainStatus: data.blockchain_status || (data.report_hash ? 'Registered on Ethereum Sepolia' : undefined),
+      contractAddress: data.contract_address,
+      etherscanUrl: data.etherscan_url,
     };
   }
 

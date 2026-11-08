@@ -107,5 +107,10 @@ export interface UrlInvestigationResult {
   technicalFindings: TechnicalFinding[];
   recommendedActions: RecommendedAction[];
   ed25519Signature: string;
+  reportHash?: string;
+  txHash?: string;
+  blockchainStatus?: string;
+  contractAddress?: string;
+  etherscanUrl?: string;
 }
 

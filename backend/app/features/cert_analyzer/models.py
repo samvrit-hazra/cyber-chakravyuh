@@ -84,4 +84,9 @@ class CertAnalyzeResponse(BaseModel):
     ct_logs: List[CTLogEntry] = []
     ai_explanation: Optional[str] = None
     recommended_actions: List[str] = []
+    report_hash: Optional[str] = None
+    tx_hash: Optional[str] = None
+    blockchain_status: Optional[str] = None
+    contract_address: Optional[str] = None
+    etherscan_url: Optional[str] = None
     created_at: datetime

@@ -21,6 +21,8 @@ from app.features.scam_detector.extractors import extract_indicators
 from app.features.scam_detector.threat_correlator import correlate_indicators
 from app.core.groq_client import query_groq
 from app.core.database import get_database
+from app.features.reports.service import report_integrity_service
+from app.features.reports.models import ReportRegisterRequest
 
 
 class ScamDetectorService:
@@ -322,13 +324,50 @@ RECOMMENDATIONS:
             created_at=datetime.now(timezone.utc)
         )
 
-        # 7. Async Save to MongoDB (scam_analyses collection)
+        # 7. Persistence & Provenance — Ethereum Sepolia Smart Contract & Cryptographic SHA-256
+        target_preview = (cleaned_text[:60] + "...") if len(cleaned_text) > 60 else (cleaned_text or "SMS / Email Message")
+        try:
+            reg_req = ReportRegisterRequest(
+                report_id=report_id,
+                target=target_preview,
+                scan_type="scam_analysis",
+                findings_summary=ai_res["explanation"],
+                risk_score=ai_res["risk_score"],
+                risk_level=ai_res["risk_level"].upper(),
+                canonical_data={
+                    "report_id": report_id,
+                    "target": target_preview,
+                    "scan_type": "scam_analysis",
+                    "risk_score": ai_res["risk_score"],
+                    "risk_level": ai_res["risk_level"].upper(),
+                    "scam_type": ai_res["scam_type"],
+                    "confidence": ai_res["confidence"],
+                }
+            )
+            reg_res = await report_integrity_service.register_report(reg_req)
+            response.report_hash = reg_res.report_hash
+            response.tx_hash = reg_res.tx_hash
+            response.blockchain_status = "Registered on Ethereum Sepolia"
+            response.contract_address = reg_res.contract_address
+            response.etherscan_url = reg_res.etherscan_url
+        except Exception as reg_err:
+            print(f"Scam report blockchain registration notice: {reg_err}")
+
+        # 8. Async Save to MongoDB (scam_analyses + indicators collections)
         db = get_database()
         if db is not None:
             try:
                 doc = response.model_dump()
                 doc["_id"] = report_id
                 await db.scam_analyses.insert_one(doc)
+
+                for u in indicators.urls:
+                    await db.indicators.insert_one({
+                        "report_id": report_id,
+                        "type": "scam_url",
+                        "value": u,
+                        "created_at": datetime.now(timezone.utc)
+                    })
             except Exception as e:
                 print(f"MongoDB scam persistence notice: {e}")
 

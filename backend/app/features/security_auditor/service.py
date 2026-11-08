@@ -26,6 +26,8 @@ from app.core.security import is_safe_url
 from app.core.shodan_client import query_shodan_host
 from app.core.groq_client import query_groq
 from app.core.database import get_database
+from app.features.reports.service import report_integrity_service
+from app.features.reports.models import ReportRegisterRequest
 
 
 class SecurityAuditorService:
@@ -155,7 +157,7 @@ REMEDIATIONS:
                 remediation="Provide a publicly routable internet domain",
                 relevant_limitations="Private subnets are strictly un-auditable"
             )
-            return SecurityAuditResponse(
+            resp = SecurityAuditResponse(
                 report_id=report_id,
                 target_url=raw_url,
                 normalized_url=normalized_url,
@@ -169,6 +171,30 @@ REMEDIATIONS:
                 remediation_priorities=["Audit publicly accessible domains only."],
                 created_at=datetime.now(timezone.utc)
             )
+            try:
+                reg_res = await report_integrity_service.register_report(ReportRegisterRequest(
+                    report_id=report_id,
+                    target=normalized_url,
+                    scan_type="security_audit",
+                    findings_summary="Target rejected: Hostname resolves to an internal or loopback IP address, violating SSRF protection policy.",
+                    risk_score=100,
+                    risk_level="CRITICAL",
+                    canonical_data={
+                        "report_id": report_id,
+                        "target": normalized_url,
+                        "status": "SSRF_BLOCKED",
+                        "grade": "F",
+                        "security_score": 0
+                    }
+                ))
+                resp.report_hash = reg_res.report_hash
+                resp.tx_hash = reg_res.tx_hash
+                resp.blockchain_status = "Registered on Ethereum Sepolia"
+                resp.contract_address = reg_res.contract_address
+                resp.etherscan_url = reg_res.etherscan_url
+            except Exception:
+                pass
+            return resp
 
         host_ip = self.resolve_ip(hostname)
 
@@ -231,13 +257,50 @@ REMEDIATIONS:
             created_at=datetime.now(timezone.utc)
         )
 
-        # 3. Save to MongoDB (security_audits collection)
+        # 3. Persistence & Provenance — Ethereum Sepolia Smart Contract & Cryptographic SHA-256
+        try:
+            reg_req = ReportRegisterRequest(
+                report_id=report_id,
+                target=hostname,
+                scan_type="security_audit",
+                findings_summary=ai_summary,
+                risk_score=100 - score,
+                risk_level=risk_level.upper(),
+                canonical_data={
+                    "report_id": report_id,
+                    "target": hostname,
+                    "scan_type": "security_audit",
+                    "security_score": score,
+                    "grade": grade,
+                    "risk_level": risk_level.upper(),
+                    "findings_count": len(all_findings),
+                }
+            )
+            reg_res = await report_integrity_service.register_report(reg_req)
+            response.report_hash = reg_res.report_hash
+            response.tx_hash = reg_res.tx_hash
+            response.blockchain_status = "Registered on Ethereum Sepolia"
+            response.contract_address = reg_res.contract_address
+            response.etherscan_url = reg_res.etherscan_url
+        except Exception as reg_err:
+            print(f"Audit report blockchain registration notice: {reg_err}")
+
+        # 4. Save to MongoDB (security_audits + indicators collections)
         db = get_database()
         if db is not None:
             try:
                 doc = response.model_dump()
                 doc["_id"] = report_id
                 await db.security_audits.insert_one(doc)
+
+                if host_ip:
+                    await db.indicators.insert_one({
+                        "report_id": report_id,
+                        "type": "audit_host",
+                        "value": host_ip,
+                        "hostname": hostname,
+                        "created_at": datetime.now(timezone.utc)
+                    })
             except Exception as e:
                 print(f"MongoDB audit persistence notice: {e}")
 

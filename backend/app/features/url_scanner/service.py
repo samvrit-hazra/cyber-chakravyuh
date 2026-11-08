@@ -15,6 +15,8 @@ from app.core.security import is_safe_url
 from app.core.groq_client import query_groq
 from app.core.shodan_client import query_shodan_host
 from app.core.database import get_database
+from app.features.reports.service import report_integrity_service
+from app.features.reports.models import ReportRegisterRequest
 from app.features.url_scanner.heuristics import (
     detect_typosquatting,
     detect_homoglyphs,
@@ -194,20 +196,47 @@ PRECAUTIONS:
                 evidence="Destination resolves to private, loopback, or invalid IP address space.",
                 source="ssrf_guard"
             ))
-            return URLAnalyzeResponse(
+            ai_exp = "The target URL resolves to an internal or restricted network address, posing a security hazard."
+            resp = URLAnalyzeResponse(
                 report_id=report_id,
                 url=raw_input_url,
                 normalized_url=normalized_url,
                 risk_level="high",
                 risk_score=95,
                 findings=findings,
-                ai_explanation="The target URL resolves to an internal or restricted network address, posing a security hazard.",
+                ai_explanation=ai_exp,
                 recommended_actions=["Do not navigate to private network destinations.", "Ensure URLs point to public web addresses."],
                 redirect_chain=[normalized_url],
                 domain_info=DomainDetails(domain=urlparse(normalized_url).hostname or raw_input_url),
                 threat_intel=ThreatIntelSummary(),
                 created_at=datetime.now(timezone.utc)
             )
+            # Register SSRF incident to ledger
+            try:
+                reg_res = await report_integrity_service.register_report(ReportRegisterRequest(
+                    report_id=report_id,
+                    target=normalized_url,
+                    scan_type="url_analysis",
+                    findings_summary=ai_exp,
+                    risk_score=95,
+                    risk_level="HIGH",
+                    canonical_data={
+                        "report_id": report_id,
+                        "target": normalized_url,
+                        "scan_type": "url_analysis",
+                        "risk_score": 95,
+                        "risk_level": "HIGH",
+                        "status": "SSRF_BLOCKED"
+                    }
+                ))
+                resp.report_hash = reg_res.report_hash
+                resp.tx_hash = reg_res.tx_hash
+                resp.blockchain_status = "Registered on Ethereum Sepolia"
+                resp.contract_address = reg_res.contract_address
+                resp.etherscan_url = reg_res.etherscan_url
+            except Exception:
+                pass
+            return resp
 
         # 2. Domain Decomposition (tldextract)
         extracted = tldextract.extract(normalized_url)
@@ -377,7 +406,35 @@ PRECAUTIONS:
             created_at=datetime.now(timezone.utc)
         )
 
-        # 12. Async Save to MongoDB (non-blocking)
+        # 12. Persistence & Provenance — Ethereum Sepolia Ledger & Cryptographic Fingerprint
+        try:
+            reg_req = ReportRegisterRequest(
+                report_id=report_id,
+                target=normalized_url,
+                scan_type="url_analysis",
+                findings_summary=explanation,
+                risk_score=risk_score,
+                risk_level=risk_level.upper(),
+                canonical_data={
+                    "report_id": report_id,
+                    "target": normalized_url,
+                    "scan_type": "url_analysis",
+                    "risk_score": risk_score,
+                    "risk_level": risk_level.upper(),
+                    "findings_count": len(findings),
+                    "ai_explanation": explanation,
+                }
+            )
+            reg_res = await report_integrity_service.register_report(reg_req)
+            response.report_hash = reg_res.report_hash
+            response.tx_hash = reg_res.tx_hash
+            response.blockchain_status = "Registered on Ethereum Sepolia"
+            response.contract_address = reg_res.contract_address
+            response.etherscan_url = reg_res.etherscan_url
+        except Exception as reg_err:
+            print(f"URL report blockchain registration notice: {reg_err}")
+
+        # 13. Async Save to MongoDB (non-blocking)
         db = get_database()
         if db is not None:
             try:

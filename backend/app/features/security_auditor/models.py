@@ -58,4 +58,9 @@ class SecurityAuditResponse(BaseModel):
     findings: List[AuditFinding] = []
     ai_posture_summary: str
     remediation_priorities: List[str] = []
+    report_hash: Optional[str] = None
+    tx_hash: Optional[str] = None
+    blockchain_status: Optional[str] = None
+    contract_address: Optional[str] = None
+    etherscan_url: Optional[str] = None
     created_at: datetime

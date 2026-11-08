@@ -46,4 +46,9 @@ class URLAnalyzeResponse(BaseModel):
     redirect_chain: List[str] = []
     domain_info: DomainDetails
     threat_intel: ThreatIntelSummary
+    report_hash: Optional[str] = None
+    tx_hash: Optional[str] = None
+    blockchain_status: Optional[str] = None
+    contract_address: Optional[str] = None
+    etherscan_url: Optional[str] = None
     created_at: datetime

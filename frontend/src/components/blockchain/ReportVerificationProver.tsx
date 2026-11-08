@@ -55,6 +55,13 @@ export function ReportVerificationProver({
   const [isCopied, setIsCopied] = useState(false);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
+  React.useEffect(() => {
+    if (initialQuery && initialQuery.trim()) {
+      setQueryInput(initialQuery.trim());
+      executeVerify(initialQuery.trim());
+    }
+  }, [initialQuery]);
+
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
     setIsCopied(true);

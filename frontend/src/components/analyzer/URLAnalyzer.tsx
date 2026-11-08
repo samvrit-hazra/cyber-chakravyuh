@@ -23,6 +23,8 @@ import {
 } from '../../utils/investigationEngine.ts';
 import type { UrlInvestigationResult } from '../../types/investigation.ts';
 import { ScanHistoryService } from '../../services/scanHistoryService.ts';
+import { ThreatApiService } from '../../services/threatApi.ts';
+import { useNavigation } from '../../context/NavigationContext.tsx';
 import { RiskBadge } from './RiskBadge.tsx';
 import { ThreatScoreGauge } from './ThreatScoreGauge.tsx';
 import { SecurityFindingsList } from './SecurityFindingsList.tsx';
@@ -48,6 +50,8 @@ export function URLAnalyzer({
   const [activeTab, setActiveTab] = useState<'overview' | 'dossier' | 'redirects' | 'raw'>('overview');
   const [copiedWarning, setCopiedWarning] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState(false);
+  const [copiedHash, setCopiedHash] = useState(false);
+  const { navigateTo } = useNavigation();
 
   // If a non-empty initialUrl is provided explicitly from outside, trigger scan
   useEffect(() => {
@@ -85,11 +89,14 @@ export function URLAnalyzer({
     const t3 = setTimeout(() => setScanStep(4), 500);
 
     try {
-      const res = await performUrlInvestigation(target.trim());
+      const { result: res } = await ThreatApiService.investigateUrl(target.trim());
       setResult(res);
       ScanHistoryService.saveScan(res);
     } catch (err) {
-      console.error('Scan error:', err);
+      console.error('Scan error, using local fallback:', err);
+      const fallback = await performUrlInvestigation(target.trim());
+      setResult(fallback);
+      ScanHistoryService.saveScan(fallback);
     } finally {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -416,6 +423,46 @@ Do not enter credentials, financial information, or execute downloads.`;
                 </button>
               </div>
             </div>
+
+            {/* 04. Persistence & Provenance — Ethereum Sepolia Cryptographic Report Fingerprint */}
+            {result.reportHash && (
+              <div className="mt-4 pt-3 border-t border-[#D9DED7] dark:border-[#304144] flex flex-wrap items-center justify-between gap-3 text-xs font-mono bg-[#356D68]/5 dark:bg-[#79A99C]/10 px-3.5 py-2.5 rounded-md border border-[#356D68]/20 dark:border-[#79A99C]/25">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="text-[#356D68] dark:text-[#79A99C] font-bold">SEPOLIA LEDGER PROVENANCE:</span>
+                  <span className="text-[#182629] dark:text-[#E8E6DC] font-mono text-[11px] truncate max-w-xs" title={result.reportHash}>
+                    {result.reportHash.startsWith('0x') ? result.reportHash.slice(0, 12) : `0x${result.reportHash.slice(0, 10)}`}...{result.reportHash.slice(-8)}
+                  </span>
+                  <span className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 font-bold border border-emerald-500/30">
+                    SHA-256 ATTESTED
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(result.reportHash || '');
+                      setCopiedHash(true);
+                      setTimeout(() => setCopiedHash(false), 2000);
+                    }}
+                    className="px-2.5 py-1 rounded bg-[#EAECE6] hover:bg-[#D9DED7] dark:bg-[#223336] dark:hover:bg-[#293A3C] text-[11px] text-[#182629] dark:text-[#E8E6DC] border border-[#D9DED7] dark:border-[#304144] flex items-center gap-1 transition-colors cursor-pointer"
+                  >
+                    {copiedHash ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                    <span>{copiedHash ? 'Hash Copied' : 'Copy Hash'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => navigateTo('threat-registry', result.reportHash)}
+                    className="px-3 py-1 rounded bg-[#356D68] hover:bg-[#2c5b57] text-white text-[11px] font-bold flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer"
+                  >
+                    <span>Verify on Sepolia Ledger</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* 4 Essential Indicator Cards */}

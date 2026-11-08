@@ -45,6 +45,12 @@ export function BlockchainVerificationTab({ initialVerificationHash }: Blockchai
   } | null>(null);
 
   useEffect(() => {
+    if (initialVerificationHash) {
+      setVerificationQuery(initialVerificationHash);
+    }
+  }, [initialVerificationHash]);
+
+  useEffect(() => {
     let mounted = true;
     ThreatApiService.getReportsNetworkInfo()
       .then((status) => {

@@ -208,6 +208,18 @@ class ReportIntegrityService:
             if doc.get("target", "").lower() == clean_lower:
                 return doc
 
+        # Fallback: Reload from disk in case updated by another worker/process
+        _load_storage()
+        if clean in _REPORTS_STORE:
+            return _REPORTS_STORE[clean]
+        for k, v in _REPORTS_STORE.items():
+            if k.lower() == clean_lower:
+                return v
+        if raw_hex in _HASH_INDEX:
+            return _REPORTS_STORE.get(_HASH_INDEX[raw_hex])
+        if raw_hex in _TX_INDEX:
+            return _REPORTS_STORE.get(_TX_INDEX[raw_hex])
+
         return None
 
     async def verify_report(self, req: ReportVerifyRequest) -> ReportVerifyResponse:
@@ -420,6 +432,7 @@ class ReportIntegrityService:
         )
 
     def get_all_reports(self) -> List[Dict[str, Any]]:
+        _load_storage()
         return list(_REPORTS_STORE.values())
 
 

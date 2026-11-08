@@ -6,7 +6,7 @@ import { ScanHistoryView } from '../components/analyzer/ScanHistoryView.tsx';
 import { useNavigation } from '../context/NavigationContext.tsx';
 
 export function ThreatRegistryPage() {
-  const { navigateTo, isHistoryOpen, closeHistory } = useNavigation();
+  const { navigateTo, targetUrl, isHistoryOpen, closeHistory } = useNavigation();
 
   return (
     <div className="min-h-screen bg-[#F3F1E9] dark:bg-[#101A1D] text-[#182629] dark:text-[#E8E6DC] flex flex-col font-sans transition-colors duration-200">
@@ -33,7 +33,7 @@ export function ThreatRegistryPage() {
 
         {/* Central Web3 Verification & Registry Tool */}
         <div className="pt-1">
-          <BlockchainVerificationTab />
+          <BlockchainVerificationTab initialVerificationHash={targetUrl} />
         </div>
       </main>
 
