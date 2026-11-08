@@ -13,6 +13,7 @@ from app.features.security_auditor.router import router as security_router
 from app.features.threat_intel.router import router as threat_router
 from app.features.web3_registry.router import router as web3_router
 from app.features.web3_threat.router import router as web3_threat_router
+from app.features.reports.router import router as reports_router
 
 
 @asynccontextmanager
@@ -48,6 +49,7 @@ app.include_router(security_router, prefix="/api/security", tags=["Website Secur
 app.include_router(threat_router, prefix="/api/threats", tags=["Threat Correlation"])
 app.include_router(web3_router, prefix="/api/web3", tags=["Web3 Threat Registry"])
 app.include_router(web3_threat_router, prefix="/api/web3-threat", tags=["Web3 Threat & ML Graph Tracer"])
+app.include_router(reports_router, prefix="/api/reports", tags=["Blockchain Report Integrity & Verification"])
 
 
 @app.get("/", tags=["Root"])
@@ -59,6 +61,7 @@ async def root():
         "docs_url": "/docs",
         "frontend_url": "http://localhost:5173",
         "active_services": {
+            "report_integrity": "/api/reports/network",
             "web3_threat": "/api/web3-threat/health",
             "web3_registry": "/api/web3/network-status",
             "url_analysis": "/api/url/analyze",

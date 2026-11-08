@@ -653,7 +653,7 @@ export class ThreatApiService {
   }
 
   // =========================================================================
-  // 6. ON-CHAIN THREAT REGISTRY & VERIFICATION (/api/web3/...)
+  // 6. ON-CHAIN THREAT REGISTRY & VERIFICATION (/api/reports/ & /api/web3/...)
   // =========================================================================
   static async submitOnChainThreatReport(reportId: string): Promise<any> {
     return await ApiClient.post<any>('/web3/submit', { report_id: reportId });
@@ -677,6 +677,88 @@ export class ThreatApiService {
       latest_block: number;
       provider: string;
     }>('/web3/network-status');
+  }
+
+  // =========================================================================
+  // 6B. ADVANCED BLOCKCHAIN REPORT INTEGRITY & VERIFICATION (/api/reports/...)
+  // =========================================================================
+  static async registerReportOnChain(payload: {
+    report_id?: string;
+    target: string;
+    scan_type: string;
+    findings_summary: string;
+    risk_score: number;
+    risk_level: string;
+    canonical_data?: Record<string, unknown>;
+  }): Promise<{
+    report_id: string;
+    report_hash: string;
+    tx_hash: string;
+    network: string;
+    chain_id: number;
+    contract_address: string;
+    block_number: number;
+    status: string;
+    created_at: string;
+    etherscan_url: string;
+  }> {
+    return await ApiClient.post('/reports/register', payload);
+  }
+
+  static async verifyReportOnChainAdvanced(params: {
+    query?: string;
+    report_data?: Record<string, unknown>;
+    report_id?: string;
+  }): Promise<{
+    verified: boolean;
+    status: 'GENUINE' | 'TAMPERED' | 'UNREGISTERED' | 'INVALID_TRANSACTION';
+    integrity: 'MATCH' | 'MISMATCH' | 'NOT_FOUND';
+    network: string;
+    chain_id: number;
+    issuer_verified: boolean;
+    blockchain_registered: boolean;
+    report_id?: string;
+    report_hash?: string;
+    recalculated_hash?: string;
+    tx_hash?: string;
+    contract_address?: string;
+    block_number?: number;
+    timestamp?: string;
+    target?: string;
+    scan_type?: string;
+    risk_score?: number;
+    risk_level?: string;
+    etherscan_url?: string;
+    audit_details?: Record<string, unknown>;
+  }> {
+    return await ApiClient.post('/reports/verify', params);
+  }
+
+  static async verifyReportById(reportId: string): Promise<any> {
+    return await ApiClient.get(`/reports/verify/id/${encodeURIComponent(reportId)}`);
+  }
+
+  static async verifyReportByHash(reportHash: string): Promise<any> {
+    return await ApiClient.get(`/reports/verify/hash/${encodeURIComponent(reportHash)}`);
+  }
+
+  static async verifyReportByTx(txHash: string): Promise<any> {
+    return await ApiClient.get(`/reports/verify/tx/${encodeURIComponent(txHash)}`);
+  }
+
+  static async getAllRegisteredReports(): Promise<any[]> {
+    return await ApiClient.get<any[]>('/reports/all');
+  }
+
+  static async getReportsNetworkInfo(): Promise<{
+    network: string;
+    chain_id: number;
+    connected: boolean;
+    latest_block: number;
+    provider: string;
+    hash_algorithm: string;
+  }> {
+    return await ApiClient.get('/reports/network');
   }
 
   // =========================================================================

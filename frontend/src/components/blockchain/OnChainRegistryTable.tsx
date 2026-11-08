@@ -4,9 +4,10 @@ import type { BlockchainReportRecord } from '../../types/blockchainVerification.
 interface OnChainRegistryTableProps {
   records: BlockchainReportRecord[];
   onViewDetails: (record: BlockchainReportRecord) => void;
+  onVerifyReport?: (reportId: string) => void;
 }
 
-export function OnChainRegistryTable({ records, onViewDetails }: OnChainRegistryTableProps) {
+export function OnChainRegistryTable({ records, onViewDetails, onVerifyReport }: OnChainRegistryTableProps) {
   return (
     <div className="rounded-2xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] p-5 md:p-6 space-y-6 shadow-sm font-mono text-xs">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D9DED7] dark:border-[#304144] pb-4">
@@ -72,14 +73,25 @@ export function OnChainRegistryTable({ records, onViewDetails }: OnChainRegistry
                     </span>
                   </td>
                   <td className="py-3 px-3 text-right">
-                    <button
-                      type="button"
-                      onClick={() => onViewDetails(rec)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-[#182629] dark:text-[#E8E6DC] hover:border-[#A95636] dark:hover:border-[#C47A52] transition-colors cursor-pointer"
-                    >
-                      <Eye className="w-3 h-3 text-[#A95636] dark:text-[#C47A52]" />
-                      <span>View Dossier</span>
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      {onVerifyReport && (
+                        <button
+                          type="button"
+                          onClick={() => onVerifyReport(rec.reportId)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-[#356D68]/10 dark:bg-[#79A99C]/20 border border-[#356D68]/30 text-[#356D68] dark:text-[#79A99C] hover:bg-[#356D68]/20 transition-colors cursor-pointer text-[10px] font-bold"
+                        >
+                          <span>Audit</span>
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => onViewDetails(rec)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-[#182629] dark:text-[#E8E6DC] hover:border-[#A95636] dark:hover:border-[#C47A52] transition-colors cursor-pointer"
+                      >
+                        <Eye className="w-3 h-3 text-[#A95636] dark:text-[#C47A52]" />
+                        <span>View</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
