@@ -4,7 +4,7 @@ services:
   # -------------------------------------------------------------
   - type: web
     name: cyber-chakravyuh-backend
-    env: python
+    runtime: python
     region: oregon
     plan: free
     rootDir: backend
@@ -37,8 +37,9 @@ services:
   # -------------------------------------------------------------
   # 2. React + Vite Frontend Static Site
   # -------------------------------------------------------------
-  - type: static
+  - type: web
     name: cyber-chakravyuh-frontend
+    runtime: static
     region: oregon
     plan: free
     rootDir: frontend
