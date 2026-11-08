@@ -8,9 +8,14 @@ db = None
 async def connect_to_mongo():
     global client, db
     try:
-        client = AsyncIOMotorClient(settings.MONGODB_URI)
+        # 1-second timeout so offline DB never delays or blocks AI responses
+        client = AsyncIOMotorClient(
+            settings.MONGODB_URI,
+            serverSelectionTimeoutMS=1000,
+            connectTimeoutMS=1000,
+        )
         db = client[settings.MONGODB_DB_NAME]
-        print(f"✅ Connected to MongoDB: {settings.MONGODB_DB_NAME}")
+        print(f"✅ Connected to MongoDB client: {settings.MONGODB_DB_NAME}")
     except Exception as e:
         print(f"⚠️ Warning: Could not connect to MongoDB: {e}")
 
