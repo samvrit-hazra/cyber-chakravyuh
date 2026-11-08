@@ -36,8 +36,11 @@ export const Web3ThreatTab: React.FC<Web3ThreatTabProps> = ({
       return;
     }
 
-    if (!addr.startsWith('0x') || addr.length !== 42) {
-      setError('Invalid format: address must be a 42-character hexadecimal string beginning with 0x.');
+    const isWallet = /^0x[a-f0-9]{40}$/.test(addr);
+    const isTxHash = /^0x[a-f0-9]{64}$/.test(addr);
+
+    if (!isWallet && !isTxHash) {
+      setError('Invalid format: input must be a 42-character wallet address (0x...) or a 66-character transaction hash (0x...).');
       return;
     }
 
@@ -158,7 +161,7 @@ export const Web3ThreatTab: React.FC<Web3ThreatTabProps> = ({
               type="text"
               value={addressInput}
               onChange={(e) => setAddressInput(e.target.value)}
-              placeholder="Enter Ethereum wallet address (0x...)"
+              placeholder="Enter Ethereum wallet address (0x...) or transaction hash (0x...)"
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/50 border border-white/10 text-white font-mono text-xs focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 placeholder:text-slate-500"
             />
           </div>
@@ -203,6 +206,33 @@ export const Web3ThreatTab: React.FC<Web3ThreatTabProps> = ({
             )}
           </Button>
         </form>
+        <div className="flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-400 pt-1">
+          <div className="flex items-center gap-2">
+            {addressInput.trim().length === 66 && (
+              <span className="text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded">
+                ⚡ Detected: Ethereum Transaction Hash (centers flow on sender &amp; receiver)
+              </span>
+            )}
+            {addressInput.trim().length === 42 && (
+              <span className="text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+                ✓ Detected: Ethereum Wallet Address (fetches live on-chain counterparty graph)
+              </span>
+            )}
+            {addressInput.trim().length > 0 && addressInput.trim().length !== 42 && addressInput.trim().length !== 66 && (
+              <span className="text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">
+                ℹ Expected: 42-char wallet address or 66-char tx hash (current length: {addressInput.trim().length})
+              </span>
+            )}
+            {!addressInput.trim() && (
+              <span className="text-slate-500">
+                Accepts 42-char wallet addresses or 66-char transaction hashes
+              </span>
+            )}
+          </div>
+          <span className="text-[10px] text-slate-500">
+            Live Mainnet Blockscout Indexer + XGBoost Structuring Engine
+          </span>
+        </div>
 
         {error && (
           <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-mono flex items-center gap-2">

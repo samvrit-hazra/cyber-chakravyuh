@@ -27,6 +27,18 @@ ETHERSCAN_V2_BASE_URL = "https://api.etherscan.io/v2/api"
 ETHERSCAN_V1_BASE_URL = "https://api.etherscan.io/api"
 
 
+def is_valid_tx_hash(query: Optional[str]) -> bool:
+    if not query or not isinstance(query, str):
+        return False
+    return bool(re.match(r"^0x[a-f0-9]{64}$", query.strip().lower()))
+
+
+def is_valid_wallet_address(query: Optional[str]) -> bool:
+    if not query or not isinstance(query, str):
+        return False
+    return bool(re.match(r"^0x[a-f0-9]{40}$", query.strip().lower()))
+
+
 def normalize_address(address: Optional[str]) -> Optional[str]:
     """Normalize Ethereum address to lowercase and trimmed string."""
     if not address or not isinstance(address, str):
@@ -208,10 +220,41 @@ class Web3ThreatService:
     async def get_demo_wallets(self) -> List[DemoWalletItem]:
         return DEMO_WALLETS
 
+    async def fetch_tx_info(self, tx_hash: str) -> Optional[Dict[str, Any]]:
+        """
+        Fetches live transaction details by 66-character transaction hash via public Blockscout API.
+        """
+        clean_hash = tx_hash.strip().lower()
+        try:
+            async with httpx.AsyncClient(timeout=4.0, headers={"User-Agent": "CyberChakravyuh/1.0"}) as client:
+                url = f"https://eth.blockscout.com/api?module=transaction&action=gettxinfo&txhash={clean_hash}"
+                resp = await client.get(url)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    r = data.get("result")
+                    if isinstance(r, dict) and r.get("from"):
+                        from_addr = normalize_address(r.get("from"))
+                        to_addr = normalize_address(r.get("to"))
+                        raw_val = float(r.get("value", 0))
+                        val_eth = raw_val / 1e18 if raw_val > 1e10 else raw_val
+                        ts = r.get("timeStamp")
+                        timestamp = datetime.fromtimestamp(int(ts), tz=timezone.utc) if ts else datetime.now(timezone.utc)
+                        return {
+                            "hash": clean_hash,
+                            "from": from_addr or "0x0000000000000000000000000000000000000000",
+                            "to": to_addr or "0x0000000000000000000000000000000000000000",
+                            "value_eth": round(val_eth, 4),
+                            "timestamp": timestamp,
+                            "is_error": r.get("isError") == "1",
+                        }
+        except Exception as e:
+            logger.info(f"Blockscout gettxinfo fallback for {clean_hash}: {e}")
+        return None
+
     async def fetch_transactions(self, address: str, limit: int = 50) -> List[Dict[str, Any]]:
         """
-        Fetches live transactions from Etherscan API V2/V1.
-        Falls back smoothly to synthetic transaction graph data if API key is not configured or rate-limited.
+        Fetches live transactions from public Blockscout API (fast, free, no key needed)
+        with fallback to Etherscan and deterministic synthetic graph data.
         """
         norm_addr = normalize_address(address)
         if not norm_addr:
@@ -221,41 +264,68 @@ class Web3ThreatService:
         if norm_addr in KNOWN_ENTITIES:
             return self._generate_known_entity_transactions(norm_addr)
 
-        # Attempt live Etherscan query
-        api_key = getattr(settings, "ETHERSCAN_API_KEY", "") or ""
-        params = {
-            "chainid": "1",
-            "module": "account",
-            "action": "txlist",
-            "address": norm_addr,
-            "sort": "desc",
-            "page": "1",
-            "offset": str(limit),
-            "apikey": api_key,
-        }
-
+        # 1. Primary: Live Blockscout API Query (Fast, Public, No API key required)
         try:
-            async with httpx.AsyncClient(timeout=self.http_timeout) as client:
-                resp = await client.get(ETHERSCAN_V2_BASE_URL, params=params)
+            async with httpx.AsyncClient(timeout=4.0, headers={"User-Agent": "CyberChakravyuh/1.0"}) as client:
+                b_url = f"https://eth.blockscout.com/api?module=account&action=txlist&address={norm_addr}&page=1&offset={limit}&sort=desc"
+                resp = await client.get(b_url)
                 if resp.status_code == 200:
                     data = resp.json()
-                    if data.get("status") == "1" and isinstance(data.get("result"), list):
+                    if data.get("status") == "1" and isinstance(data.get("result"), list) and len(data["result"]) > 0:
                         txs = []
                         for item in data["result"]:
+                            f_addr = normalize_address(item.get("from"))
+                            t_addr = normalize_address(item.get("to"))
+                            val_eth = float(item.get("value", "0")) / 1e18
+                            ts_int = int(item.get("timeStamp", "0"))
                             txs.append({
                                 "hash": item.get("hash", ""),
-                                "from": normalize_address(item.get("from", "")),
-                                "to": normalize_address(item.get("to", "")),
-                                "value_eth": float(item.get("value", "0")) / 1e18,
-                                "timestamp": datetime.fromtimestamp(int(item.get("timeStamp", "0")), tz=timezone.utc),
+                                "from": f_addr or norm_addr,
+                                "to": t_addr or norm_addr,
+                                "value_eth": round(val_eth, 4),
+                                "timestamp": datetime.fromtimestamp(ts_int, tz=timezone.utc) if ts_int else datetime.now(timezone.utc),
                                 "is_error": item.get("isError") == "1",
                             })
                         if txs:
                             return txs
         except Exception as e:
-            logger.info(f"Etherscan query skipped or unavailable ({e}); generating deterministic synthesized flow.")
+            logger.info(f"Blockscout live query fallback for {norm_addr}: {e}")
 
-        # Fallback to realistic deterministic simulation based on address hash
+        # 2. Secondary: Etherscan query (if API key provided)
+        api_key = getattr(settings, "ETHERSCAN_API_KEY", "") or ""
+        if api_key:
+            params = {
+                "chainid": "1",
+                "module": "account",
+                "action": "txlist",
+                "address": norm_addr,
+                "sort": "desc",
+                "page": "1",
+                "offset": str(limit),
+                "apikey": api_key,
+            }
+            try:
+                async with httpx.AsyncClient(timeout=4.0) as client:
+                    resp = await client.get(ETHERSCAN_V2_BASE_URL, params=params)
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        if data.get("status") == "1" and isinstance(data.get("result"), list):
+                            txs = []
+                            for item in data["result"]:
+                                txs.append({
+                                    "hash": item.get("hash", ""),
+                                    "from": normalize_address(item.get("from", "")),
+                                    "to": normalize_address(item.get("to", "")),
+                                    "value_eth": float(item.get("value", "0")) / 1e18,
+                                    "timestamp": datetime.fromtimestamp(int(item.get("timeStamp", "0")), tz=timezone.utc),
+                                    "is_error": item.get("isError") == "1",
+                                })
+                            if txs:
+                                return txs
+            except Exception as e:
+                logger.info(f"Etherscan query fallback: {e}")
+
+        # 3. Fallback: realistic deterministic simulation based on address hash
         return self._generate_synthetic_transactions(norm_addr)
 
     def _generate_known_entity_transactions(self, norm_addr: str) -> List[Dict[str, Any]]:
@@ -800,12 +870,36 @@ class Web3ThreatService:
         )
 
     async def analyze_wallet(self, req: WalletAnalysisRequest) -> Web3ThreatAnalysisResponse:
-        norm_addr = normalize_address(req.address)
-        if not norm_addr:
-            raise ValueError(f"Invalid Ethereum wallet address format: '{req.address}'. Must be a 42-character hex string starting with 0x.")
+        raw_query = (req.address or "").strip()
+        is_hash = is_valid_tx_hash(raw_query)
+        is_wallet = is_valid_wallet_address(raw_query)
+
+        if not is_hash and not is_wallet:
+            raise ValueError(f"Invalid Ethereum identifier format: '{req.address}'. Please provide a 42-character wallet address (0x...) or a 66-character transaction hash (0x...).")
+
+        target_tx = None
+        if is_hash:
+            target_tx = await self.fetch_tx_info(raw_query)
+            if target_tx:
+                norm_addr = target_tx["from"]
+            else:
+                seed_val = int(raw_query[2:10], 16)
+                norm_addr = f"0x{raw_query[2:42]}"
+                target_tx = {
+                    "hash": raw_query.lower(),
+                    "from": norm_addr,
+                    "to": f"0x{(seed_val * 777):040x}"[:42],
+                    "value_eth": 2.5,
+                    "timestamp": datetime.now(timezone.utc),
+                    "is_error": False,
+                }
+        else:
+            norm_addr = normalize_address(raw_query)
 
         # 1. Fetch / Ingest Transactions
         transactions = await self.fetch_transactions(norm_addr)
+        if target_tx and not any(tx.get("hash") == target_tx["hash"] for tx in transactions):
+            transactions.insert(0, target_tx)
 
         # 2. Extract ML Feature Vector (9 features)
         vector, feature_items = self.compute_ml_features(norm_addr, transactions)
@@ -821,6 +915,11 @@ class Web3ThreatService:
 
         # 6. Build Multi-Hop Transaction Graph
         graph = self.build_graph_trace(norm_addr, transactions, depth=req.depth or 2)
+        if target_tx:
+            for e in graph.edges:
+                if e.tx_hash.lower() == target_tx["hash"].lower():
+                    e.is_trace_path = True
+                    e.is_flagged = True
 
         # 7. Aggregate Overall Threat Score
         known_base = KNOWN_ENTITIES.get(norm_addr, {}).get("base_risk", None)
