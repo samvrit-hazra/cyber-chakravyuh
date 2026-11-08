@@ -1,92 +1,222 @@
-import { useState } from 'react';
 import {
-  LandingNavbar,
-  HeroSection,
-  ThreatEducationEditorial,
-  EmergencyChecklistSection,
-  FaqSection,
-  LandingFooter,
-  AuthModal,
-} from '../components/landing/index.ts';
+  Globe,
+  Lock,
+  MessageSquare,
+  Shield,
+  Radio,
+  Fingerprint,
+  ArrowRight,
+  ExternalLink,
+} from 'lucide-react';
+import { LandingNavbar } from '../components/landing/LandingNavbar.tsx';
 import { ScanHistoryView } from '../components/analyzer/ScanHistoryView.tsx';
-import { Modal, Button } from '../components/common/index.ts';
-import { useNavigation } from '../context/NavigationContext.tsx';
+import { useNavigation, type PageId } from '../context/NavigationContext.tsx';
+
+interface ToolCard {
+  id: PageId;
+  module: string;
+  title: string;
+  description: string;
+  icon: typeof Globe;
+  iconBg: string;
+  iconColor: string;
+  accentBorder: string;
+  tags: string[];
+  ctaText: string;
+}
+
+const TOOLS: ToolCard[] = [
+  {
+    id: 'url-analyzer',
+    module: 'Module 1',
+    title: 'URL Scanner',
+    description:
+      'Inspect suspicious web addresses for phishing traps, deceptive redirects, homoglyph domain impersonation, and malicious downloads.',
+    icon: Globe,
+    iconBg: 'bg-[#A95636]/10 dark:bg-[#C47A52]/15',
+    iconColor: 'text-[#A95636] dark:text-[#C47A52]',
+    accentBorder: 'hover:border-[#A95636] dark:hover:border-[#C47A52]',
+    tags: ['Phishing Detection', 'Redirect Tracer', 'Domain Age'],
+    ctaText: 'Open URL Scanner',
+  },
+  {
+    id: 'tls-inspector',
+    module: 'Module 2',
+    title: 'SSL Certificate Analyzer',
+    description:
+      'Validate HTTPS certificate chains, issuing Certificate Authority trust, revocation status, expiration dates, and cryptographic cipher strength.',
+    icon: Lock,
+    iconBg: 'bg-[#356D68]/10 dark:bg-[#79A99C]/15',
+    iconColor: 'text-[#356D68] dark:text-[#79A99C]',
+    accentBorder: 'hover:border-[#356D68] dark:hover:border-[#79A99C]',
+    tags: ['X.509 Chain Audit', 'Certificate Transparency', 'Cipher Check'],
+    ctaText: 'Open SSL Analyzer',
+  },
+  {
+    id: 'sms-scanner',
+    module: 'Module 3',
+    title: 'Scam Message Detector',
+    description:
+      'Analyze SMS texts, WhatsApp messages, and emails with AI to detect urgency manipulation, fake bank alerts, and dangerous payment requests.',
+    icon: MessageSquare,
+    iconBg: 'bg-[#A87532]/10 dark:bg-[#D7AA61]/15',
+    iconColor: 'text-[#A87532] dark:text-[#D7AA61]',
+    accentBorder: 'hover:border-[#A87532] dark:hover:border-[#D7AA61]',
+    tags: ['AI Urgency Detection', 'Brand Impersonation', 'Link Extraction'],
+    ctaText: 'Open Scam Detector',
+  },
+  {
+    id: 'security-auditor',
+    module: 'Module 5',
+    title: 'Website Security Auditor',
+    description:
+      'Passive website hygiene assessment inspecting defensive HTTP headers (CSP, HSTS, X-Frame-Options), cookie protections, and exposed ports.',
+    icon: Shield,
+    iconBg: 'bg-[#36745F]/10 dark:bg-[#79B69A]/15',
+    iconColor: 'text-[#36745F] dark:text-[#79B69A]',
+    accentBorder: 'hover:border-[#36745F] dark:hover:border-[#79B69A]',
+    tags: ['Security Headers', 'HSTS & CSP Audit', 'Passive Shodan Intel'],
+    ctaText: 'Open Security Auditor',
+  },
+  {
+    id: 'threat-intel',
+    module: 'Module 4',
+    title: 'Threat Intelligence Radar',
+    description:
+      'Monitor real-time adversary infrastructure, active phishing campaigns, MITRE ATT&CK mapping, and cross-correlated Indicators of Compromise.',
+    icon: Radio,
+    iconBg: 'bg-[#B64B46]/10 dark:bg-[#E17B70]/15',
+    iconColor: 'text-[#B64B46] dark:text-[#E17B70]',
+    accentBorder: 'hover:border-[#B64B46] dark:hover:border-[#E17B70]',
+    tags: ['Live Threat Feeds', 'MITRE ATT&CK', 'Adversary IOC Stream'],
+    ctaText: 'Open Threat Radar',
+  },
+  {
+    id: 'threat-registry',
+    module: 'Module 6',
+    title: 'Web3 Threat Registry',
+    description:
+      'Decentralized immutable threat incident ledger and cryptographic attestation console anchored on-chain with SHA-256 evidence validation.',
+    icon: Fingerprint,
+    iconBg: 'bg-[#2A5753]/10 dark:bg-[#669387]/15',
+    iconColor: 'text-[#2A5753] dark:text-[#669387]',
+    accentBorder: 'hover:border-[#2A5753] dark:hover:border-[#669387]',
+    tags: ['Smart Contract Ledger', 'Tamper-Evident SHA-256', 'Merkle Proofs'],
+    ctaText: 'Open Threat Registry',
+  },
+];
 
 export function LandingPage() {
   const { navigateTo, isHistoryOpen, closeHistory } = useNavigation();
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [docModalInfo, setDocModalInfo] = useState<{ title: string; content: string } | null>(null);
-
-  const handleStartInvestigation = (url?: string) => {
-    navigateTo('url-analyzer', url);
-  };
 
   return (
-    <div className="min-h-screen bg-[#F3F1E9] dark:bg-[#101A1D] text-[#182629] dark:text-[#E8E6DC] flex flex-col relative selection:bg-[#A95636]/20 dark:selection:bg-[#C47A52]/25 selection:text-[#A95636] dark:selection:text-[#C47A52] font-sans transition-colors duration-200">
+    <div className="min-h-screen bg-[#F3F1E9] dark:bg-[#101A1D] text-[#182629] dark:text-[#E8E6DC] flex flex-col font-sans transition-colors duration-150">
       {/* Universal Top Nav */}
       <LandingNavbar />
 
-      {/* Main Home Presentation Surfaces */}
-      <main className="flex-1 relative z-10 space-y-0">
-        {/* Section 1: Hero & Prominent URL Analyzer Public Bar (Image 1 Layout) */}
-        <HeroSection
-          onStartInvestigation={handleStartInvestigation}
-        />
+      {/* Main Minimal Content Workspace */}
+      <main className="flex-1 pt-20 sm:pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full space-y-10">
+        {/* Minimal Clean Title Section */}
+        <div className="text-center space-y-2 pt-4">
+          <h1 className="text-3xl sm:text-5xl font-extrabold font-heading text-[#182629] dark:text-[#E8E6DC] tracking-tight">
+            Security Analysis Tools
+          </h1>
 
-        {/* Section 2: Capability Cards & Editorial Threat Guide (Image 2 Layout) */}
-        <ThreatEducationEditorial
-          onOpenMessageScanner={() => navigateTo('sms-scanner')}
-          onLaunchDashboard={() => navigateTo('threat-registry')}
-          onOpenThreatIntel={() => navigateTo('threat-intel')}
-        />
-        {/* Section 3: Emergency Containment Playbook */}
-        <EmergencyChecklistSection />
+          <p className="text-sm sm:text-base text-[#647477] dark:text-[#A6B3AE] max-w-2xl mx-auto leading-relaxed">
+            Select an investigation tool below to analyze web addresses, inspect SSL certificates, evaluate scam messages, or audit website security.
+          </p>
+        </div>
 
-        {/* Section 4: Security FAQ */}
-        <FaqSection />
+        {/* 6 Clean, Distinct Boxes / Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {TOOLS.map((tool) => {
+            const Icon = tool.icon;
+
+            return (
+              <div
+                key={tool.id}
+                onClick={() => navigateTo(tool.id)}
+                className={`group rounded-2xl bg-white dark:bg-[#19272A] border-2 border-[#D9DED7] dark:border-[#304144] ${tool.accentBorder} p-6 shadow-sm hover:shadow-md transition-all duration-150 cursor-pointer flex flex-col justify-between space-y-4 active:scale-[0.99]`}
+              >
+                <div className="space-y-3.5">
+                  {/* Top: Icon + Module Label */}
+                  <div className="flex items-center justify-between">
+                    <div
+                      className={`w-12 h-12 rounded-xl ${tool.iconBg} flex items-center justify-center shrink-0 border border-[#D9DED7]/40 dark:border-[#304144]/40 group-hover:scale-105 transition-transform`}
+                    >
+                      <Icon className={`w-6 h-6 ${tool.iconColor}`} />
+                    </div>
+
+                    <span className="text-[11px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-[#EAECE6] dark:bg-[#223336] text-[#647477] dark:text-[#A6B3AE] border border-[#D9DED7] dark:border-[#304144]">
+                      {tool.module}
+                    </span>
+                  </div>
+
+                  {/* Title & Description */}
+                  <div>
+                    <h2 className="text-xl font-bold font-heading text-[#182629] dark:text-[#E8E6DC] tracking-tight group-hover:text-[#A95636] dark:group-hover:text-[#C47A52] transition-colors flex items-center justify-between">
+                      <span>{tool.title}</span>
+                      <ArrowRight className="w-4 h-4 text-[#647477] dark:text-[#A6B3AE] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                    </h2>
+                    <p className="text-xs sm:text-sm text-[#647477] dark:text-[#A6B3AE] leading-relaxed mt-1.5 font-sans">
+                      {tool.description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Bottom: Tags + Action Pill */}
+                <div className="pt-3 border-t border-[#D9DED7] dark:border-[#304144] space-y-3">
+                  <div className="flex flex-wrap gap-1.5">
+                    {tool.tags.map((tag, idx) => (
+                      <span
+                        key={idx}
+                        className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#EAECE6]/80 dark:bg-[#223336]/80 text-[#647477] dark:text-[#A6B3AE]"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#182629] dark:text-white group-hover:underline">
+                    <span>{tool.ctaText}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Minimal Footer */}
+        <footer className="pt-8 border-t border-[#D9DED7] dark:border-[#304144] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#647477] dark:text-[#A6B3AE]">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-[#182629] dark:text-[#E8E6DC]">Cyber Chakravyuh</span>
+            <span>•</span>
+            <span>Digital Threat & Web Trust Platform</span>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <a
+              href="http://localhost:8000/docs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline flex items-center gap-1"
+            >
+              <span>API Documentation</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+            <span>•</span>
+            <span>Zero Data Retention</span>
+          </div>
+        </footer>
       </main>
 
-      {/* Persistent Scan History Drawer */}
+      {/* History Slide-over */}
       <ScanHistoryView
         isOpen={isHistoryOpen}
         onClose={closeHistory}
         onSelectScan={(url) => navigateTo('url-analyzer', url)}
       />
-
-      {/* Corporate Security Footer (Image 2 Layout) */}
-      <LandingFooter
-        onStartInvestigation={() => navigateTo('url-analyzer')}
-        onLaunchDashboard={() => navigateTo('threat-registry')}
-        onOpenDocModal={(title, content) => setDocModalInfo({ title, content })}
-      />
-
-      {/* Authentication Modal */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        onSuccess={() => navigateTo('analyst-console')}
-      />
-
-      {/* Documentation / Verification Modal */}
-      <Modal
-        isOpen={Boolean(docModalInfo)}
-        onClose={() => setDocModalInfo(null)}
-        title={docModalInfo?.title || 'Documentation'}
-      >
-        <div className="space-y-4 text-xs font-sans text-[#647477] dark:text-[#A6B3AE] leading-relaxed">
-          <p>{docModalInfo?.content}</p>
-          <div className="pt-2 border-t border-[#D9DED7] dark:border-[#304144] flex justify-end">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setDocModalInfo(null)}
-              className="text-xs"
-            >
-              Close
-            </Button>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 }
