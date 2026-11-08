@@ -41,6 +41,8 @@ class CertificateDetails(BaseModel):
     key_size: Optional[int] = None  # e.g. 2048, 4096
     signature_algo: Optional[str] = None
     tls_version: Optional[str] = None
+    cipher_suite: Optional[str] = None
+    sha256_fingerprint: Optional[str] = None
     is_self_signed: bool = False
     hostname_matches: bool = True
     is_wildcard: bool = False
@@ -48,6 +50,11 @@ class CertificateDetails(BaseModel):
     ocsp_urls: List[str] = []
     crl_distribution_points: List[str] = []
     has_revocation_info: bool = False
+    system_trust_valid: bool = True
+    system_trust_error: Optional[str] = None
+    is_revoked: bool = False
+    revocation_date: Optional[str] = None
+    revocation_url: Optional[str] = None
     certificate_chain: List[CertChainItem] = []
 
 
@@ -64,11 +71,15 @@ class CertAnalyzeResponse(BaseModel):
     report_id: str
     domain: str
     url: str
-    risk_level: str  # "low", "suspicious", "high", "inconclusive"
+    risk_level: str  # "low", "suspicious", "high", "critical"
     risk_score: int  # 0 to 100
+    trust_score: int = 100  # 0 to 100 (where 0-20 = High/Critical Risk, 90-100 = Grade A)
+    grade: str = "A"  # "A+", "A", "B", "C", "D", "F"
+    status: str = "Valid & Trusted"
     is_https_available: bool = True
     trust_status: str  # "trusted", "suspicious", "untrusted", "compromised"
     certificate: Optional[CertificateDetails] = None
+    certificate_details: Optional[CertificateDetails] = None  # Backward compatibility alias
     findings: List[CertFinding] = []
     ct_logs: List[CTLogEntry] = []
     ai_explanation: Optional[str] = None

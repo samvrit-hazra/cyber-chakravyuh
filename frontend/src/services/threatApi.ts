@@ -457,35 +457,80 @@ export class ThreatApiService {
   }
 
   private static mapBackendTlsResponse(data: any, target: string): TlsInvestigationResult {
+    const certDetails = data.certificate || data.certificate_details || {};
     const rawStatus = (data.status || data.risk_level || '').toLowerCase();
-    let certificateStatus: TlsCertificateStatus = 'Valid & Trusted';
-    if (rawStatus.includes('expired')) certificateStatus = 'Expired Certificate';
-    else if (rawStatus.includes('mismatch')) certificateStatus = 'Hostname Mismatch';
-    else if (rawStatus.includes('self_signed')) certificateStatus = 'Untrusted / Self-Signed';
-    else if (rawStatus.includes('distrusted')) certificateStatus = 'Compromised CA Indicator';
-    else if (rawStatus.includes('weak')) certificateStatus = 'Weak Cryptography';
 
-    const certDetails = data.certificate_details || {};
+    let certificateStatus: TlsCertificateStatus = 'Valid & Trusted';
+    if (data.status) {
+      if (data.status === 'Expired Certificate' || rawStatus.includes('expired')) certificateStatus = 'Expired Certificate';
+      else if (data.status === 'Revoked Certificate' || rawStatus.includes('revoked')) certificateStatus = 'Revoked Certificate';
+      else if (data.status === 'Hostname Mismatch' || rawStatus.includes('mismatch')) certificateStatus = 'Hostname Mismatch';
+      else if (data.status === 'Untrusted / Self-Signed' || rawStatus.includes('self-signed') || rawStatus.includes('self_signed') || rawStatus.includes('untrusted')) certificateStatus = 'Untrusted / Self-Signed';
+      else if (data.status === 'Compromised CA Indicator' || rawStatus.includes('compromised') || rawStatus.includes('distrusted')) certificateStatus = 'Compromised CA Indicator';
+      else if (data.status === 'Weak Cryptography' || rawStatus.includes('weak')) certificateStatus = 'Weak Cryptography';
+      else if (data.status === 'Valid & Trusted') certificateStatus = 'Valid & Trusted';
+      else if (data.status === 'Inconclusive / Refused') certificateStatus = 'Inconclusive / Refused';
+    } else {
+      if (certDetails.is_revoked) certificateStatus = 'Revoked Certificate';
+      else if (certDetails.is_expired) certificateStatus = 'Expired Certificate';
+      else if (certDetails.hostname_matches === false) certificateStatus = 'Hostname Mismatch';
+      else if (certDetails.is_self_signed || certDetails.system_trust_valid === false) certificateStatus = 'Untrusted / Self-Signed';
+      else if (rawStatus.includes('expired')) certificateStatus = 'Expired Certificate';
+      else if (rawStatus.includes('revoked')) certificateStatus = 'Revoked Certificate';
+      else if (rawStatus.includes('mismatch')) certificateStatus = 'Hostname Mismatch';
+      else if (rawStatus.includes('self_signed') || rawStatus.includes('untrusted')) certificateStatus = 'Untrusted / Self-Signed';
+      else if (rawStatus.includes('distrusted') || rawStatus.includes('compromised')) certificateStatus = 'Compromised CA Indicator';
+      else if (rawStatus.includes('weak')) certificateStatus = 'Weak Cryptography';
+    }
+
+    const isCriticalIssue =
+      certificateStatus === 'Expired Certificate' ||
+      certificateStatus === 'Revoked Certificate' ||
+      certificateStatus === 'Hostname Mismatch' ||
+      certificateStatus === 'Untrusted / Self-Signed' ||
+      Boolean(certDetails.is_expired) ||
+      Boolean(certDetails.is_revoked) ||
+      certDetails.hostname_matches === false ||
+      certDetails.system_trust_valid === false ||
+      Boolean(certDetails.is_self_signed);
+
+    const trustGrade: TrustGrade = (data.grade as TrustGrade) || (isCriticalIssue ? 'F' : 'A');
+    const trustScore: number =
+      data.trust_score !== undefined
+        ? data.trust_score
+        : isCriticalIssue
+        ? 10
+        : Math.max(0, 100 - (data.risk_score || 5));
+
     const chainNodes: CertificateChainNode[] = (certDetails.certificate_chain || []).map(
       (c: any, idx: number, arr: any[]) => ({
         level: (idx === arr.length - 1 ? 'Root CA' : idx === 0 ? 'Leaf / Website' : 'Intermediate CA') as any,
         commonName: c.subject || c.common_name || 'Certificate Node',
         organization: c.issuer || 'Certificate Authority',
-        validFrom: c.not_before || '2026-01-01',
-        validTo: c.not_after || '2027-01-01',
-        serialNumber: c.serial_number || `0x${idx}beefcafe`,
-        fingerprintSha256: `SHA256:${idx}abcdef123456`,
+        validFrom: c.not_before ? new Date(c.not_before).toISOString().slice(0, 10) : 'UNKNOWN',
+        validTo: c.not_after ? new Date(c.not_after).toISOString().slice(0, 10) : 'UNKNOWN',
+        serialNumber: c.serial_number || 'UNKNOWN',
+        fingerprintSha256: certDetails.sha256_fingerprint || 'UNKNOWN',
         signatureAlgorithm: certDetails.signature_algo || 'SHA256withRSA',
         publicKeyAlgorithm: c.key_type || 'RSA',
         keySizeBits: c.key_size || 2048,
-        isTrustedInSystemStore: !c.is_expired,
+        isTrustedInSystemStore: Boolean(certDetails.system_trust_valid && !c.is_expired),
         keyUsage: ['Digital Signature', 'Key Encipherment'],
+        isRevoked: Boolean(certDetails.is_revoked),
       })
     );
 
     const findings: TlsSecurityFinding[] = (data.findings || []).map((f: any, idx: number) => ({
       id: `TLS-FIND-${idx + 1}`,
-      category: (f.category?.includes('distrusted') ? 'Compromised CA' : 'Weak Cryptography') as any,
+      category: (f.category?.includes('distrusted')
+        ? 'Compromised CA'
+        : f.category?.includes('revocation')
+        ? 'Revocation Verification'
+        : f.category?.includes('validity')
+        ? 'Certificate Expiry'
+        : f.category?.includes('hostname')
+        ? 'Hostname Mismatch'
+        : 'Weak Cryptography') as any,
       title: f.indicator || 'TLS Security Finding',
       description: f.evidence || '',
       severity: (f.severity || 'medium') as any,
@@ -493,16 +538,21 @@ export class ThreatApiService {
       isCompromisedTrust: f.severity === 'critical',
     }));
 
+    const validFromDate = certDetails.valid_from ? new Date(certDetails.valid_from).toISOString().slice(0, 10) : 'UNKNOWN';
+    const validToDate = certDetails.valid_to ? new Date(certDetails.valid_to).toISOString().slice(0, 10) : 'UNKNOWN';
+    const daysRemaining = certDetails.days_to_expiry !== undefined ? certDetails.days_to_expiry : 0;
+    const isExpired = Boolean(certDetails.is_expired);
+
     return {
       investigationId: data.report_id || `TLS-${Date.now().toString(36).toUpperCase()}`,
       targetDomain: target.replace(/^https?:\/\//, '').split('/')[0],
       targetPort: 443,
       analyzedAt: data.created_at || new Date().toISOString(),
       certificateStatus,
-      trustGrade: (data.grade as TrustGrade) || 'A',
-      trustScore: Math.max(0, 100 - (data.risk_score || 10)),
+      trustGrade,
+      trustScore,
       protocolVersion: (certDetails.tls_version as any) || 'TLS 1.3',
-      cipherSuite: 'TLS_AES_256_GCM_SHA384',
+      cipherSuite: certDetails.cipher_suite || 'TLS_AES_256_GCM_SHA384',
       isPfsSupported: true,
 
       subject: {
@@ -510,16 +560,16 @@ export class ThreatApiService {
         organization: certDetails.issuer_org || 'Website Organization',
       },
       issuer: {
-        commonName: certDetails.issuer_common_name || certDetails.issuer_org || "Let's Encrypt Authority",
-        organization: certDetails.issuer_org || 'Certificate Authority',
-        serialNumber: certDetails.serial_number || '0x42fedcba',
+        commonName: certDetails.issuer_common_name || certDetails.issuer_org || 'Unknown CA',
+        organization: certDetails.issuer_org || certDetails.issuer_common_name || 'Certificate Authority',
+        serialNumber: certDetails.serial_number || 'UNKNOWN',
       },
-      validFrom: certDetails.valid_from || '2026-01-01',
-      validTo: certDetails.valid_to || '2026-12-31',
-      daysRemaining: certDetails.days_to_expiry || 120,
-      isExpired: Boolean(certDetails.is_expired),
-      subjectAltNames: certDetails.san_list || [target],
-      isHostnameMatched: Boolean(certDetails.hostname_matches ?? true),
+      validFrom: validFromDate,
+      validTo: validToDate,
+      daysRemaining,
+      isExpired,
+      subjectAltNames: (certDetails.san_list && certDetails.san_list.length > 0) ? certDetails.san_list : [target],
+      isHostnameMatched: Boolean(certDetails.hostname_matches ?? false),
 
       signatureAlgorithm: certDetails.signature_algo || 'SHA256withRSA',
       publicKeyInfo: {
@@ -529,8 +579,8 @@ export class ThreatApiService {
 
       ocspStapling: {
         isStapled: Boolean(certDetails.has_revocation_info),
-        status: 'Good (Unrevoked)',
-        responderUrl: certDetails.ocsp_urls?.[0],
+        status: certDetails.is_revoked ? 'Revoked' : (certDetails.has_revocation_info ? 'Good (Unrevoked)' : 'Unknown'),
+        responderUrl: certDetails.ocsp_urls?.[0] || certDetails.crl_distribution_points?.[0],
       },
 
       certificateChain: chainNodes,
