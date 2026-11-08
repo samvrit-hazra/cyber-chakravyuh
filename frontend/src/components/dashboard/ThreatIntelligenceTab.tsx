@@ -21,14 +21,14 @@ export function ThreatIntelligenceTab({
   return (
     <div className="space-y-6">
       {/* Module A Header */}
-      <Card variant="glass" className="p-6 border-rose-500/30 bg-[#070d1e]/90">
+      <Card variant="glass" className="p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
-            <h3 className="text-sm font-mono font-bold text-rose-400 uppercase tracking-wider flex items-center gap-2">
+            <h3 className="text-sm font-mono font-bold text-rose-700 dark:text-rose-400 uppercase tracking-wider flex items-center gap-2">
               <AlertTriangle className="w-4 h-4" />
               GLOBAL THREAT INTELLIGENCE & CORROBORATED NEXUS (MODULE A)
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-[#647477] dark:text-[#A6B3AE]">
               Active phishing campaigns, hostile domain fleets, repeated indicator fingerprints, and evidentiary relationship graphs.
             </p>
           </div>

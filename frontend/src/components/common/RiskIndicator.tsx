@@ -121,7 +121,7 @@ export function RiskIndicator({
   return (
     <div
       className={cn(
-        'p-4 rounded-xl border backdrop-blur-md bg-[#0b152d]/90 relative overflow-hidden transition-all duration-300',
+        'p-4 rounded-xl border bg-white dark:bg-[#19272A] border-[#D9DED7] dark:border-[#304144] shadow-sm relative overflow-hidden transition-all duration-300',
         current.border,
         current.glow,
         className
@@ -144,7 +144,7 @@ export function RiskIndicator({
                 SCORE {score}
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">Calculated Threat Index</p>
+            <p className="text-xs text-[#647477] dark:text-[#A6B3AE] mt-0.5">Calculated Threat Index</p>
           </div>
         </div>
 
@@ -161,7 +161,7 @@ export function RiskIndicator({
               </span>
             )}
             {trend === 'stable' && (
-              <span className="flex items-center text-slate-400 text-xs font-mono">
+              <span className="flex items-center text-[#647477] dark:text-[#A6B3AE] text-xs font-mono">
                 <Minus className="w-3.5 h-3.5" /> Stable
               </span>
             )}
@@ -175,7 +175,7 @@ export function RiskIndicator({
       </div>
 
       {/* Mini score meter bar */}
-      <div className="mt-3 w-full bg-[#030712] rounded-full h-1.5 overflow-hidden border border-white/10">
+      <div className="mt-3 w-full bg-[#EAECE6] dark:bg-[#223336] rounded-full h-1.5 overflow-hidden border border-[#D9DED7] dark:border-[#304144]">
         <div
           className={cn('h-full rounded-full transition-all duration-500', current.bg.replace('/10', '').replace('/15', ''))}
           style={{ width: `${Math.min(100, score)}%` }}

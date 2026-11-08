@@ -9,21 +9,21 @@ export function ThreatDistributionChart() {
 
   return (
     <Card variant="default" className="p-5 flex flex-col justify-between">
-      <CardHeader className="p-0 pb-4">
+      <CardHeader className="p-0 pb-4 border-b border-[#D9DED7] dark:border-[#304144]">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-base text-white">Threat Distribution by Defense Layer</CardTitle>
-            <CardDescription className="text-xs text-slate-400">
+            <CardTitle className="text-base text-[#182629] dark:text-[#E8E6DC]">Threat Distribution by Defense Layer</CardTitle>
+            <CardDescription className="text-xs text-[#647477] dark:text-[#A6B3AE]">
               Correlated anomaly detections across 7 Chakravyuha perimeter rings
             </CardDescription>
           </div>
-          <span className="text-xs font-mono text-cyan-400 font-semibold hidden sm:inline-block">
+          <span className="text-xs font-mono text-[#A95636] dark:text-[#C47A52] font-semibold hidden sm:inline-block">
             Layer 1–7 Mesh
           </span>
         </div>
       </CardHeader>
 
-      <CardContent className="p-0 pt-2 space-y-4">
+      <CardContent className="p-0 pt-4 space-y-4">
         {/* Responsive Horizontal Bar Chart */}
         <div className="space-y-3">
           {mockLayerDistribution.map((item, idx) => {
@@ -40,13 +40,13 @@ export function ThreatDistributionChart() {
                 <div className="flex items-center justify-between text-xs font-mono">
                   <span
                     className={`transition-colors truncate max-w-[200px] ${
-                      isHovered ? 'text-cyan-300 font-semibold' : 'text-slate-300'
+                      isHovered ? 'text-[#A95636] dark:text-[#C47A52] font-semibold' : 'text-[#182629] dark:text-[#E8E6DC]'
                     }`}
                   >
                     {item.layer}
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="text-slate-400">{item.count} hits</span>
+                    <span className="text-[#647477] dark:text-[#A6B3AE]">{item.count} hits</span>
                     <span
                       className="font-bold text-[11px]"
                       style={{ color: item.color }}
@@ -56,7 +56,7 @@ export function ThreatDistributionChart() {
                   </div>
                 </div>
 
-                <div className="w-full h-2 rounded-full bg-slate-900 border border-white/5 overflow-hidden p-0.5">
+                <div className="w-full h-2 rounded-full bg-[#EAECE6] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] overflow-hidden p-0.5">
                   <div
                     className="h-full rounded-full transition-all duration-500 ease-out"
                     style={{
@@ -71,12 +71,11 @@ export function ThreatDistributionChart() {
           })}
         </div>
 
-        <div className="pt-3 border-t border-white/5 flex items-center justify-between text-[11px] font-mono text-slate-500">
-          <span>Total Defense Intercepts: 1,023</span>
-          <span className="text-cyan-400">Highest Ingress: Layer 1 (Perimeter)</span>
+        <div className="pt-2 flex items-center justify-between text-[11px] text-[#647477] dark:text-[#A6B3AE] font-mono border-t border-[#D9DED7] dark:border-[#304144]">
+          <span>Continuous heuristics validation</span>
+          <span className="text-[#36745F] dark:text-[#79B69A] font-semibold">100% telemetry synced</span>
         </div>
       </CardContent>
     </Card>
   );
 }
-

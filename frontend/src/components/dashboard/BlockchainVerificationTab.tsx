@@ -32,14 +32,14 @@ export function BlockchainVerificationTab({ initialVerificationHash }: Blockchai
   return (
     <div className="space-y-6">
       {/* Module B Header */}
-      <Card variant="glass" className="p-6 border-cyan-500/30 bg-[#070d1e]/90">
+      <Card variant="glass" className="p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
-            <h3 className="text-sm font-mono font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+            <h3 className="text-sm font-mono font-bold text-[#356D68] dark:text-[#79A99C] uppercase tracking-wider flex items-center gap-2">
               <Fingerprint className="w-4 h-4" />
               DECENTRALIZED THREAT REGISTRY & WEB3 VERIFICATION (MODULE B)
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-[#647477] dark:text-[#A6B3AE]">
               Cryptographic report attestation, immutable revision history, zero-knowledge privacy commitments & Merkle proof auditing.
             </p>
           </div>

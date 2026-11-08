@@ -51,7 +51,6 @@ export function DataTable<T>({
     if (searchFilter) {
       return data.filter((row) => searchFilter(row, query));
     }
-    // Default fallback search: stringify row values
     return data.filter((row) =>
       Object.values(row as Record<string, unknown>).some((val) =>
         String(val).toLowerCase().includes(query.toLowerCase())
@@ -70,13 +69,8 @@ export function DataTable<T>({
       if (aVal === undefined || aVal === null) return 1;
       if (bVal === undefined || bVal === null) return -1;
 
-      if (typeof aVal === 'number' && typeof bVal === 'number') {
-        return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
-      }
-
-      return sortDirection === 'asc'
-        ? String(aVal).localeCompare(String(bVal))
-        : String(bVal).localeCompare(String(aVal));
+      const comparison = String(aVal).localeCompare(String(bVal), undefined, { numeric: true });
+      return sortDirection === 'asc' ? comparison : -comparison;
     });
   }, [filteredData, sortKey, sortDirection]);
 
@@ -89,8 +83,9 @@ export function DataTable<T>({
 
   const handleSort = (key: string) => {
     if (sortKey === key) {
-      if (sortDirection === 'asc') setSortDirection('desc');
-      else {
+      if (sortDirection === 'asc') {
+        setSortDirection('desc');
+      } else {
         setSortKey(null);
         setSortDirection('asc');
       }
@@ -103,10 +98,11 @@ export function DataTable<T>({
   const handleSelectAll = (checked: boolean) => {
     if (!onSelectionChange) return;
     if (checked) {
-      const allKeys = paginatedData.map(keyExtractor);
-      onSelectionChange(Array.from(new Set([...selectedRowKeys, ...allKeys])));
+      const pageKeys = paginatedData.map((row, i) => keyExtractor(row, i));
+      const combined = Array.from(new Set([...selectedRowKeys, ...pageKeys]));
+      onSelectionChange(combined);
     } else {
-      const pageKeys = new Set(paginatedData.map(keyExtractor));
+      const pageKeys = new Set(paginatedData.map((row, i) => keyExtractor(row, i)));
       onSelectionChange(selectedRowKeys.filter((k) => !pageKeys.has(k)));
     }
   };
@@ -124,11 +120,11 @@ export function DataTable<T>({
     paginatedData.length > 0 && paginatedData.every((row, i) => selectedRowKeys.includes(keyExtractor(row, i)));
 
   return (
-    <div className={cn('w-full space-y-3', className)}>
+    <div className={cn('w-full space-y-3 font-sans', className)}>
       {searchable && (
         <div className="flex items-center justify-between gap-4">
           <div className="relative max-w-xs w-full">
-            <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-[#647477] dark:text-[#A6B3AE] absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={query}
@@ -137,29 +133,29 @@ export function DataTable<T>({
                 setCurrentPage(1);
               }}
               placeholder={searchPlaceholder}
-              className="w-full h-8 pl-8 pr-3 text-xs bg-[#0b152d]/80 text-slate-200 placeholder-slate-500 rounded-lg border border-cyan-500/20 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/40 font-mono"
+              className="w-full h-8 pl-8 pr-3 text-xs bg-[#EAECE6]/50 dark:bg-[#101A1D] text-[#182629] dark:text-[#E8E6DC] placeholder-[#647477] dark:placeholder-[#A6B3AE] rounded border border-[#D9DED7] dark:border-[#304144] focus:outline-none focus:border-[#A95636] dark:focus:border-[#C47A52] font-mono"
             />
           </div>
 
-          <span className="text-xs font-mono text-slate-400">
-            Total Records: <strong className="text-cyan-400">{filteredData.length}</strong>
+          <span className="text-xs font-mono text-[#647477] dark:text-[#A6B3AE]">
+            Records: <strong className="text-[#A95636] dark:text-[#C47A52]">{filteredData.length}</strong>
           </span>
         </div>
       )}
 
-      {/* Table container with cyber frame */}
-      <div className="w-full overflow-hidden rounded-xl border border-cyan-500/15 bg-[#0b152d]/70 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.5)]">
+      {/* Table container */}
+      <div className="w-full overflow-hidden rounded-md border border-[#D9DED7] dark:border-[#304144] bg-white dark:bg-[#19272A] shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-white/[0.08] bg-[#070d1e]/80 text-slate-400 uppercase font-mono tracking-wider">
+              <tr className="border-b border-[#D9DED7] dark:border-[#304144] bg-[#EAECE6]/60 dark:bg-[#101A1D] text-[#647477] dark:text-[#A6B3AE] uppercase font-mono tracking-wider">
                 {selectable && (
                   <th className="p-3 w-10 text-center">
                     <input
                       type="checkbox"
                       checked={isAllCurrentSelected}
                       onChange={(e) => handleSelectAll(e.target.checked)}
-                      className="rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-cyan-400 cursor-pointer"
+                      className="rounded border-[#D9DED7] dark:border-[#304144] text-[#A95636] dark:text-[#C47A52] cursor-pointer"
                     />
                   </th>
                 )}
@@ -172,7 +168,7 @@ export function DataTable<T>({
                       'p-3 font-semibold select-none',
                       col.align === 'center' && 'text-center',
                       col.align === 'right' && 'text-right',
-                      col.sortable && 'cursor-pointer hover:text-cyan-300 transition-colors'
+                      col.sortable && 'cursor-pointer hover:text-[#A95636] dark:hover:text-[#C47A52] transition-colors'
                     )}
                   >
                     <div
@@ -184,16 +180,23 @@ export function DataTable<T>({
                     >
                       <span>{col.header}</span>
                       {col.sortable && (
-                        <span className="inline-flex flex-col text-slate-500">
-                          {sortKey === col.key ? (
-                            sortDirection === 'asc' ? (
-                              <ChevronUp className="w-3.5 h-3.5 text-cyan-400" />
-                            ) : (
-                              <ChevronDown className="w-3.5 h-3.5 text-cyan-400" />
-                            )
-                          ) : (
-                            <ChevronUp className="w-3.5 h-3.5 opacity-30" />
-                          )}
+                        <span className="inline-flex flex-col text-[10px]">
+                          <ChevronUp
+                            className={cn(
+                              'w-2.5 h-2.5 -mb-1',
+                              sortKey === col.key && sortDirection === 'asc'
+                                ? 'text-[#A95636] dark:text-[#C47A52]'
+                                : 'opacity-30'
+                            )}
+                          />
+                          <ChevronDown
+                            className={cn(
+                              'w-2.5 h-2.5',
+                              sortKey === col.key && sortDirection === 'desc'
+                                ? 'text-[#A95636] dark:text-[#C47A52]'
+                                : 'opacity-30'
+                            )}
+                          />
                         </span>
                       )}
                     </div>
@@ -201,14 +204,14 @@ export function DataTable<T>({
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.05]">
+            <tbody className="divide-y divide-[#D9DED7] dark:divide-[#304144]/60">
               {paginatedData.length === 0 ? (
                 <tr>
                   <td
                     colSpan={columns.length + (selectable ? 1 : 0)}
-                    className="p-8 text-center text-slate-500 font-mono"
+                    className="p-8 text-center text-xs font-mono text-[#647477] dark:text-[#A6B3AE]"
                   >
-                    No matching threat data found.
+                    No matching records found.
                   </td>
                 </tr>
               ) : (
@@ -221,13 +224,11 @@ export function DataTable<T>({
                       key={key}
                       onClick={() => onRowClick?.(row)}
                       className={cn(
-                        'transition-colors duration-150',
+                        'transition-colors',
                         onRowClick && 'cursor-pointer',
                         isSelected
-                          ? 'bg-cyan-500/10'
-                          : idx % 2 === 0
-                          ? 'bg-transparent hover:bg-slate-800/40'
-                          : 'bg-white/[0.01] hover:bg-slate-800/40'
+                          ? 'bg-[#A95636]/10 dark:bg-[#C47A52]/15'
+                          : 'hover:bg-[#EAECE6]/40 dark:hover:bg-[#223336]'
                       )}
                     >
                       {selectable && (
@@ -236,7 +237,7 @@ export function DataTable<T>({
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => handleRowSelect(key)}
-                            className="rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-cyan-400 cursor-pointer"
+                            className="rounded border-[#D9DED7] dark:border-[#304144] text-[#A95636] dark:text-[#C47A52] cursor-pointer"
                           />
                         </td>
                       )}
@@ -244,7 +245,7 @@ export function DataTable<T>({
                         <td
                           key={col.key}
                           className={cn(
-                            'p-3 text-slate-200',
+                            'p-3 text-[#182629] dark:text-[#E8E6DC]',
                             col.align === 'center' && 'text-center',
                             col.align === 'right' && 'text-right'
                           )}
@@ -264,10 +265,10 @@ export function DataTable<T>({
 
         {/* Pagination bar */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between p-3 border-t border-white/[0.06] bg-[#070d1e]/90 text-xs font-mono">
-            <span className="text-slate-400">
-              Page <strong className="text-slate-200">{currentPage}</strong> of{' '}
-              <strong className="text-slate-200">{totalPages}</strong>
+          <div className="flex items-center justify-between p-3 border-t border-[#D9DED7] dark:border-[#304144] bg-[#EAECE6]/50 dark:bg-[#101A1D] text-xs font-mono">
+            <span className="text-[#647477] dark:text-[#A6B3AE]">
+              Page <strong className="text-[#182629] dark:text-[#E8E6DC]">{currentPage}</strong> of{' '}
+              <strong className="text-[#182629] dark:text-[#E8E6DC]">{totalPages}</strong>
             </span>
 
             <div className="flex items-center gap-1.5">
@@ -275,7 +276,7 @@ export function DataTable<T>({
                 type="button"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                className="p-1.5 rounded text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="p-1.5 rounded text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-white hover:bg-[#D9DED7] dark:hover:bg-[#223336] disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label="Previous page"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -284,7 +285,7 @@ export function DataTable<T>({
                 type="button"
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                className="p-1.5 rounded text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="p-1.5 rounded text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-white hover:bg-[#D9DED7] dark:hover:bg-[#223336] disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label="Next page"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -296,4 +297,3 @@ export function DataTable<T>({
     </div>
   );
 }
-

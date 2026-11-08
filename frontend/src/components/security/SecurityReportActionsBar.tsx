@@ -56,7 +56,7 @@ export function SecurityReportActionsBar({ result }: SecurityReportActionsBarPro
 
   const handleDownloadReport = () => {
     const exportData = {
-      engine: 'Cyber Chakravyuha Layer 4 Endpoint & Posture Inspector',
+      engine: 'Cyber Chakravyuh Layer 4 Endpoint & Posture Inspector',
       exportTimestamp: new Date().toISOString(),
       reportPayload: result,
     };
@@ -67,7 +67,7 @@ export function SecurityReportActionsBar({ result }: SecurityReportActionsBarPro
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `chakravyuha-security-assessment-${result.canonicalHost}.json`;
+    link.download = `chakravyuh-security-assessment-${result.canonicalHost}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -79,17 +79,17 @@ export function SecurityReportActionsBar({ result }: SecurityReportActionsBarPro
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-[#0b162c] border border-emerald-500/30 shadow-lg">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-md bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-950/80 border border-emerald-500/30 text-emerald-400">
+          <div className="p-2.5 rounded bg-[#356D68]/10 dark:bg-[#79A99C]/15 border border-[#356D68]/25 dark:border-[#79A99C]/30 text-[#356D68] dark:text-[#79A99C]">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-mono font-bold text-white flex items-center gap-2">
+            <h4 className="text-sm font-mono font-bold text-[#182629] dark:text-[#E8E6DC] flex items-center gap-2">
               <span>Security Posture Dossier:</span>
-              <span className="text-emerald-300">#{result.assessmentId}</span>
+              <span className="text-[#A95636] dark:text-[#C47A52]">#{result.assessmentId}</span>
             </h4>
-            <p className="text-xs font-mono text-slate-400">
+            <p className="text-xs font-mono text-[#647477] dark:text-[#A6B3AE]">
               Passive defense-in-depth security hygiene and endpoint audit
             </p>
           </div>
@@ -103,7 +103,7 @@ export function SecurityReportActionsBar({ result }: SecurityReportActionsBarPro
             size="sm"
             onClick={handleCopySummary}
             className="flex-1 sm:flex-none font-mono text-xs"
-            leftIcon={isCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+            leftIcon={isCopied ? <Check className="w-4 h-4 text-[#36745F] dark:text-[#79B69A]" /> : <Copy className="w-4 h-4" />}
           >
             {isCopied ? 'Summary Copied!' : 'Copy Summary'}
           </Button>
@@ -113,8 +113,8 @@ export function SecurityReportActionsBar({ result }: SecurityReportActionsBarPro
             variant="outline"
             size="sm"
             onClick={handleDownloadReport}
-            className="flex-1 sm:flex-none font-mono text-xs border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10"
-            leftIcon={downloadSuccess ? <Check className="w-4 h-4 text-emerald-400" /> : <Download className="w-4 h-4" />}
+            className="flex-1 sm:flex-none font-mono text-xs"
+            leftIcon={downloadSuccess ? <Check className="w-4 h-4 text-[#36745F] dark:text-[#79B69A]" /> : <Download className="w-4 h-4" />}
           >
             {downloadSuccess ? 'Downloaded!' : 'Export JSON'}
           </Button>
@@ -143,29 +143,29 @@ export function SecurityReportActionsBar({ result }: SecurityReportActionsBarPro
         <div className="space-y-4 font-mono text-xs">
           {/* Metrics summary */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
-            <div className="p-2.5 rounded-lg bg-slate-900 border border-white/5">
-              <span className="text-slate-400 text-[10px] block">GRADE</span>
-              <span className="text-emerald-400 font-bold">Grade {result.securityGrade}</span>
+            <div className="p-2.5 rounded bg-[#EAECE6] dark:bg-[#223336] border border-[#D9DED7] dark:border-[#304144]">
+              <span className="text-[#647477] dark:text-[#A6B3AE] text-[10px] block">GRADE</span>
+              <span className="text-[#36745F] dark:text-[#79B69A] font-bold">Grade {result.securityGrade}</span>
             </div>
-            <div className="p-2.5 rounded-lg bg-slate-900 border border-white/5">
-              <span className="text-slate-400 text-[10px] block">SECURITY SCORE</span>
-              <span className="text-cyan-400 font-bold">{result.securityScore} / 100</span>
+            <div className="p-2.5 rounded bg-[#EAECE6] dark:bg-[#223336] border border-[#D9DED7] dark:border-[#304144]">
+              <span className="text-[#647477] dark:text-[#A6B3AE] text-[10px] block">SECURITY SCORE</span>
+              <span className="text-[#356D68] dark:text-[#79A99C] font-bold">{result.securityScore} / 100</span>
             </div>
-            <div className="p-2.5 rounded-lg bg-slate-900 border border-white/5">
-              <span className="text-slate-400 text-[10px] block">CATEGORIES</span>
-              <span className="text-purple-400 font-bold">7 Evaluated</span>
+            <div className="p-2.5 rounded bg-[#EAECE6] dark:bg-[#223336] border border-[#D9DED7] dark:border-[#304144]">
+              <span className="text-[#647477] dark:text-[#A6B3AE] text-[10px] block">CATEGORIES</span>
+              <span className="text-[#A95636] dark:text-[#C47A52] font-bold">7 Evaluated</span>
             </div>
-            <div className="p-2.5 rounded-lg bg-slate-900 border border-white/5">
-              <span className="text-slate-400 text-[10px] block">FINDINGS</span>
-              <span className="text-amber-400 font-bold">{result.findings.length} Artifacts</span>
+            <div className="p-2.5 rounded bg-[#EAECE6] dark:bg-[#223336] border border-[#D9DED7] dark:border-[#304144]">
+              <span className="text-[#647477] dark:text-[#A6B3AE] text-[10px] block">FINDINGS</span>
+              <span className="text-[#A87532] dark:text-[#D7AA61] font-bold">{result.findings.length} Artifacts</span>
             </div>
           </div>
 
           {/* Raw JSON Code Block */}
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-slate-400 text-[11px]">
+            <div className="flex items-center justify-between text-[#647477] dark:text-[#A6B3AE] text-[11px]">
               <span className="flex items-center gap-1.5">
-                <Code2 className="w-3.5 h-3.5 text-emerald-400" />
+                <Code2 className="w-3.5 h-3.5 text-[#356D68] dark:text-[#79A99C]" />
                 Raw Assessment JSON Payload
               </span>
               <button
@@ -175,18 +175,18 @@ export function SecurityReportActionsBar({ result }: SecurityReportActionsBarPro
                   setIsCopied(true);
                   setTimeout(() => setIsCopied(false), 2000);
                 }}
-                className="text-emerald-400 hover:underline cursor-pointer"
+                className="text-[#A95636] dark:text-[#C47A52] hover:underline cursor-pointer"
               >
                 {isCopied ? 'Copied JSON!' : 'Copy Raw JSON'}
               </button>
             </div>
-            <pre className="p-4 rounded-xl bg-black/80 border border-white/10 text-[11px] text-emerald-200/90 overflow-x-auto max-h-[380px] overflow-y-auto select-all">
+            <pre className="p-4 rounded bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-[11px] text-[#182629] dark:text-[#E8E6DC] overflow-x-auto max-h-[380px] overflow-y-auto select-all">
               {JSON.stringify(result, null, 2)}
             </pre>
           </div>
 
           {/* Modal Footer */}
-          <div className="flex justify-end gap-2 pt-2 border-t border-white/5">
+          <div className="flex justify-end gap-2 pt-2 border-t border-[#D9DED7] dark:border-[#304144]">
             <Button variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
               Close
             </Button>
@@ -195,7 +195,6 @@ export function SecurityReportActionsBar({ result }: SecurityReportActionsBarPro
               size="sm"
               onClick={handleDownloadReport}
               leftIcon={<Download className="w-4 h-4" />}
-              className="bg-emerald-600 hover:bg-emerald-500"
             >
               Export JSON File
             </Button>
@@ -205,4 +204,3 @@ export function SecurityReportActionsBar({ result }: SecurityReportActionsBarPro
     </>
   );
 }
-

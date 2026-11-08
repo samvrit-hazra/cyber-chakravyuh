@@ -52,7 +52,7 @@ export function Tooltip({
           role="tooltip"
           className={cn(
             'absolute z-50 whitespace-nowrap px-2.5 py-1 text-xs font-mono font-medium text-slate-100',
-            'bg-[#060d1f]/95 border border-cyan-500/30 rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.6)] backdrop-blur-md',
+            'bg-[#19272A] border border-[#304144] rounded-md shadow-md text-[#E8E6DC]',
             'pointer-events-none transition-all duration-150 animate-in fade-in zoom-in-95',
             positionClasses[position],
             className

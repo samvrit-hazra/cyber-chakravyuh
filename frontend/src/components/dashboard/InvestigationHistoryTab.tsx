@@ -232,7 +232,7 @@ export function InvestigationHistoryTab({
   return (
     <div className="space-y-6">
       {/* Top Ledger Header Card */}
-      <Card variant="glass" className="p-6 border-cyan-500/30 bg-[#070d1e]/90">
+      <Card variant="glass" className="p-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-1">
             <h3 className="text-sm font-mono font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
@@ -266,7 +266,7 @@ export function InvestigationHistoryTab({
             <Button
               variant="ghost"
               size="sm"
-              leftIcon={<RefreshCw className="w-4 h-4 text-purple-400" />}
+              leftIcon={<RefreshCw className="w-4 h-4 text-[#C47A52]" />}
               onClick={() => {
                 setStateMode('loading');
                 setTimeout(() => setStateMode('ready'), 600);
@@ -294,7 +294,7 @@ export function InvestigationHistoryTab({
                 className={`px-2 py-0.5 rounded text-[11px] uppercase transition-colors cursor-pointer ${
                   stateMode === mode
                     ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-400/40'
-                    : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
+                    : 'bg-[#F3F1E9] dark:bg-[#101A1D] text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC] border border-[#D9DED7] dark:border-[#304144]'
                 }`}
               >
                 {mode}
@@ -305,7 +305,7 @@ export function InvestigationHistoryTab({
       </Card>
 
       {/* Search and Filters Toolbar */}
-      <Card variant="default" className="p-4 space-y-3 bg-[#0b152d]/80 border-cyan-500/20">
+      <Card variant="default" className="p-4 space-y-3">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
           {/* Search Bar */}
           <div className="relative lg:col-span-2">
@@ -318,7 +318,7 @@ export function InvestigationHistoryTab({
                 setCurrentPage(1);
               }}
               placeholder="Search by URL, incident ID, IP, campaign, or MITRE..."
-              className="w-full h-9 pl-9 pr-8 rounded-lg bg-[#070d1e] text-xs text-slate-200 placeholder-slate-500 border border-cyan-500/20 focus:outline-none focus:border-cyan-400 font-mono transition-all"
+              className="w-full h-9 pl-9 pr-8 rounded-lg bg-[#F3F1E9] dark:bg-[#101A1D] text-xs text-[#182629] dark:text-[#E8E6DC] placeholder-[#647477] dark:placeholder-[#A6B3AE] border border-[#D9DED7] dark:border-[#304144] focus:outline-none focus:border-[#A95636] dark:focus:border-[#C47A52] font-mono transition-all"
             />
             {query && (
               <button
@@ -432,7 +432,7 @@ export function InvestigationHistoryTab({
                 className={`px-2 py-0.5 rounded cursor-pointer ${
                   pageSize === size
                     ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-400/40'
-                    : 'bg-slate-900 text-slate-400 hover:text-white'
+                    : 'bg-[#F3F1E9] dark:bg-[#101A1D] text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC] border border-[#D9DED7] dark:border-[#304144]'
                 }`}
               >
                 {size}
@@ -496,10 +496,10 @@ export function InvestigationHistoryTab({
       {/* State Mode 4: Ready State Table */}
       {stateMode === 'ready' && filteredRecords.length > 0 && (
         <div className="space-y-4">
-          <div className="overflow-x-auto rounded-xl border border-cyan-500/20 bg-[#070d1e]/90 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+          <div className="overflow-x-auto rounded-xl border border-[#D9DED7] dark:border-[#304144] bg-white dark:bg-[#19272A] shadow-sm">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-white/10 bg-[#0b152d]/90 text-[11px] font-mono text-cyan-400 uppercase tracking-wider">
+                <tr className="border-b border-[#D9DED7] dark:border-[#304144] bg-[#EAECE6] dark:bg-[#223336] text-[11px] font-mono text-[#647477] dark:text-[#A6B3AE] uppercase tracking-wider">
                   <th className="py-3 px-4">Case ID</th>
                   <th className="py-3 px-4">Target Specifier / URL</th>
                   <th className="py-3 px-4">Vector</th>
@@ -548,7 +548,7 @@ export function InvestigationHistoryTab({
 
                       {/* Investigation Type */}
                       <td className="py-3 px-4 whitespace-nowrap">
-                        <span className="text-slate-300 bg-slate-900/80 px-2 py-0.5 rounded border border-white/5 text-[11px]">
+                        <span className="text-[#182629] dark:text-[#E8E6DC] bg-[#F3F1E9] dark:bg-[#101A1D] px-2 py-0.5 rounded border border-[#D9DED7] dark:border-[#304144] text-[11px]">
                           {record.type}
                         </span>
                       </td>
@@ -557,7 +557,7 @@ export function InvestigationHistoryTab({
                       <td className="py-3 px-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <Badge
-                            variant={isCrit ? 'rose' : isH ? 'amber' : isG ? 'purple' : 'emerald'}
+                            variant={isCrit ? 'rose' : isH ? 'amber' : isG ? 'copper' : 'emerald'}
                             size="sm"
                             hasDot
                           >
@@ -570,7 +570,7 @@ export function InvestigationHistoryTab({
                                 : isH
                                 ? 'text-amber-400'
                                 : isG
-                                ? 'text-purple-400'
+                                ? 'text-[#C47A52]'
                                 : 'text-emerald-400'
                             }`}
                           >
@@ -581,7 +581,7 @@ export function InvestigationHistoryTab({
 
                       {/* Campaign / MITRE */}
                       <td className="py-3 px-4 max-w-[180px]">
-                        <span className="text-purple-300 truncate block text-[11px]" title={record.campaign}>
+                        <span className="text-[#C47A52] truncate block text-[11px]" title={record.campaign}>
                           {record.campaign || 'N/A'}
                         </span>
                         <span className="text-slate-500 text-[10px] truncate block" title={record.mitreTactic}>
@@ -630,7 +630,7 @@ export function InvestigationHistoryTab({
           </div>
 
           {/* Pagination Navigation Bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 rounded-xl bg-[#0b152d]/60 border border-white/5 text-xs font-mono">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-xs font-mono">
             <div className="text-slate-400">
               Showing <strong className="text-slate-200">{(currentPage - 1) * pageSize + 1}</strong> to{' '}
               <strong className="text-slate-200">
@@ -659,7 +659,7 @@ export function InvestigationHistoryTab({
                 <ChevronLeft className="w-4 h-4" />
               </Button>
 
-              <span className="px-3 py-1 rounded bg-slate-900 border border-white/10 text-cyan-300 font-bold">
+              <span className="px-3 py-1 rounded bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] text-[#A95636] dark:text-[#C47A52] font-bold">
                 Page {currentPage} of {totalPages}
               </span>
 

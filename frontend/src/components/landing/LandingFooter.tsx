@@ -1,24 +1,13 @@
-import { Shield, ExternalLink, Terminal, Heart } from 'lucide-react';
-import { Badge } from '../common/index.ts';
 
 interface LandingFooterProps {
-  onStartInvestigation: () => void;
-  onLaunchDashboard: () => void;
+  onStartInvestigation?: () => void;
+  onLaunchDashboard?: () => void;
   onOpenDocModal?: (title: string, content: string) => void;
 }
 
 export function LandingFooter({
-  onStartInvestigation,
-  onLaunchDashboard,
   onOpenDocModal,
 }: LandingFooterProps) {
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const handleDocClick = (title: string, summary: string) => {
     if (onOpenDocModal) {
       onOpenDocModal(title, summary);
@@ -26,186 +15,104 @@ export function LandingFooter({
   };
 
   return (
-    <footer className="border-t border-cyan-500/20 bg-[#030712] relative z-10 text-slate-400">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
-          {/* Brand Info & Mission */}
-          <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 via-sky-500 to-purple-600 flex items-center justify-center p-0.5 shadow-[0_0_15px_rgba(6,182,212,0.4)]">
-                <div className="w-full h-full bg-[#030712] rounded-[10px] flex items-center justify-center">
-                  <Shield className="w-4 h-4 text-cyan-400" />
-                </div>
-              </div>
-              <span className="font-extrabold text-base tracking-wider text-white">
-                CYBER CHAKRAVYUHA
-              </span>
+    <footer id="about" className="border-t border-[#D9DED7] dark:border-[#304144] bg-[#F3F1E9] dark:bg-[#101A1D] transition-colors py-6 sm:py-7 px-4 sm:px-6 lg:px-8 text-[#647477] dark:text-[#A6B3AE] font-sans">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+        {/* Brand mark */}
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center shrink-0">
+            <img src="/logo.png" alt="Cyber Chakravyuh Logo" className="w-full h-full object-contain" />
+          </div>
+          <div className="text-left">
+            <div className="font-bold text-base font-brand text-[#182629] dark:text-[#E8E6DC]">
+              Cyber Chakravyuh
             </div>
-
-            <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
-              <strong className="text-cyan-300">Navigate the Threat. Verify the Trust.</strong>
-              <br />
-              An AI-powered cybersecurity command platform providing deep URL investigation, phishing detection, cryptographic TLS verification, and digital trust intelligence.
-            </p>
-
-            <div className="flex items-center gap-2 pt-2">
-              <Badge variant="cyan" size="sm">
-                DEFCON-3 ACTIVE
-              </Badge>
-              <Badge variant="emerald" size="sm">
-                ZERO-TRUST 100%
-              </Badge>
+            <div className="text-[11px] text-[#647477] dark:text-[#A6B3AE] -mt-0.5 font-mono">
+              Link Intelligence & Threat Forensics
             </div>
-          </div>
-
-          {/* Quick Navigation Links */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
-              Platform Navigation
-            </h4>
-            <ul className="space-y-2 text-xs">
-              <li>
-                <button
-                  onClick={() => scrollTo('home')}
-                  className="hover:text-cyan-400 transition-colors cursor-pointer"
-                >
-                  Home Ingress
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollTo('features')}
-                  className="hover:text-cyan-400 transition-colors cursor-pointer"
-                >
-                  Core Defense Features
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollTo('how-it-works')}
-                  className="hover:text-cyan-400 transition-colors cursor-pointer"
-                >
-                  5-Stage Workflow Pipeline
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollTo('threat-intelligence')}
-                  className="hover:text-cyan-400 transition-colors cursor-pointer"
-                >
-                  Threat Telemetry
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollTo('about')}
-                  className="hover:text-cyan-400 transition-colors cursor-pointer"
-                >
-                  Trust & Security Pillars
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Product & Solutions */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
-              Operations
-            </h4>
-            <ul className="space-y-2 text-xs">
-              <li>
-                <button
-                  onClick={onStartInvestigation}
-                  className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer text-cyan-300 font-semibold"
-                >
-                  <span>Start Investigation</span>
-                  <ExternalLink className="w-3 h-3" />
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={onLaunchDashboard}
-                  className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer"
-                >
-                  <span>SecOps Dashboard</span>
-                  <ExternalLink className="w-3 h-3" />
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleDocClick('API & Webhooks', 'REST and WebSocket API endpoints for submitting URLs, streaming real-time telemetry, and retrieving Ed25519-signed verification receipts.')}
-                  className="hover:text-cyan-400 transition-colors cursor-pointer"
-                >
-                  API & Webhooks
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleDocClick('Threat IOC Feed', 'Daily sanitized JSON/CSV export of confirmed malicious domains and phishing indicators.')}
-                  className="hover:text-cyan-400 transition-colors cursor-pointer"
-                >
-                  Raw IOC Feeds
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Documentation & Project Credits */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
-              Documentation & Credits
-            </h4>
-            <ul className="space-y-2 text-xs">
-              <li>
-                <button
-                  onClick={() => handleDocClick('7-Layer Architecture Guide', 'Comprehensive specifications for Saptarishi Perimeter, Vyuha Network Gateway, Identity Vault, Endpoint Intel, Application Shield, Post-Quantum Vault, and Cognitive Core.')}
-                  className="hover:text-cyan-400 transition-colors cursor-pointer"
-                >
-                  7-Layer Architecture
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleDocClick('Attestation Whitepaper', 'Mathematical proof and cryptographic protocols behind zero-knowledge threat record verification.')}
-                  className="hover:text-cyan-400 transition-colors cursor-pointer"
-                >
-                  Verification Whitepaper
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleDocClick('Responsible Disclosure Policy', 'Guidelines for reporting vulnerabilities under coordinated security disclosure.')}
-                  className="hover:text-cyan-400 transition-colors cursor-pointer"
-                >
-                  Security Disclosure
-                </button>
-              </li>
-              <li>
-                <span className="text-slate-500 flex items-center gap-1 pt-1">
-                  <Terminal className="w-3 h-3 text-cyan-400" />
-                  Built with Google Antigravity
-                </span>
-              </li>
-            </ul>
           </div>
         </div>
 
-        {/* Bottom Credits & Copyright */}
-        <div className="mt-12 pt-8 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500">
-          <div className="flex items-center gap-2">
-            <span>© 2026 Cyber Chakravyuha. All rights reserved.</span>
+        {/* Legal & About Links */}
+        <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-medium">
+          <button
+            type="button"
+            onClick={() => handleDocClick('About Platform', 'Cyber Chakravyuh is an open client-side threat intelligence platform designed to de-anonymize deceptive URL lures and protect users from phishing campaigns.')}
+            className="hover:text-[#182629] dark:hover:text-[#E8E6DC] transition-colors cursor-pointer"
+          >
+            About
+          </button>
+          <span className="text-[#D9DED7] dark:text-[#304144]">|</span>
+          <button
+            type="button"
+            onClick={() => handleDocClick('Privacy Policy', 'We operate with strict zero data retention. URLs and text snippets are processed transiently in browser memory and are never saved or harvested.')}
+            className="hover:text-[#182629] dark:hover:text-[#E8E6DC] transition-colors cursor-pointer"
+          >
+            Privacy Policy
+          </button>
+          <span className="text-[#D9DED7] dark:text-[#304144]">|</span>
+          <button
+            type="button"
+            onClick={() => handleDocClick('Terms of Service', 'The analysis reports provided by Cyber Chakravyuh are deterministic heuristic assessments intended for defensive education and cyber risk mitigation.')}
+            className="hover:text-[#182629] dark:hover:text-[#E8E6DC] transition-colors cursor-pointer"
+          >
+            Terms of Service
+          </button>
+          <span className="text-[#D9DED7] dark:text-[#304144]">|</span>
+          <button
+            type="button"
+            onClick={() => handleDocClick('Contact & Vulnerability Reporting', 'Security researchers can contact our threat intelligence team at security@chakravyuh.internal to report newly observed phishing domains.')}
+            className="hover:text-[#182629] dark:hover:text-[#E8E6DC] transition-colors cursor-pointer"
+          >
+            Contact
+          </button>
+        </div>
+
+        {/* Social Icons & Copyright */}
+        <div className="flex flex-col sm:flex-row items-center gap-4 text-xs font-mono">
+          <div className="flex items-center gap-3">
+            {/* GitHub SVG */}
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1.5 rounded hover:bg-[#EAECE6] dark:hover:bg-[#223336] text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC] transition-colors"
+              aria-label="GitHub"
+            >
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+              </svg>
+            </a>
+            {/* LinkedIn SVG */}
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1.5 rounded hover:bg-[#EAECE6] dark:hover:bg-[#223336] text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC] transition-colors"
+              aria-label="LinkedIn"
+            >
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+              </svg>
+            </a>
+            {/* X / Twitter SVG */}
+            <a
+              href="https://x.com"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1.5 rounded hover:bg-[#EAECE6] dark:hover:bg-[#223336] text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC] transition-colors"
+              aria-label="X (Twitter)"
+            >
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+            </a>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span>Designed for Next-Generation Digital Trust Intelligence</span>
-            <span>•</span>
-            <span className="flex items-center gap-1 text-slate-400">
-              Crafted with <Heart className="w-3 h-3 text-rose-500 fill-rose-500" /> for Cybersecurity
-            </span>
-          </div>
+          <span className="text-[11px] text-[#647477] dark:text-[#A6B3AE]">
+            © 2026 Cyber Chakravyuh. Built for defensive intelligence.
+          </span>
         </div>
       </div>
     </footer>
   );
 }
-

@@ -48,31 +48,28 @@ export function ScamSubmissionForm({
   };
 
   return (
-    <div className="relative rounded-2xl bg-gradient-to-b from-[#0e122b] to-[#070b1c] border border-purple-500/30 p-5 md:p-7 shadow-[0_0_35px_rgba(168,85,247,0.12)]">
-      {/* Background cyber ambient highlight */}
-      <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/5 rounded-bl-full pointer-events-none blur-2xl" />
-
-      <div className="space-y-4 relative z-10">
+    <div className="relative rounded-md bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] p-5 md:p-7 shadow-xs">
+      <div className="space-y-4">
         {/* Title Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-lg md:text-xl font-bold font-mono tracking-tight text-white flex items-center gap-2.5">
-              <span className="inline-block w-2.5 h-2.5 rounded-full bg-purple-400 animate-pulse shadow-[0_0_8px_#c084fc]" />
+            <h2 className="text-base sm:text-lg font-bold font-heading tracking-tight text-[#182629] dark:text-[#E8E6DC] flex items-center gap-2">
+              <span className="inline-block w-2 h-2 rounded-full bg-[#A95636] dark:bg-[#C47A52]" />
               AI-POWERED SCAM & MESSAGE ANALYSIS
             </h2>
-            <p className="text-xs text-slate-400 font-mono mt-0.5">
+            <p className="text-xs text-[#647477] dark:text-[#A6B3AE] font-mono mt-0.5">
               Paste suspicious SMS, email, job offers, investment pitches, or support messages for NLP cognitive evaluation
             </p>
           </div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-purple-950/60 border border-purple-500/30 text-[11px] font-mono text-purple-300">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#356D68]/10 dark:bg-[#79A99C]/15 border border-[#356D68]/25 dark:border-[#79A99C]/30 text-[11px] font-mono text-[#356D68] dark:text-[#79A99C]">
             <Brain className="w-3.5 h-3.5" />
             <span>Layer 7 Cognitive NLP Engine</span>
           </div>
         </div>
 
         {/* Security Disclaimers Banner */}
-        <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs font-mono">
-          <ShieldAlert className="w-4 h-4 shrink-0 text-amber-400" />
+        <div className="flex items-center gap-2.5 px-3 py-2 rounded bg-[#A87532]/10 border border-[#A87532]/25 text-[#A87532] dark:text-[#D7AA61] text-xs font-mono">
+          <ShieldAlert className="w-4 h-4 shrink-0 text-[#A87532] dark:text-[#D7AA61]" />
           <span>
             <strong>Zero-Credential Safe Protocol:</strong> Never paste real OTP codes, account passwords, private keys, or secret seed recovery phrases.
           </span>
@@ -81,10 +78,10 @@ export function ScamSubmissionForm({
         {/* Preset Selector Dropdown / Pills */}
         <div className="space-y-1.5 pt-1">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#647477] dark:text-[#A6B3AE]">
               Select Sample Attack / Benign Telemetry Dossier:
             </span>
-            <span className="text-[10px] font-mono text-purple-400">7 Curated Scenarios</span>
+            <span className="text-[10px] font-mono text-[#A95636] dark:text-[#C47A52]">7 Curated Scenarios</span>
           </div>
 
           <div className="flex flex-wrap gap-1.5">
@@ -96,13 +93,13 @@ export function ScamSubmissionForm({
                   type="button"
                   onClick={() => handleSelectPreset(preset)}
                   disabled={isLoading}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-mono border transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 rounded text-[11px] font-mono border transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-purple-600/30 border-purple-400 text-purple-200 font-bold shadow-[0_0_10px_rgba(168,85,247,0.3)]'
-                      : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-slate-200 hover:border-purple-500/40'
+                      ? 'bg-[#A95636]/15 dark:bg-[#C47A52]/20 border-[#A95636] dark:border-[#C47A52] text-[#A95636] dark:text-[#C47A52] font-semibold'
+                      : 'bg-[#EAECE6]/50 dark:bg-[#223336]/60 border-[#D9DED7] dark:border-[#304144] text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC] hover:border-[#A95636]/40'
                   }`}
                 >
-                  <span className="text-slate-500 mr-1.5">[{preset.categoryLabel}]</span>
+                  <span className="text-[#647477] dark:text-[#A6B3AE] mr-1.5">[{preset.categoryLabel}]</span>
                   <span>{preset.title.split('(')[0].trim()}</span>
                 </button>
               );
@@ -121,15 +118,15 @@ export function ScamSubmissionForm({
             placeholder="Paste suspicious SMS notification, email message body, job offer proposal, WhatsApp investment text, or customer support alert here..."
             rows={7}
             disabled={isLoading}
-            className={`w-full p-4 rounded-xl bg-[#030712]/95 border font-mono text-xs sm:text-sm text-slate-100 placeholder-slate-500 outline-none transition-all duration-200 resize-y leading-relaxed ${
+            className={`w-full p-4 rounded bg-white dark:bg-[#101A1D] border font-mono text-xs sm:text-sm text-[#182629] dark:text-[#E8E6DC] placeholder-[#647477] dark:placeholder-[#A6B3AE] outline-none transition-all duration-200 resize-y leading-relaxed ${
               validationError
-                ? 'border-rose-500/80 ring-2 ring-rose-500/20'
-                : 'border-purple-500/40 hover:border-purple-400/70 focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30'
+                ? 'border-[#B64B46] dark:border-[#E17B70] ring-1 ring-[#B64B46]/20'
+                : 'border-[#D9DED7] dark:border-[#304144] hover:border-[#A95636]/60 focus:border-[#A95636] dark:focus:border-[#C47A52] focus:ring-1 focus:ring-[#A95636]/30'
             }`}
           />
 
           <div className="absolute bottom-3 right-3 flex items-center gap-2">
-            <span className="text-[11px] font-mono text-slate-500 bg-slate-900/80 px-2 py-0.5 rounded border border-white/5">
+            <span className="text-[11px] font-mono text-[#647477] dark:text-[#A6B3AE] bg-[#EAECE6] dark:bg-[#223336] px-2 py-0.5 rounded border border-[#D9DED7] dark:border-[#304144]">
               {text.length} characters
             </span>
           </div>
@@ -137,7 +134,7 @@ export function ScamSubmissionForm({
 
         {/* Validation Error */}
         {validationError && (
-          <div className="flex items-center gap-2 text-xs font-mono text-rose-400 bg-rose-500/10 border border-rose-500/20 px-3 py-2 rounded-lg">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#B64B46] dark:text-[#E17B70] bg-[#B64B46]/10 border border-[#B64B46]/30 px-3 py-2 rounded">
             <AlertTriangle className="w-4 h-4 shrink-0" />
             <span>{validationError}</span>
           </div>
@@ -151,7 +148,7 @@ export function ScamSubmissionForm({
               size="lg"
               onClick={handleAnalyze}
               isLoading={isLoading}
-              className="flex-1 sm:flex-none px-6 font-mono font-bold tracking-wider uppercase text-sm bg-purple-600 hover:bg-purple-500 border-purple-400 text-white shadow-[0_0_15px_rgba(168,85,247,0.35)]"
+              className="flex-1 sm:flex-none px-6 font-mono font-bold tracking-wider uppercase text-xs"
             >
               <span>ANALYSE MESSAGE</span>
               {!isLoading && <ArrowRight className="w-4 h-4 ml-1.5" />}
@@ -163,13 +160,13 @@ export function ScamSubmissionForm({
               onClick={handleClear}
               disabled={isLoading || !text}
               leftIcon={<X className="w-4 h-4" />}
-              className="font-mono text-xs border-white/10 text-slate-400 hover:text-white"
+              className="font-mono text-xs"
             >
               Clear Text
             </Button>
           </div>
 
-          <div className="text-[11px] font-mono text-slate-500 text-right">
+          <div className="text-[11px] font-mono text-[#647477] dark:text-[#A6B3AE] text-right">
             Supports: SMS • Email • WhatsApp • Telegram • Invoices • Job Posts
           </div>
         </div>
@@ -177,4 +174,3 @@ export function ScamSubmissionForm({
     </div>
   );
 }
-

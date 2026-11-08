@@ -44,7 +44,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           )}
 
           {showCount && maxLength && (
-            <span className="text-[11px] font-mono text-slate-400">
+            <span className="text-[11px] font-mono text-[#647477] dark:text-[#A6B3AE]">
               {count} / {maxLength}
             </span>
           )}
@@ -57,9 +57,9 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           maxLength={maxLength}
           disabled={disabled}
           className={cn(
-            'w-full min-h-[90px] p-3 rounded-lg bg-[#0b152d]/80 text-slate-100 placeholder-slate-500',
-            'border border-cyan-500/20 backdrop-blur-md transition-all duration-200',
-            'focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 focus:shadow-[0_0_12px_rgba(6,182,212,0.25)]',
+            'w-full min-h-[90px] p-3 rounded-lg bg-white dark:bg-[#101A1D] text-[#182629] dark:text-[#E8E6DC] placeholder-[#647477] dark:placeholder-[#A6B3AE]',
+            'border border-[#D9DED7] dark:border-[#304144] transition-all duration-200 shadow-xs',
+            'focus:outline-none focus:border-[#A95636] dark:focus:border-[#C47A52]',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             errorMessage && 'border-rose-500/80 focus:border-rose-500 focus:ring-rose-500/40 focus:shadow-[0_0_12px_rgba(244,63,94,0.25)]',
             isMonospace && 'font-mono text-xs leading-relaxed',
@@ -74,7 +74,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             <span>{errorMessage}</span>
           </p>
         ) : helperText ? (
-          <p className="text-xs text-slate-400 mt-1">{helperText}</p>
+          <p className="text-xs text-[#647477] dark:text-[#A6B3AE] mt-1">{helperText}</p>
         ) : null}
       </div>
     );

@@ -25,21 +25,21 @@ export function RiskClassificationChart() {
 
   return (
     <Card variant="default" className="p-5 flex flex-col justify-between">
-      <CardHeader className="p-0 pb-4">
+      <CardHeader className="p-0 pb-4 border-b border-[#D9DED7] dark:border-[#304144]">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-base text-white">Risk Classification Breakdown</CardTitle>
-            <CardDescription className="text-xs text-slate-400">
+            <CardTitle className="text-base text-[#182629] dark:text-[#E8E6DC]">Risk Classification Breakdown</CardTitle>
+            <CardDescription className="text-xs text-[#647477] dark:text-[#A6B3AE]">
               Distribution of categorized security findings
             </CardDescription>
           </div>
-          <span className="text-xs font-mono text-emerald-400 font-semibold">
+          <span className="text-xs font-mono text-[#36745F] dark:text-[#79B69A] font-semibold">
             {total} Audited
           </span>
         </div>
       </CardHeader>
 
-      <CardContent className="p-0 pt-2 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <CardContent className="p-0 pt-4 flex flex-col sm:flex-row items-center justify-between gap-6">
         {/* SVG Donut */}
         <div className="relative flex items-center justify-center shrink-0">
           <svg width={size} height={size} className="transform -rotate-90">
@@ -48,7 +48,7 @@ export function RiskClassificationChart() {
               cx={size / 2}
               cy={size / 2}
               r={radius}
-              stroke="rgba(255, 255, 255, 0.05)"
+              className="stroke-[#D9DED7] dark:stroke-[#304144]"
               strokeWidth={strokeWidth}
               fill="transparent"
             />
@@ -84,12 +84,12 @@ export function RiskClassificationChart() {
 
           {/* Central Donut Readout */}
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-            <span className="text-2xl font-extrabold font-mono text-white tracking-tight">
+            <span className="text-2xl font-extrabold font-mono text-[#182629] dark:text-[#E8E6DC] tracking-tight">
               {activeSegment !== null
                 ? `${mockRiskClassification[activeSegment].percentage}%`
                 : `${mockRiskClassification[0].percentage}%`}
             </span>
-            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+            <span className="text-[10px] font-mono text-[#647477] dark:text-[#A6B3AE] uppercase tracking-wider">
               {activeSegment !== null
                 ? mockRiskClassification[activeSegment].label.split(' ')[0]
                 : 'Verified Low'}
@@ -107,7 +107,9 @@ export function RiskClassificationChart() {
                 onMouseEnter={() => setActiveSegment(idx)}
                 onMouseLeave={() => setActiveSegment(null)}
                 className={`flex items-center justify-between p-2 rounded-lg text-xs font-mono transition-all cursor-pointer ${
-                  isHighlighted ? 'bg-slate-800/80 border border-white/10' : 'hover:bg-slate-900/60'
+                  isHighlighted
+                    ? 'bg-[#EAECE6] dark:bg-[#293A3C] border border-[#D9DED7] dark:border-[#304144]'
+                    : 'hover:bg-[#EAECE6]/60 dark:hover:bg-[#223336]/60'
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -115,12 +117,12 @@ export function RiskClassificationChart() {
                     className="w-2.5 h-2.5 rounded-full shrink-0"
                     style={{ backgroundColor: seg.color }}
                   />
-                  <span className={isHighlighted ? 'text-white font-semibold' : 'text-slate-300'}>
+                  <span className={isHighlighted ? 'text-[#182629] dark:text-[#E8E6DC] font-semibold' : 'text-[#647477] dark:text-[#A6B3AE]'}>
                     {seg.label}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 font-bold">
-                  <span className="text-slate-400 font-normal">{seg.count}</span>
+                  <span className="text-[#647477] dark:text-[#A6B3AE] font-normal">{seg.count}</span>
                   <span style={{ color: seg.color }}>{seg.percentage}%</span>
                 </div>
               </div>
