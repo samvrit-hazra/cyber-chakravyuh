@@ -12,6 +12,7 @@ import { WebsiteSecurityTab } from '../components/dashboard/WebsiteSecurityTab.t
 import { ThreatIntelligenceTab } from '../components/dashboard/ThreatIntelligenceTab.tsx';
 import { BlockchainVerificationTab } from '../components/dashboard/BlockchainVerificationTab.tsx';
 import { InvestigationHistoryTab } from '../components/dashboard/InvestigationHistoryTab.tsx';
+import { Web3ThreatTab } from '../components/dashboard/Web3ThreatTab.tsx';
 import { SettingsTab } from '../components/dashboard/SettingsTab.tsx';
 import { ForensicReportModal } from '../components/dashboard/ForensicReportModal.tsx';
 import { NetworkBackground, Modal, Button, Badge } from '../components/common/index.ts';
@@ -149,6 +150,8 @@ export function DashboardPage({
 
           {activeTab === 'website-security' && <WebsiteSecurityTab />}
 
+          {activeTab === 'web3-threat' && <Web3ThreatTab />}
+
           {activeTab === 'threat-intelligence' && (
             <ThreatIntelligenceTab
               onInvestigateDomain={handleInvestigateDomain}
@@ -218,4 +221,3 @@ export function DashboardPage({
     </div>
   );
 }
-

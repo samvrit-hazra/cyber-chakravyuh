@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Shield,
   HelpCircle,
+  Network,
 } from 'lucide-react';
 import { Badge } from '../common/index.ts';
 
@@ -22,6 +23,7 @@ export type DashboardTabId =
   | 'scam-detection'
   | 'tls-intelligence'
   | 'website-security'
+  | 'web3-threat'
   | 'threat-intelligence'
   | 'blockchain-verification'
   | 'investigation-history'
@@ -84,6 +86,14 @@ export function DashboardSidebar({
       id: 'website-security',
       label: 'Website Security',
       icon: <ShieldCheck className="w-4 h-4" />,
+      section: 'INVESTIGATION ENGINES',
+    },
+    {
+      id: 'web3-threat',
+      label: 'Web3 Threat & Tracer',
+      icon: <Network className="w-4 h-4" />,
+      badge: 'ML',
+      badgeVariant: 'purple',
       section: 'INVESTIGATION ENGINES',
     },
     {
@@ -262,4 +272,3 @@ export function DashboardSidebar({
     </>
   );
 }
-

@@ -12,6 +12,7 @@ from app.features.scam_detector.router import router as scam_router
 from app.features.security_auditor.router import router as security_router
 from app.features.threat_intel.router import router as threat_router
 from app.features.web3_registry.router import router as web3_router
+from app.features.web3_threat.router import router as web3_threat_router
 
 
 @asynccontextmanager
@@ -46,6 +47,7 @@ app.include_router(scam_router, prefix="/api/scam", tags=["AI Scam Analysis"])
 app.include_router(security_router, prefix="/api/security", tags=["Website Security Audit"])
 app.include_router(threat_router, prefix="/api/threats", tags=["Threat Correlation"])
 app.include_router(web3_router, prefix="/api/web3", tags=["Web3 Threat Registry"])
+app.include_router(web3_threat_router, prefix="/api/web3-threat", tags=["Web3 Threat & ML Graph Tracer"])
 
 
 @app.get("/health", tags=["Health"])
