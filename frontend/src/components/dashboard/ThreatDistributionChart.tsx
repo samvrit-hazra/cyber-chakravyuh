@@ -1,12 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../common/index.ts';
-import { mockLayerDistribution } from '../../utils/dashboardMockData.ts';
+import { ThreatApiService } from '../../services/threatApi.ts';
 
-export function ThreatDistributionChart() {
+interface ThreatDistributionChartProps {
+  defenseMesh?: Array<{ layer: string; name: string; count: number; percentage: number }>;
+}
+
+export function ThreatDistributionChart({ defenseMesh: initialMesh }: ThreatDistributionChartProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [defenseMesh, setDefenseMesh] = useState<
+    Array<{ layer: string; name: string; count: number; percentage: number }>
+  >(initialMesh || []);
 
-  const hasData = mockLayerDistribution && mockLayerDistribution.length > 0;
-  const maxCount = hasData ? Math.max(...mockLayerDistribution.map((d) => d.count), 1) : 1;
+  useEffect(() => {
+    if (initialMesh && initialMesh.length > 0) {
+      setDefenseMesh(initialMesh);
+      return;
+    }
+
+    let mounted = true;
+    ThreatApiService.getThreatDistribution()
+      .then((data) => {
+        if (mounted && data.defense_mesh) {
+          setDefenseMesh(data.defense_mesh);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      mounted = false;
+    };
+  }, [initialMesh]);
+
+  const hasData = defenseMesh && defenseMesh.length > 0;
+  const maxCount = hasData ? Math.max(...defenseMesh.map((d) => d.count), 1) : 1;
 
   return (
     <Card variant="default" className="p-5 flex flex-col justify-between">
@@ -31,7 +58,7 @@ export function ThreatDistributionChart() {
           </div>
         ) : (
           <div className="space-y-3">
-            {mockLayerDistribution.map((item, idx) => {
+            {defenseMesh.map((item, idx) => {
               const isHovered = hoveredIndex === idx;
 
               return (
@@ -43,26 +70,29 @@ export function ThreatDistributionChart() {
                 >
                   <div className="flex items-center justify-between text-xs font-mono">
                     <span
-                      className={`transition-colors truncate max-w-[200px] ${
+                      className={`transition-colors truncate max-w-[220px] ${
                         isHovered ? 'text-[#A95636] dark:text-[#C47A52] font-semibold' : 'text-[#182629] dark:text-[#E8E6DC]'
                       }`}
                     >
-                      {item.layer}
+                      {item.name}
                     </span>
                     <div className="flex items-center gap-2">
-                      <span className="text-[#647477] dark:text-[#A6B3AE]">{item.count} hits</span>
-                      <span className="font-bold text-[#182629] dark:text-[#E8E6DC]">
+                      <span className="text-[#647477] dark:text-[#A6B3AE] font-mono">{item.count} detections</span>
+                      <span className="text-[#356D68] dark:text-[#79A99C] font-mono font-bold w-12 text-right">
                         {item.percentage}%
                       </span>
                     </div>
                   </div>
 
-                  <div className="w-full h-1.5 rounded-full bg-[#EAECE6] dark:bg-[#101A1D] overflow-hidden border border-[#D9DED7] dark:border-[#304144]">
+                  <div className="w-full h-2 rounded-full bg-[#EAECE6] dark:bg-[#101A1D] overflow-hidden border border-[#D9DED7] dark:border-[#304144]">
                     <div
-                      className="h-full rounded-full transition-all duration-300"
+                      className={`h-full rounded-full transition-all duration-300 ${
+                        isHovered
+                          ? 'bg-[#A95636] dark:bg-[#C47A52]'
+                          : 'bg-[#356D68] dark:bg-[#79A99C]'
+                      }`}
                       style={{
-                        width: `${(item.count / maxCount) * 100}%`,
-                        backgroundColor: item.color,
+                        width: `${Math.max(5, (item.count / maxCount) * 100)}%`,
                       }}
                     />
                   </div>

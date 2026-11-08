@@ -812,9 +812,173 @@ export class ThreatApiService {
   }
 
   // =========================================================================
-  // 7. THREAT CORRELATION (/api/threats/...)
+  // 7. REAL THREAT INTELLIGENCE RADAR (/api/threats/...)
   // =========================================================================
   static async correlateThreatReport(reportId: string): Promise<any> {
     return await ApiClient.get<any>(`/threats/correlate/${reportId}`);
+  }
+
+  static async getThreatDashboard(): Promise<{
+    feed_status: {
+      configured: number;
+      synchronized: number;
+      failed: number;
+      feeds: Array<{
+        feed_name: string;
+        status: string;
+        last_sync: string;
+        ioc_count: number;
+        frequency: string;
+        source_url: string;
+        error_message?: string;
+      }>;
+    };
+    campaigns: {
+      active: number;
+      clusters: number;
+      top_campaigns: Array<{
+        campaign_id: string;
+        name: string;
+        status: string;
+        malware_families: string[];
+        ioc_count: number;
+        confidence: number;
+        sources: string[];
+        first_seen: string;
+        last_seen: string;
+        attribution: string;
+        indicators: string[];
+      }>;
+    };
+    indicators: {
+      total: number;
+      new_last_24h: number;
+      malicious_domains: number;
+      malicious_ips: number;
+      malicious_urls: number;
+    };
+    takedown_velocity: string;
+    defense_mesh: Array<{
+      layer: string;
+      name: string;
+      count: number;
+      percentage: number;
+    }>;
+    threat_categories: Array<{
+      category: string;
+      count: number;
+      percentage: number;
+    }>;
+    last_updated: string;
+  }> {
+    return await ApiClient.get('/threats/dashboard');
+  }
+
+  static async getThreatStream(params?: {
+    limit?: number;
+    category?: string;
+    search?: string;
+  }): Promise<Array<{
+    ioc: string;
+    ioc_type: string;
+    threat_type: string;
+    malware_family?: string;
+    confidence: number;
+    source: string;
+    source_id?: string;
+    reference?: string;
+    defense_layer: string;
+    first_seen: string;
+    last_seen: string;
+    ingested_at: string;
+    tags: string[];
+  }>> {
+    const q = new URLSearchParams();
+    if (params?.limit) q.set('limit', String(params.limit));
+    if (params?.category) q.set('category', params.category);
+    if (params?.search) q.set('search', params.search);
+    const queryString = q.toString() ? `?${q.toString()}` : '';
+    return await ApiClient.get(`/threats/stream${queryString}`);
+  }
+
+  static async getThreatCampaigns(): Promise<Array<{
+    campaign_id: string;
+    name: string;
+    status: string;
+    malware_families: string[];
+    ioc_count: number;
+    confidence: number;
+    sources: string[];
+    first_seen: string;
+    last_seen: string;
+    attribution: string;
+    indicators: string[];
+  }>> {
+    return await ApiClient.get('/threats/campaigns');
+  }
+
+  static async getThreatDistribution(): Promise<{
+    defense_mesh: Array<{ layer: string; name: string; count: number; percentage: number }>;
+    threat_categories: Array<{ category: string; count: number; percentage: number }>;
+    total_indicators: number;
+  }> {
+    return await ApiClient.get('/threats/distribution');
+  }
+
+  static async getThreatMitreMatrix(): Promise<Array<{
+    technique_id: string;
+    name: string;
+    tactic: string;
+    description: string;
+    observed_count: number;
+    confidence: number;
+    evidence_sources: string[];
+    sample_indicators: string[];
+    mitigations: string;
+    severity: string;
+  }>> {
+    return await ApiClient.get('/threats/mitre');
+  }
+
+  static async deepScanIoc(target: string): Promise<{
+    target: string;
+    normalized_type: string;
+    verdict: string;
+    threat_confidence: number;
+    risk_score: number;
+    risk_level: string;
+    sources_corroborated: string[];
+    matched_campaign?: {
+      campaign_id: string;
+      name: string;
+      attribution: string;
+      malware_families: string[];
+    };
+    related_indicators: string[];
+    mitre_mappings: Array<{
+      technique_id: string;
+      name: string;
+      tactic: string;
+      description: string;
+    }>;
+    findings: Array<{
+      source: string;
+      category: string;
+      severity: string;
+      evidence: string;
+      confidence: number;
+    }>;
+    dns_records?: Record<string, unknown>;
+    recommended_actions: string[];
+    investigated_at: string;
+  }> {
+    return await ApiClient.post('/threats/deep-scan', { target });
+  }
+
+  static async syncThreatFeeds(): Promise<{
+    added_indicators: number;
+    feeds_synced: string[];
+  }> {
+    return await ApiClient.post('/threats/feeds/sync', {});
   }
 }

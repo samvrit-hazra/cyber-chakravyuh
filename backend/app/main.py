@@ -61,6 +61,7 @@ async def root():
         "docs_url": "/docs",
         "frontend_url": "http://localhost:5173",
         "active_services": {
+            "threat_intelligence": "/api/threats/dashboard",
             "report_integrity": "/api/reports/network",
             "web3_threat": "/api/web3-threat/health",
             "web3_registry": "/api/web3/network-status",

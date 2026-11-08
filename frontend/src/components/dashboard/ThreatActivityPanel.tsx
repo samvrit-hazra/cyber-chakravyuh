@@ -1,20 +1,59 @@
-import { useState } from 'react';
-import { Radio, Globe, Tag, Clock, ArrowRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Radio, Globe, Tag, Clock, ArrowRight, ShieldAlert, Search } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, Badge } from '../common/index.ts';
-import { mockThreatActivities } from '../../utils/dashboardMockData.ts';
+import { ThreatApiService } from '../../services/threatApi.ts';
 
 interface ThreatActivityPanelProps {
   onInvestigateDomain?: (domain: string) => void;
 }
 
+interface ThreatIndicatorItem {
+  ioc: string;
+  ioc_type: string;
+  threat_type: string;
+  malware_family?: string;
+  confidence: number;
+  source: string;
+  source_id?: string;
+  defense_layer: string;
+  ingested_at: string;
+  tags: string[];
+}
+
 export function ThreatActivityPanel({ onInvestigateDomain }: ThreatActivityPanelProps) {
+  const [items, setItems] = useState<ThreatIndicatorItem[]>([]);
   const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const categories = ['all', 'Credential Harvester', 'Web3 Drainer', 'Identity Impersonation', 'Malware C2 Stager', 'Banking Phish', 'Office365 Harvester'];
+  const categories = ['all', 'phishing', 'c2', 'botnet', 'credential_harvesting'];
 
-  const filteredItems = (mockThreatActivities || []).filter((item) => {
-    return filterCategory === 'all' || item.category === filterCategory;
-  });
+  const loadStream = (category?: string, search?: string) => {
+    setIsLoading(true);
+    ThreatApiService.getThreatStream({
+      limit: 50,
+      category: category && category !== 'all' ? category : undefined,
+      search: search?.trim() ? search.trim() : undefined,
+    })
+      .then((data) => {
+        setItems(data);
+      })
+      .catch((err) => {
+        console.error('Error loading threat stream:', err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    loadStream(filterCategory, searchQuery);
+  }, [filterCategory]);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    loadStream(filterCategory, searchQuery);
+  };
 
   return (
     <Card variant="default" className="p-5 flex flex-col justify-between">
@@ -28,102 +67,119 @@ export function ThreatActivityPanel({ onInvestigateDomain }: ThreatActivityPanel
               </Badge>
             </div>
             <CardDescription className="text-xs text-[#647477] dark:text-[#A6B3AE]">
-              Correlated suspicious domains, reported threat campaigns, and category indicators
+              Correlated suspicious domains, reported threat campaigns, and category indicators from live threat feeds
             </CardDescription>
           </div>
 
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-mono">
-            <Radio className="w-3.5 h-3.5 text-[#A95636] dark:text-[#C47A52] shrink-0" />
-            <span className="text-[#647477] dark:text-[#A6B3AE]">Real-Time Threat Stream</span>
+            <Radio className="w-3.5 h-3.5 text-[#A95636] dark:text-[#C47A52] shrink-0 animate-pulse" />
+            <span className="text-[#647477] dark:text-[#A6B3AE]">
+              {items.length} Synchronized IOCs
+            </span>
           </div>
         </div>
 
-        {/* Category Pill Filters */}
-        {filteredItems.length > 0 && (
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-3">
-            {categories.slice(0, 5).map((cat) => (
+        {/* Search & Filter Toolbar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3">
+          {/* Category Pill Filters */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            {categories.map((cat) => (
               <button
                 key={cat}
+                type="button"
                 onClick={() => setFilterCategory(cat)}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-mono transition-colors whitespace-nowrap cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-[11px] font-mono transition-colors whitespace-nowrap cursor-pointer uppercase font-bold ${
                   filterCategory === cat
-                    ? 'bg-[#A95636]/10 dark:bg-[#C47A52]/20 text-[#A95636] dark:text-[#C47A52] border border-[#A95636] dark:border-[#C47A52] font-semibold'
+                    ? 'bg-[#A95636]/10 dark:bg-[#C47A52]/20 text-[#A95636] dark:text-[#C47A52] border border-[#A95636] dark:border-[#C47A52]'
                     : 'bg-[#EAECE6] dark:bg-[#223336] text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC] border border-[#D9DED7] dark:border-[#304144]'
                 }`}
               >
-                {cat === 'all' ? 'All Active' : cat}
+                {cat === 'all' ? 'All Feeds' : cat.replace('_', ' ')}
               </button>
             ))}
           </div>
-        )}
+
+          {/* Quick Search */}
+          <form onSubmit={handleSearchSubmit} className="relative sm:w-64">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Filter by IOC or malware..."
+              className="w-full pl-8 pr-3 py-1 rounded-md bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-[11px] font-mono text-[#182629] dark:text-[#E8E6DC] focus:outline-hidden focus:border-[#A95636]"
+            />
+            <Search className="w-3.5 h-3.5 text-[#647477] dark:text-[#A6B3AE] absolute left-2.5 top-2" />
+          </form>
+        </div>
       </CardHeader>
 
       <CardContent className="p-0 pt-4 space-y-3">
-        {filteredItems.length === 0 ? (
+        {isLoading ? (
+          <div className="py-12 text-center text-[#647477] dark:text-[#A6B3AE] font-mono text-xs animate-pulse">
+            Querying local threat intelligence store & live feeds...
+          </div>
+        ) : items.length === 0 ? (
           <div className="py-8 text-center text-[#647477] dark:text-[#A6B3AE] font-mono text-xs">
-            No adversary threat activity logged in stream.
+            No adversary threat activity matching filters logged in stream.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {filteredItems.map((item) => {
-              const isCritical = item.riskLevel === 'critical';
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[460px] overflow-y-auto pr-1">
+            {items.map((item, idx) => {
+              const isHighConfidence = item.confidence >= 90;
 
               return (
                 <div
-                  key={item.id}
+                  key={`${item.source}-${item.ioc}-${idx}`}
                   className="p-3.5 rounded-xl bg-[#F3F1E9] dark:bg-[#223336] border border-[#D9DED7] dark:border-[#304144] hover:border-[#A95636] dark:hover:border-[#C47A52] transition-all flex flex-col justify-between space-y-2.5 group"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="space-y-1 overflow-hidden">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-[#B64B46] dark:text-[#E17B70] flex items-center gap-1">
-                          <Globe className="w-3 h-3 text-[#A95636] dark:text-[#C47A52]" />
-                          {item.domain}
+                        <span className="font-mono text-xs font-bold text-[#B64B46] dark:text-[#E17B70] flex items-center gap-1 break-all">
+                          <Globe className="w-3.5 h-3.5 text-[#A95636] dark:text-[#C47A52] shrink-0" />
+                          <span className="truncate max-w-[260px] sm:max-w-[320px]">{item.ioc}</span>
                         </span>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono">
                         <span className="text-[#A95636] dark:text-[#C47A52] font-semibold flex items-center gap-1">
                           <Tag className="w-3 h-3 text-[#A95636] dark:text-[#C47A52]" />
-                          {item.campaign}
+                          {item.malware_family || item.threat_type}
                         </span>
                         <span className="text-[#647477] dark:text-[#A6B3AE]">•</span>
-                        <span className="text-[#647477] dark:text-[#A6B3AE]">{item.category}</span>
+                        <span className="text-[#356D68] dark:text-[#79A99C] font-semibold">{item.source}</span>
                       </div>
                     </div>
 
-                    <Badge variant={isCritical ? 'rose' : 'amber'} size="sm">
-                      {item.riskLevel.toUpperCase()}
+                    <Badge variant={isHighConfidence ? 'rose' : 'amber'} size="sm">
+                      {item.confidence}% CONF
                     </Badge>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                    {item.indicators.map((ind, i) => (
-                      <span
-                        key={i}
-                        className="text-[10px] font-mono px-2 py-0.5 rounded bg-white dark:bg-[#101A1D] text-[#182629] dark:text-[#E8E6DC] border border-[#D9DED7] dark:border-[#304144]"
-                      >
-                        {ind}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center justify-between pt-1 border-t border-[#D9DED7] dark:border-[#304144]/60 text-[11px] font-mono">
+                  {/* Defense Ring & Ingestion Timestamp */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-[#D9DED7]/50 dark:border-[#304144]/60 text-[10px] font-mono">
                     <span className="text-[#647477] dark:text-[#A6B3AE] flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {item.timestamp}
+                      <ShieldAlert className="w-3 h-3 text-[#356D68] dark:text-[#79A99C]" />
+                      {item.defense_layer}
                     </span>
 
-                    {onInvestigateDomain && (
-                      <button
-                        type="button"
-                        onClick={() => onInvestigateDomain(item.domain)}
-                        className="inline-flex items-center gap-1 text-[#A95636] dark:text-[#C47A52] hover:underline font-semibold cursor-pointer"
-                      >
-                        <span>Investigate</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </button>
-                    )}
+                    <div className="flex items-center gap-3">
+                      <span className="text-[#647477] dark:text-[#A6B3AE] flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {item.ingested_at ? new Date(item.ingested_at).toLocaleTimeString() : 'Live'}
+                      </span>
+
+                      {onInvestigateDomain && (
+                        <button
+                          type="button"
+                          onClick={() => onInvestigateDomain(item.ioc)}
+                          className="inline-flex items-center gap-1 text-[#A95636] dark:text-[#C47A52] font-bold hover:underline"
+                        >
+                          <span>Deep Scan</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
