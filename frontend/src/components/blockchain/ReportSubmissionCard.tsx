@@ -205,7 +205,7 @@ export function ReportSubmissionCard({ onReportRegistered }: ReportSubmissionCar
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
               <span>Attestation Successfully Mined on Ledger!</span>
             </div>
-            <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 uppercase font-bold">
+            <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/15 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-500/40 dark:border-emerald-500/50 uppercase font-bold">
               BLOCK #{lastSubmission.blockNumber}
             </span>
           </div>

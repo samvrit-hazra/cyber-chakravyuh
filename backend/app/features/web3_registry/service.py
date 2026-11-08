@@ -1,13 +1,48 @@
 import hashlib
+import json
 import httpx
+from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, Any, Optional
 from app.features.web3_registry.models import Web3SubmitResponse, Web3VerifyResponse
 from app.core.config import settings
 from app.core.database import get_database
 
-# In-memory registry fallback if MongoDB is not connected
+REGISTRY_FILE = Path(__file__).parent.parent.parent.parent / "data" / "web3_registry.json"
+
+# In-memory registry fallback
 _MEMORY_REGISTRY: Dict[str, Dict[str, Any]] = {}
+
+
+def _load_storage():
+    global _MEMORY_REGISTRY
+    try:
+        if REGISTRY_FILE.exists():
+            with open(REGISTRY_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    _MEMORY_REGISTRY.update(data)
+    except Exception as e:
+        pass
+
+
+def _save_storage():
+    try:
+        REGISTRY_FILE.parent.mkdir(parents=True, exist_ok=True)
+        # Convert datetime objects to iso strings for serialization
+        serializable = {}
+        for k, v in _MEMORY_REGISTRY.items():
+            item = dict(v)
+            if isinstance(item.get("created_at"), datetime):
+                item["created_at"] = item["created_at"].isoformat()
+            serializable[k] = item
+        with open(REGISTRY_FILE, "w", encoding="utf-8") as f:
+            json.dump(serializable, f, indent=2)
+    except Exception as e:
+        pass
+
+
+_load_storage()
 
 
 class Web3RegistryService:
@@ -60,16 +95,27 @@ class Web3RegistryService:
             "created_at": now
         }
 
-        # Store in memory registry
-        _MEMORY_REGISTRY[report_hash.lower()] = record_data
-        _MEMORY_REGISTRY[report_id.lower()] = record_data
+        # Store normalized variants so lookups succeed with or without '0x'
+        rep_lower = report_hash.lower()
+        rep_raw = rep_lower.replace("0x", "")
+        tx_lower = tx_hash.lower()
+        tx_raw = tx_lower.replace("0x", "")
+        id_lower = report_id.strip().lower()
+
+        _MEMORY_REGISTRY[rep_lower] = record_data
+        _MEMORY_REGISTRY[rep_raw] = record_data
+        _MEMORY_REGISTRY[tx_lower] = record_data
+        _MEMORY_REGISTRY[tx_raw] = record_data
+        _MEMORY_REGISTRY[id_lower] = record_data
+
+        _save_storage()
 
         # Async persist in MongoDB if available
         db = get_database()
         if db is not None:
             try:
                 doc = dict(record_data)
-                doc["_id"] = report_hash.lower()
+                doc["_id"] = rep_lower
                 doc["report_id"] = report_id
                 await db.web3_registry.insert_one(doc)
             except Exception:
@@ -78,31 +124,43 @@ class Web3RegistryService:
         return Web3SubmitResponse(**record_data)
 
     async def verify_report_hash(self, report_hash: str) -> Web3VerifyResponse:
-        clean_hash = report_hash.strip().lower()
+        clean = report_hash.strip().lower()
+        norm_0x = clean if clean.startswith("0x") else f"0x{clean}"
+        raw_hex = clean[2:] if clean.startswith("0x") else clean
 
-        # 1. Check in-memory store
-        if clean_hash in _MEMORY_REGISTRY:
-            rec = _MEMORY_REGISTRY[clean_hash]
-            return Web3VerifyResponse(
-                report_hash=rec["report_hash"],
-                exists_on_chain=True,
-                submitted_at=rec["created_at"],
-                tx_hash=rec["tx_hash"],
-                integrity_match=True
-            )
+        # 1. Check in-memory store across normalized variations
+        for key in [clean, norm_0x, raw_hex]:
+            if key in _MEMORY_REGISTRY:
+                rec = _MEMORY_REGISTRY[key]
+                sub_at = rec.get("created_at")
+                if isinstance(sub_at, str):
+                    try:
+                        sub_at = datetime.fromisoformat(sub_at)
+                    except Exception:
+                        sub_at = datetime.now(timezone.utc)
+                return Web3VerifyResponse(
+                    report_hash=rec.get("report_hash", norm_0x),
+                    exists_on_chain=True,
+                    submitted_at=sub_at,
+                    tx_hash=rec.get("tx_hash"),
+                    integrity_match=True
+                )
 
         # 2. Check MongoDB collection
         db = get_database()
         if db is not None:
             try:
-                doc = await db.web3_registry.find_one({"_id": clean_hash})
-                if not doc:
-                    doc = await db.web3_registry.find_one({"report_hash": clean_hash})
-                if not doc:
-                    doc = await db.web3_registry.find_one({"tx_hash": clean_hash})
+                doc = await db.web3_registry.find_one({
+                    "$or": [
+                        {"_id": {"$in": [clean, norm_0x, raw_hex]}},
+                        {"report_hash": {"$in": [clean, norm_0x, raw_hex]}},
+                        {"tx_hash": {"$in": [clean, norm_0x, raw_hex]}},
+                        {"report_id": {"$in": [clean, norm_0x, raw_hex]}},
+                    ]
+                })
                 if doc:
                     return Web3VerifyResponse(
-                        report_hash=doc.get("report_hash", clean_hash),
+                        report_hash=doc.get("report_hash", norm_0x),
                         exists_on_chain=True,
                         submitted_at=doc.get("created_at"),
                         tx_hash=doc.get("tx_hash"),
@@ -111,9 +169,24 @@ class Web3RegistryService:
             except Exception:
                 pass
 
+        # 3. Check live QuickNode Sepolia RPC if query matches a 64-hex transaction/commitment hash
+        if len(raw_hex) == 64:
+            try:
+                tx_data = await self._rpc_call("eth_getTransactionByHash", [norm_0x])
+                if tx_data and isinstance(tx_data, dict) and tx_data.get("hash"):
+                    return Web3VerifyResponse(
+                        report_hash=norm_0x,
+                        exists_on_chain=True,
+                        submitted_at=datetime.now(timezone.utc),
+                        tx_hash=tx_data.get("hash", norm_0x),
+                        integrity_match=True
+                    )
+            except Exception:
+                pass
+
         # If not found anywhere, report does not exist on-chain
         return Web3VerifyResponse(
-            report_hash=clean_hash,
+            report_hash=norm_0x,
             exists_on_chain=False,
             submitted_at=None,
             tx_hash=None,

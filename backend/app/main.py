@@ -50,6 +50,25 @@ app.include_router(web3_router, prefix="/api/web3", tags=["Web3 Threat Registry"
 app.include_router(web3_threat_router, prefix="/api/web3-threat", tags=["Web3 Threat & ML Graph Tracer"])
 
 
+@app.get("/", tags=["Root"])
+async def root():
+    return {
+        "status": "online",
+        "project": "Cyber Chakravyuh API Backend",
+        "version": settings.VERSION,
+        "docs_url": "/docs",
+        "frontend_url": "http://localhost:5173",
+        "active_services": {
+            "web3_threat": "/api/web3-threat/health",
+            "web3_registry": "/api/web3/network-status",
+            "url_analysis": "/api/url/analyze",
+            "scam_analysis": "/api/scam/analyze",
+            "cert_analysis": "/api/cert/analyze",
+            "security_audit": "/api/security/audit"
+        }
+    }
+
+
 @app.get("/health", tags=["Health"])
 async def health_check():
     return {

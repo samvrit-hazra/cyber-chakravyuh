@@ -85,26 +85,26 @@ export function ReportVerificationProver({
     switch (status) {
       case 'Verified On-Chain':
         return {
-          pill: 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300',
+          pill: 'bg-emerald-500/15 dark:bg-emerald-950/40 border-emerald-500/40 dark:border-emerald-500/50 text-emerald-800 dark:text-emerald-300',
           icon: CheckCircle2,
           text: '100% UNTAMPERED AUTHENTIC LEDGER RECORD',
         };
       case 'Tamper Detected':
         return {
-          pill: 'bg-rose-500/20 border-rose-500/40 text-rose-300 animate-pulse',
+          pill: 'bg-rose-500/15 dark:bg-rose-950/40 border-rose-500/40 dark:border-rose-500/50 text-rose-800 dark:text-rose-300 animate-pulse',
           icon: AlertOctagon,
           text: 'TAMPER DETECTED: FINGERPRINT DOES NOT MATCH ON-CHAIN COMMITMENT',
         };
       case 'Pending Attestation':
         return {
-          pill: 'bg-amber-500/20 border-amber-500/40 text-amber-300',
+          pill: 'bg-amber-500/15 dark:bg-amber-950/40 border-amber-500/40 dark:border-amber-500/50 text-amber-800 dark:text-amber-300',
           icon: Shield,
           text: 'PENDING BLOCKCHAIN ATTESTATION',
         };
       case 'Unregistered':
       default:
         return {
-          pill: 'bg-slate-500/20 border-slate-500/40 text-slate-300',
+          pill: 'bg-[#182629]/10 dark:bg-white/10 border-[#182629]/25 dark:border-white/20 text-[#182629] dark:text-[#E8E6DC] font-bold',
           icon: HelpCircle,
           text: 'NO CRYPTOGRAPHIC ATTESTATION FOUND ON LEDGER',
         };

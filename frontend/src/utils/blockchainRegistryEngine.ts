@@ -75,12 +75,13 @@ export function verifyReportOnChain(
     targetHash = generateReportFingerprint(trimmed);
   }
 
-  const match = records.find(
-    (r) =>
-      r.reportFingerprint.toLowerCase() === targetHash.toLowerCase() ||
-      r.transactionHash.toLowerCase() === targetHash.toLowerCase() ||
-      r.reportId.toLowerCase() === targetHash.toLowerCase()
-  );
+  const cleanTarget = targetHash.toLowerCase().replace(/^0x/, '');
+  const match = records.find((r) => {
+    const cleanRf = r.reportFingerprint.toLowerCase().replace(/^0x/, '');
+    const cleanTx = r.transactionHash.toLowerCase().replace(/^0x/, '');
+    const cleanId = r.reportId.toLowerCase();
+    return cleanRf === cleanTarget || cleanTx === cleanTarget || cleanId === targetHash.toLowerCase();
+  });
 
   if (!match) {
     if (targetHash.length >= 10 && records.some((r) => r.reportId.toLowerCase().includes(targetHash.toLowerCase()))) {
