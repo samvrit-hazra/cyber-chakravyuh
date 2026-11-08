@@ -222,9 +222,80 @@ class Web3ThreatService:
 
     async def fetch_tx_info(self, tx_hash: str) -> Optional[Dict[str, Any]]:
         """
-        Fetches live transaction details by 66-character transaction hash via public Blockscout API.
+        Fetches live transaction details by 66-character transaction hash via QuickNode Sepolia RPC,
+        Sepolia Blockscout, or Ethereum Mainnet Blockscout.
         """
         clean_hash = tx_hash.strip().lower()
+
+        # 1. QuickNode Sepolia RPC Query
+        rpc_url = getattr(settings, "SEPOLIA_RPC_URL", "")
+        if rpc_url:
+            try:
+                async with httpx.AsyncClient(timeout=4.0) as client:
+                    res = await client.post(
+                        rpc_url,
+                        json={"jsonrpc": "2.0", "method": "eth_getTransactionByHash", "params": [clean_hash], "id": 1}
+                    )
+                    if res.status_code == 200:
+                        r = res.json().get("result")
+                        if isinstance(r, dict) and r.get("from"):
+                            from_addr = normalize_address(r.get("from"))
+                            to_addr = normalize_address(r.get("to"))
+                            raw_val = int(r.get("value", "0x0"), 16)
+                            val_eth = raw_val / 1e18
+
+                            # Optional status check via receipt
+                            is_error = False
+                            try:
+                                r_resp = await client.post(
+                                    rpc_url,
+                                    json={"jsonrpc": "2.0", "method": "eth_getTransactionReceipt", "params": [clean_hash], "id": 2}
+                                )
+                                if r_resp.status_code == 200:
+                                    rec = r_resp.json().get("result")
+                                    if isinstance(rec, dict) and rec.get("status") == "0x0":
+                                        is_error = True
+                            except Exception:
+                                pass
+
+                            return {
+                                "hash": clean_hash,
+                                "from": from_addr or "0x0000000000000000000000000000000000000000",
+                                "to": to_addr or "0x0000000000000000000000000000000000000000",
+                                "value_eth": round(val_eth, 4),
+                                "timestamp": datetime.now(timezone.utc),
+                                "is_error": is_error,
+                            }
+            except Exception as e:
+                logger.info(f"QuickNode RPC getTransactionByHash fallback: {e}")
+
+        # 2. Sepolia Blockscout Query
+        try:
+            async with httpx.AsyncClient(timeout=4.0, headers={"User-Agent": "CyberChakravyuh/1.0"}) as client:
+                url = f"https://eth-sepolia.blockscout.com/api?module=transaction&action=gettxinfo&txhash={clean_hash}"
+                resp = await client.get(url)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    r = data.get("result")
+                    if isinstance(r, dict) and r.get("from"):
+                        from_addr = normalize_address(r.get("from"))
+                        to_addr = normalize_address(r.get("to"))
+                        raw_val = float(r.get("value", 0))
+                        val_eth = raw_val / 1e18 if raw_val > 1e10 else raw_val
+                        ts = r.get("timeStamp")
+                        timestamp = datetime.fromtimestamp(int(ts), tz=timezone.utc) if ts else datetime.now(timezone.utc)
+                        return {
+                            "hash": clean_hash,
+                            "from": from_addr or "0x0000000000000000000000000000000000000000",
+                            "to": to_addr or "0x0000000000000000000000000000000000000000",
+                            "value_eth": round(val_eth, 4),
+                            "timestamp": timestamp,
+                            "is_error": r.get("isError") == "1",
+                        }
+        except Exception as e:
+            logger.info(f"Sepolia Blockscout gettxinfo fallback for {clean_hash}: {e}")
+
+        # 3. Mainnet Blockscout Query
         try:
             async with httpx.AsyncClient(timeout=4.0, headers={"User-Agent": "CyberChakravyuh/1.0"}) as client:
                 url = f"https://eth.blockscout.com/api?module=transaction&action=gettxinfo&txhash={clean_hash}"
@@ -253,8 +324,8 @@ class Web3ThreatService:
 
     async def fetch_transactions(self, address: str, limit: int = 50) -> List[Dict[str, Any]]:
         """
-        Fetches live transactions from public Blockscout API (fast, free, no key needed)
-        with fallback to Etherscan and deterministic synthetic graph data.
+        Fetches live transactions from public Sepolia & Mainnet Blockscout APIs,
+        with fallback to Etherscan and QuickNode Sepolia RPC balance checks.
         """
         norm_addr = normalize_address(address)
         if not norm_addr:
@@ -264,7 +335,34 @@ class Web3ThreatService:
         if norm_addr in KNOWN_ENTITIES:
             return self._generate_known_entity_transactions(norm_addr)
 
-        # 1. Primary: Live Blockscout API Query (Fast, Public, No API key required)
+        # 1. Primary: Sepolia Blockscout API Query
+        try:
+            async with httpx.AsyncClient(timeout=4.0, headers={"User-Agent": "CyberChakravyuh/1.0"}) as client:
+                s_url = f"https://eth-sepolia.blockscout.com/api?module=account&action=txlist&address={norm_addr}&page=1&offset={limit}&sort=desc"
+                resp = await client.get(s_url)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    if data.get("status") == "1" and isinstance(data.get("result"), list) and len(data["result"]) > 0:
+                        txs = []
+                        for item in data["result"]:
+                            f_addr = normalize_address(item.get("from"))
+                            t_addr = normalize_address(item.get("to"))
+                            val_eth = float(item.get("value", "0")) / 1e18
+                            ts_int = int(item.get("timeStamp", "0"))
+                            txs.append({
+                                "hash": item.get("hash", ""),
+                                "from": f_addr or norm_addr,
+                                "to": t_addr or norm_addr,
+                                "value_eth": round(val_eth, 4),
+                                "timestamp": datetime.fromtimestamp(ts_int, tz=timezone.utc) if ts_int else datetime.now(timezone.utc),
+                                "is_error": item.get("isError") == "1",
+                            })
+                        if txs:
+                            return txs
+        except Exception as e:
+            logger.info(f"Sepolia Blockscout live query fallback for {norm_addr}: {e}")
+
+        # 2. Secondary: Mainnet Blockscout API Query
         try:
             async with httpx.AsyncClient(timeout=4.0, headers={"User-Agent": "CyberChakravyuh/1.0"}) as client:
                 b_url = f"https://eth.blockscout.com/api?module=account&action=txlist&address={norm_addr}&page=1&offset={limit}&sort=desc"
@@ -289,7 +387,7 @@ class Web3ThreatService:
                         if txs:
                             return txs
         except Exception as e:
-            logger.info(f"Blockscout live query fallback for {norm_addr}: {e}")
+            logger.info(f"Mainnet Blockscout live query fallback for {norm_addr}: {e}")
 
         # 2. Secondary: Etherscan query (if API key provided)
         api_key = getattr(settings, "ETHERSCAN_API_KEY", "") or ""
@@ -731,7 +829,7 @@ class Web3ThreatService:
             target_tx = await self.fetch_tx_info(raw_query)
             if not target_tx:
                 raise ValueError(
-                    f"Transaction hash '{raw_query}' was not found on Ethereum mainnet via public indexers. Please verify the hash."
+                    f"Transaction hash '{raw_query}' was not found on Ethereum mainnet or Sepolia testnet via live RPC/indexers. Please verify the hash."
                 )
             norm_addr = target_tx["from"]
         else:

@@ -663,6 +663,22 @@ export class ThreatApiService {
     return await ApiClient.get<any>(`/web3/verify/${reportHash}`);
   }
 
+  static async getWeb3NetworkStatus(): Promise<{
+    network: string;
+    chain_id: number;
+    connected: boolean;
+    latest_block: number;
+    provider: string;
+  }> {
+    return await ApiClient.get<{
+      network: string;
+      chain_id: number;
+      connected: boolean;
+      latest_block: number;
+      provider: string;
+    }>('/web3/network-status');
+  }
+
   // =========================================================================
   // 7. THREAT CORRELATION (/api/threats/...)
   // =========================================================================

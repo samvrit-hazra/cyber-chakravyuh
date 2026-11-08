@@ -3,22 +3,20 @@ import { Fingerprint, UploadCloud, CheckCircle2, Copy, Check, Code2 } from 'luci
 import { Button } from '../common/Button.tsx';
 import {
   CHAKRAVYUHA_SMART_CONTRACT_ADDRESS,
-  CHAKRAVYUHA_LEDGER_NETWORK,
   generateReportFingerprint,
   sanitizeReportPayload,
 } from '../../utils/blockchainRegistryEngine.ts';
 import type { BlockchainReportRecord } from '../../types/blockchainVerification.ts';
+import { ThreatApiService } from '../../services/threatApi.ts';
 
 interface ReportSubmissionCardProps {
   onReportRegistered: (record: BlockchainReportRecord) => void;
 }
 
 export function ReportSubmissionCard({ onReportRegistered }: ReportSubmissionCardProps) {
-  const [reportTitle, setReportTitle] = useState('Critical Smishing Incident (Bank Lure)');
-  const [targetSubject, setTargetSubject] = useState('chase-security-resolver.online');
-  const [findingsSummary, setFindingsSummary] = useState(
-    'Automated AiTM kit with 2-hour coercive card cancellation timer. Colocated on bulletproof ASN AS49505.'
-  );
+  const [reportTitle, setReportTitle] = useState('');
+  const [targetSubject, setTargetSubject] = useState('');
+  const [findingsSummary, setFindingsSummary] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastSubmission, setLastSubmission] = useState<BlockchainReportRecord | null>(null);
   const [isCopied, setIsCopied] = useState(false);
@@ -27,7 +25,8 @@ export function ReportSubmissionCard({ onReportRegistered }: ReportSubmissionCar
   const currentContent = `${reportTitle}|${targetSubject}|${findingsSummary}`;
   const computedFingerprint = generateReportFingerprint(currentContent);
 
-  const handleSubmitOnChain = () => {
+  const handleSubmitOnChain = async () => {
+    if (!reportTitle.trim() || !targetSubject.trim()) return;
     setIsSubmitting(true);
 
     const { sanitizationLog } = sanitizeReportPayload({
@@ -36,26 +35,28 @@ export function ReportSubmissionCard({ onReportRegistered }: ReportSubmissionCar
       summary: findingsSummary,
     });
 
-    setTimeout(() => {
+    const reportId = `REP-${Math.floor(100000 + Math.random() * 900000)}`;
+    try {
+      const liveRes = await ThreatApiService.submitOnChainThreatReport(reportId);
       const newRecord: BlockchainReportRecord = {
-        reportId: `REP-${Math.floor(100000 + Math.random() * 900000)}`,
+        reportId,
         reportTitle,
         targetSubject,
-        reportFingerprint: computedFingerprint,
-        smartContractAddress: CHAKRAVYUHA_SMART_CONTRACT_ADDRESS,
-        transactionHash: `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`,
-        blockNumber: 4892150 + Math.floor(Math.random() * 50),
-        network: CHAKRAVYUHA_LEDGER_NETWORK,
-        gasUsed: '47,820 Gwei (0.00047 ETH)',
+        reportFingerprint: liveRes.report_hash || computedFingerprint,
+        smartContractAddress: liveRes.contract_address || CHAKRAVYUHA_SMART_CONTRACT_ADDRESS,
+        transactionHash: liveRes.tx_hash,
+        blockNumber: liveRes.block_number || 12091965,
+        network: 'Ethereum Sepolia Testnet (Chain ID: 11155111)',
+        gasUsed: '21,000 Gwei (Sepolia QuickNode RPC)',
         registrationTimestamp: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
         verificationStatus: 'Verified On-Chain',
-        submitterAddress: '0x9482fa019481029410948b2910c84102941094b8',
+        submitterAddress: '0x7da0da917b7ba2b624b83ef485ecbdde6d97bbec',
         revisions: [
           {
             revisionNumber: 1,
             timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
             authorDid: 'did:chakravyuha:authenticated-secops-analyst',
-            merkleRootHash: computedFingerprint,
+            merkleRootHash: liveRes.report_hash || computedFingerprint,
             changeSummary: sanitizationLog.join(' • '),
           },
         ],
@@ -63,21 +64,24 @@ export function ReportSubmissionCard({ onReportRegistered }: ReportSubmissionCar
           {
             sourceName: 'Chakravyuha Saptarishi Ingress Verification',
             evidenceType: 'Threat Intelligence Match',
-            artifactHash: computedFingerprint,
+            artifactHash: liveRes.report_hash || computedFingerprint,
           },
         ],
         integrityVerdict: {
           isUntampered: true,
           hashMatchesLedger: true,
           blockConfirmations: 1,
-          immutableReceiptUrl: `https://explorer.chakravyuha.network/tx/${computedFingerprint}`,
+          immutableReceiptUrl: `https://sepolia.etherscan.io/tx/${liveRes.tx_hash}`,
         },
       };
 
       setLastSubmission(newRecord);
-      setIsSubmitting(false);
       onReportRegistered(newRecord);
-    }, 1100);
+    } catch (err) {
+      console.error('Failed to submit on-chain threat report:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCopyHash = (text: string) => {
@@ -116,6 +120,7 @@ export function ReportSubmissionCard({ onReportRegistered }: ReportSubmissionCar
             value={reportTitle}
             onChange={(e) => setReportTitle(e.target.value)}
             disabled={isSubmitting}
+            placeholder="e.g. Critical Phishing Incident (Bank Lure)"
             className="w-full p-2.5 rounded-lg bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-[#182629] dark:text-[#E8E6DC] outline-none focus:border-[#A95636] dark:focus:border-[#C47A52] text-xs font-mono"
           />
         </div>
@@ -129,6 +134,7 @@ export function ReportSubmissionCard({ onReportRegistered }: ReportSubmissionCar
             value={targetSubject}
             onChange={(e) => setTargetSubject(e.target.value)}
             disabled={isSubmitting}
+            placeholder="e.g. suspicious-bank-verify.info"
             className="w-full p-2.5 rounded-lg bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-[#182629] dark:text-[#E8E6DC] outline-none focus:border-[#A95636] dark:focus:border-[#C47A52] text-xs font-mono"
           />
         </div>
@@ -142,6 +148,7 @@ export function ReportSubmissionCard({ onReportRegistered }: ReportSubmissionCar
             onChange={(e) => setFindingsSummary(e.target.value)}
             disabled={isSubmitting}
             rows={2}
+            placeholder="e.g. Automated AiTM credential harvesting kit with coercive SMS lure."
             className="w-full p-2.5 rounded-lg bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-[#182629] dark:text-[#E8E6DC] outline-none focus:border-[#A95636] dark:focus:border-[#C47A52] text-xs resize-none font-mono"
           />
         </div>
