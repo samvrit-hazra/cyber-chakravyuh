@@ -18,23 +18,23 @@ export function ThreatActivityPanel({ onInvestigateDomain }: ThreatActivityPanel
 
   return (
     <Card variant="default" className="p-5 flex flex-col justify-between">
-      <CardHeader className="p-0 pb-4">
+      <CardHeader className="p-0 pb-4 border-b border-[#D9DED7] dark:border-[#304144]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <CardTitle className="text-base text-white">Live Adversary Threat Activity</CardTitle>
+              <CardTitle className="text-base text-[#182629] dark:text-[#E8E6DC]">Live Adversary Threat Activity</CardTitle>
               <Badge variant="rose" size="sm" hasDot pulseDot>
                 ACTIVE IOCS
               </Badge>
             </div>
-            <CardDescription className="text-xs text-slate-400">
+            <CardDescription className="text-xs text-[#647477] dark:text-[#A6B3AE]">
               Correlated suspicious domains, reported threat campaigns, and category indicators
             </CardDescription>
           </div>
 
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-mono">
-            <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse shrink-0" />
-            <span className="text-slate-400">Saptarishi Honey-Mesh Stream</span>
+            <Radio className="w-3.5 h-3.5 text-[#A95636] dark:text-[#C47A52] animate-pulse shrink-0" />
+            <span className="text-[#647477] dark:text-[#A6B3AE]">Saptarishi Honey-Mesh Stream</span>
           </div>
         </div>
 
@@ -46,8 +46,8 @@ export function ThreatActivityPanel({ onInvestigateDomain }: ThreatActivityPanel
               onClick={() => setFilterCategory(cat)}
               className={`px-2.5 py-1 rounded-md text-[11px] font-mono transition-colors whitespace-nowrap cursor-pointer ${
                 filterCategory === cat
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 font-semibold'
-                  : 'bg-slate-900/60 text-slate-400 hover:text-slate-200 border border-white/5'
+                  ? 'bg-[#A95636]/10 dark:bg-[#C47A52]/20 text-[#A95636] dark:text-[#C47A52] border border-[#A95636] dark:border-[#C47A52] font-semibold'
+                  : 'bg-[#EAECE6] dark:bg-[#223336] text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC] border border-[#D9DED7] dark:border-[#304144]'
               }`}
             >
               {cat === 'all' ? 'All Activity' : cat}
@@ -56,7 +56,7 @@ export function ThreatActivityPanel({ onInvestigateDomain }: ThreatActivityPanel
         </div>
       </CardHeader>
 
-      <CardContent className="p-0 pt-2 space-y-3">
+      <CardContent className="p-0 pt-4 space-y-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {filteredItems.map((item) => {
             const isCritical = item.riskLevel === 'critical';
@@ -64,24 +64,24 @@ export function ThreatActivityPanel({ onInvestigateDomain }: ThreatActivityPanel
             return (
               <div
                 key={item.id}
-                className="p-3.5 rounded-xl bg-slate-900/80 border border-white/5 hover:border-cyan-500/40 transition-all flex flex-col justify-between space-y-2.5 group"
+                className="p-3.5 rounded-xl bg-[#F3F1E9] dark:bg-[#223336] border border-[#D9DED7] dark:border-[#304144] hover:border-[#A95636] dark:hover:border-[#C47A52] transition-all flex flex-col justify-between space-y-2.5 group"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="space-y-1 overflow-hidden">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-rose-400 flex items-center gap-1">
-                        <Globe className="w-3 h-3 text-cyan-400" />
+                      <span className="font-mono text-xs font-bold text-[#B64B46] dark:text-[#E17B70] flex items-center gap-1">
+                        <Globe className="w-3 h-3 text-[#A95636] dark:text-[#C47A52]" />
                         {item.domain}
                       </span>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono">
-                      <span className="text-purple-300 font-semibold flex items-center gap-1">
-                        <Tag className="w-3 h-3 text-purple-400" />
+                      <span className="text-[#A95636] dark:text-[#C47A52] font-semibold flex items-center gap-1">
+                        <Tag className="w-3 h-3 text-[#A95636] dark:text-[#C47A52]" />
                         {item.campaign}
                       </span>
-                      <span className="text-slate-500">•</span>
-                      <span className="text-slate-400">{item.category}</span>
+                      <span className="text-[#647477] dark:text-[#A6B3AE]">•</span>
+                      <span className="text-[#647477] dark:text-[#A6B3AE]">{item.category}</span>
                     </div>
                   </div>
 
@@ -95,16 +95,16 @@ export function ThreatActivityPanel({ onInvestigateDomain }: ThreatActivityPanel
                   {item.indicators.map((ind, i) => (
                     <span
                       key={i}
-                      className="text-[10px] font-mono px-2 py-0.5 rounded bg-black/40 text-slate-300 border border-white/5"
+                      className="text-[10px] font-mono px-2 py-0.5 rounded bg-white dark:bg-[#101A1D] text-[#182629] dark:text-[#E8E6DC] border border-[#D9DED7] dark:border-[#304144]"
                     >
                       {ind}
                     </span>
                   ))}
                 </div>
 
-                <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[11px] font-mono text-slate-500">
+                <div className="pt-2 border-t border-[#D9DED7] dark:border-[#304144] flex items-center justify-between text-[11px] font-mono text-[#647477] dark:text-[#A6B3AE]">
                   <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-slate-400" />
+                    <Clock className="w-3 h-3 text-[#647477] dark:text-[#A6B3AE]" />
                     {item.timestamp}
                   </span>
 
@@ -112,7 +112,7 @@ export function ThreatActivityPanel({ onInvestigateDomain }: ThreatActivityPanel
                     <button
                       type="button"
                       onClick={() => onInvestigateDomain(`https://${item.domain}`)}
-                      className="text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors cursor-pointer group-hover:translate-x-0.5"
+                      className="text-[#A95636] dark:text-[#C47A52] hover:underline flex items-center gap-1 transition-colors cursor-pointer group-hover:translate-x-0.5"
                     >
                       <span>Deep Scan</span>
                       <ArrowRight className="w-3 h-3" />

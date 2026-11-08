@@ -71,20 +71,20 @@ export function Dropdown({
           disabled={disabled}
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
-            'w-full h-9 px-3 rounded-lg bg-[#0b152d]/90 text-sm text-slate-100',
-            'border border-cyan-500/20 backdrop-blur-md flex items-center justify-between',
-            'hover:border-cyan-400/40 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50',
+            'w-full h-9 px-3 rounded-lg bg-white dark:bg-[#19272A] text-sm text-[#182629] dark:text-[#E8E6DC]',
+            'border border-[#D9DED7] dark:border-[#304144] shadow-xs flex items-center justify-between',
+            'hover:border-[#A95636] dark:hover:border-[#C47A52] focus:outline-none focus:border-[#A95636] dark:focus:border-[#C47A52]',
             'transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
           )}
         >
           <div className="flex items-center gap-2 truncate">
-            {selectedItem?.icon && <span className="text-slate-400 shrink-0">{selectedItem.icon}</span>}
-            <span className={cn('truncate', !selectedItem && 'text-slate-500 font-normal')}>
+            {selectedItem?.icon && <span className="text-[#647477] dark:text-[#A6B3AE] shrink-0">{selectedItem.icon}</span>}
+            <span className={cn('truncate', !selectedItem && 'text-[#647477] dark:text-[#A6B3AE] font-normal')}>
               {selectedItem ? selectedItem.label : placeholder}
             </span>
           </div>
           <ChevronDown
-            className={cn('w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200', isOpen && 'rotate-180')}
+            className={cn('w-4 h-4 text-[#647477] dark:text-[#A6B3AE] shrink-0 transition-transform duration-200', isOpen && 'rotate-180')}
           />
         </button>
       )}
@@ -93,20 +93,20 @@ export function Dropdown({
         <div
           className={cn(
             'absolute left-0 right-0 z-50 mt-1.5 py-1 rounded-xl',
-            'bg-[#0b152d]/95 backdrop-blur-xl border border-cyan-500/30',
+            'bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] shadow-md',
             'shadow-[0_10px_35px_rgba(0,0,0,0.7)] animate-in fade-in zoom-in-95 duration-150 overflow-hidden'
           )}
         >
           {searchable && (
             <div className="p-2 border-b border-white/[0.06]">
               <div className="relative">
-                <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                <Search className="w-3.5 h-3.5 text-[#647477] dark:text-[#A6B3AE] absolute left-2.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Filter..."
-                  className="w-full h-7 pl-8 pr-2 text-xs bg-slate-900/80 text-slate-200 rounded border border-white/10 focus:outline-none focus:border-cyan-400"
+                  className="w-full h-7 pl-8 pr-2 text-xs bg-[#F3F1E9] dark:bg-[#101A1D] text-[#182629] dark:text-[#E8E6DC] rounded border border-[#D9DED7] dark:border-[#304144] focus:outline-none focus:border-[#A95636] dark:focus:border-[#C47A52]"
                   autoFocus
                 />
               </div>
@@ -115,7 +115,7 @@ export function Dropdown({
 
           <div className="max-h-60 overflow-y-auto p-1 space-y-0.5">
             {filteredItems.length === 0 ? (
-              <div className="px-3 py-2 text-xs text-slate-500 text-center font-mono">
+              <div className="px-3 py-2 text-xs text-[#647477] dark:text-[#A6B3AE] text-center font-mono">
                 No matching entries
               </div>
             ) : (

@@ -28,8 +28,8 @@ export function ThreatStatistics() {
       label: 'Security Reports',
       value: '112,650+',
       trend: '+24.1% generated',
-      icon: <FileText className="w-5 h-5 text-purple-400" />,
-      color: 'purple',
+      icon: <FileText className="w-5 h-5 text-[#C47A52]" />,
+      color: 'copper',
       description: 'Cryptographically signed audit logs and explainable AI risk assessments produced.',
       fillPercent: 78,
     },
@@ -46,7 +46,7 @@ export function ThreatStatistics() {
   ];
 
   return (
-    <section id="threat-intelligence" className="py-20 relative border-y border-white/[0.06] bg-[#060d1f]/60 backdrop-blur-md">
+    <section id="threat-intelligence" className="py-20 relative border-y border-[#D9DED7] dark:border-[#304144] bg-[#F3F1E9] dark:bg-[#101A1D]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         {/* Section Header with Demo/Illustrative Banner */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -59,16 +59,16 @@ export function ThreatStatistics() {
                 ILLUSTRATIVE / DEMO METRICS
               </Badge>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#182629] dark:text-[#E8E6DC]">
               Global Threat Activity & Telemetry
             </h2>
-            <p className="text-sm text-slate-400 max-w-2xl leading-relaxed">
+            <p className="text-sm text-[#647477] dark:text-[#A6B3AE] max-w-2xl leading-relaxed">
               Real-time monitoring across simulated adversarial networks, synthetic benchmark sets, and heuristic AI detection clusters.
             </p>
           </div>
 
           {/* Illustrative Notice Pill */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-white/10 text-xs text-slate-400 font-mono">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] text-xs text-[#647477] dark:text-[#A6B3AE] font-mono">
             <Info className="w-4 h-4 text-cyan-400 shrink-0" />
             <span>Illustrative benchmark values for evaluation</span>
           </div>
@@ -80,10 +80,10 @@ export function ThreatStatistics() {
             <Card
               key={stat.id}
               variant="interactive"
-              className="p-5 space-y-4 bg-[#0b152d]/80 border-cyan-500/20 shadow-[0_4px_25px_rgba(0,0,0,0.5)]"
+              className="p-5 space-y-4"
             >
               <div className="flex items-center justify-between">
-                <div className="p-2.5 rounded-xl bg-slate-900 border border-white/10 shadow-[0_0_12px_rgba(6,182,212,0.15)]">
+                <div className="p-2.5 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-[#A95636] dark:text-[#C47A52]">
                   {stat.icon}
                 </div>
                 <span className="flex items-center gap-1 text-[11px] font-mono font-semibold text-emerald-400">
@@ -93,8 +93,8 @@ export function ThreatStatistics() {
               </div>
 
               <div>
-                <p className="text-xs text-slate-400 font-mono uppercase tracking-wider">{stat.label}</p>
-                <p className="text-2xl sm:text-3xl font-extrabold font-mono text-white tracking-tight mt-1">
+                <p className="text-xs text-[#647477] dark:text-[#A6B3AE] font-mono uppercase tracking-wider">{stat.label}</p>
+                <p className="text-2xl sm:text-3xl font-extrabold font-mono text-[#182629] dark:text-[#E8E6DC] tracking-tight mt-1">
                   {stat.value}
                 </p>
               </div>
@@ -102,12 +102,12 @@ export function ThreatStatistics() {
               {/* Mini fill bar */}
               <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-white/5">
                 <div
-                  className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
+                  className="h-full bg-gradient-to-r from-cyan-500 to-[#A95636] rounded-full"
                   style={{ width: `${stat.fillPercent}%` }}
                 />
               </div>
 
-              <p className="text-xs text-slate-400 leading-relaxed font-light">
+              <p className="text-xs text-[#647477] dark:text-[#A6B3AE] leading-relaxed font-light">
                 {stat.description}
               </p>
             </Card>
@@ -116,7 +116,7 @@ export function ThreatStatistics() {
 
         {/* Mandatory Transparency Disclaimer */}
         <div className="text-center p-3 rounded-xl bg-[#030712]/70 border border-white/5 max-w-2xl mx-auto">
-          <p className="text-[11px] font-mono text-slate-400">
+          <p className="text-[11px] font-mono text-[#647477] dark:text-[#A6B3AE]">
             <strong className="text-slate-300">Notice of Illustrative Data:</strong> Numbers above represent simulated testing corpora and benchmark telemetry. No invented production metrics are represented.
           </p>
         </div>

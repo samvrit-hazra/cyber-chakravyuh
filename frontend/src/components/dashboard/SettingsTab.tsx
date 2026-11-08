@@ -206,7 +206,7 @@ export function SettingsTab() {
   return (
     <div className="space-y-6">
       {/* Top SOC Settings Banner */}
-      <Card variant="glass" className="p-6 border-cyan-500/30 bg-[#070d1e]/90">
+      <Card variant="glass" className="p-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-1">
             <h3 className="text-sm font-mono font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
@@ -256,7 +256,7 @@ export function SettingsTab() {
                 className={`px-2 py-0.5 rounded text-[11px] uppercase transition-colors cursor-pointer ${
                   stateMode === mode
                     ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-400/40'
-                    : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
+                    : 'bg-[#F3F1E9] dark:bg-[#101A1D] text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC] border border-[#D9DED7] dark:border-[#304144]'
                 }`}
               >
                 {mode}
@@ -315,7 +315,7 @@ export function SettingsTab() {
       {stateMode === 'ready' && (
         <div className="space-y-6">
           {/* Settings Section Navigation Pills */}
-          <div className="flex items-center gap-2 p-1.5 bg-[#0b152d]/90 rounded-xl border border-cyan-500/20 overflow-x-auto">
+          <div className="flex items-center gap-2 p-1.5 bg-[#F3F1E9] dark:bg-[#101A1D] rounded-xl border border-[#D9DED7] dark:border-[#304144] overflow-x-auto">
             <button
               onClick={() => setActiveSection('profile')}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-mono transition-all whitespace-nowrap cursor-pointer ${
@@ -381,12 +381,12 @@ export function SettingsTab() {
           {activeSection === 'profile' && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Profile Card / Badge */}
-              <Card variant="glass" className="p-6 space-y-4 border-cyan-500/20 bg-[#070d1e]/90 text-center flex flex-col items-center">
+              <Card variant="glass" className="p-6 space-y-4 text-center flex flex-col items-center">
                 <div className="relative">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border-2 border-cyan-400 flex items-center justify-center shadow-[0_0_25px_rgba(6,182,212,0.4)]">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-[#8F472C]/20 border-2 border-cyan-400 flex items-center justify-center shadow-[0_0_25px_rgba(6,182,212,0.4)]">
                     <Shield className="w-10 h-10 text-cyan-300 animate-pulse" />
                   </div>
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-[#070d1e] flex items-center justify-center" title="Active Clearance Status">
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-white dark:border-[#19272A] flex items-center justify-center" title="Active Clearance Status">
                     <Check className="w-3.5 h-3.5 text-black font-bold" />
                   </div>
                 </div>
@@ -418,13 +418,13 @@ export function SettingsTab() {
               </Card>
 
               {/* Profile Form */}
-              <Card variant="default" className="lg:col-span-2 p-6 space-y-5 bg-[#0b152d]/90 border-cyan-500/20">
+              <Card variant="default" className="lg:col-span-2 p-6 space-y-5">
                 <div className="flex items-center justify-between pb-2 border-b border-white/5">
                   <h4 className="text-xs font-mono font-bold uppercase text-white flex items-center gap-2">
                     <User className="w-4 h-4 text-cyan-400" />
                     Analyst Identification & Operational Role
                   </h4>
-                  <Badge variant="purple" size="sm">CONFIDENTIAL</Badge>
+                  <Badge variant="copper" size="sm">CONFIDENTIAL</Badge>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -522,7 +522,7 @@ export function SettingsTab() {
 
           {/* SECTION 2: NOTIFICATIONS & ALERTS */}
           {activeSection === 'notifications' && (
-            <Card variant="default" className="p-6 space-y-6 bg-[#0b152d]/90 border-cyan-500/20">
+            <Card variant="default" className="p-6 space-y-6">
               <div className="flex items-center justify-between pb-2 border-b border-white/5">
                 <div className="space-y-0.5">
                   <h4 className="text-xs font-mono font-bold uppercase text-white flex items-center gap-2">
@@ -538,7 +538,7 @@ export function SettingsTab() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Critical Threat Alert Toggle */}
-                <div className="p-4 rounded-xl bg-slate-900/70 border border-white/5 flex items-start justify-between gap-3">
+                <div className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex items-start justify-between gap-3">
                   <div className="space-y-1">
                     <span className="text-xs font-mono font-bold text-white block">Critical Threat Broadcasts</span>
                     <p className="text-[11px] text-slate-400">
@@ -559,7 +559,7 @@ export function SettingsTab() {
                 </div>
 
                 {/* Daily Digest Toggle */}
-                <div className="p-4 rounded-xl bg-slate-900/70 border border-white/5 flex items-start justify-between gap-3">
+                <div className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex items-start justify-between gap-3">
                   <div className="space-y-1">
                     <span className="text-xs font-mono font-bold text-white block">Daily Threat Intelligence Briefing</span>
                     <p className="text-[11px] text-slate-400">
@@ -580,7 +580,7 @@ export function SettingsTab() {
                 </div>
 
                 {/* SMS Emergency Dispatches */}
-                <div className="p-4 rounded-xl bg-slate-900/70 border border-white/5 flex items-start justify-between gap-3">
+                <div className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex items-start justify-between gap-3">
                   <div className="space-y-1">
                     <span className="text-xs font-mono font-bold text-white block">Emergency SMS / Satellite Dispatches</span>
                     <p className="text-[11px] text-slate-400">
@@ -601,7 +601,7 @@ export function SettingsTab() {
                 </div>
 
                 {/* Desktop Push Notifications */}
-                <div className="p-4 rounded-xl bg-slate-900/70 border border-white/5 flex items-start justify-between gap-3">
+                <div className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex items-start justify-between gap-3">
                   <div className="space-y-1">
                     <span className="text-xs font-mono font-bold text-white block">Desktop Browser Push Notifications</span>
                     <p className="text-[11px] text-slate-400">
@@ -623,11 +623,11 @@ export function SettingsTab() {
               </div>
 
               {/* SIEM / Slack Webhook Integration */}
-              <div className="p-4 rounded-xl bg-[#070d1e] border border-cyan-500/20 space-y-4">
+              <div className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <h5 className="text-xs font-mono font-bold uppercase text-white flex items-center gap-2">
-                      <Terminal className="w-4 h-4 text-purple-400" />
+                      <Terminal className="w-4 h-4 text-[#C47A52]" />
                       SIEM / Incident Response Ingress Webhook
                     </h5>
                     <p className="text-[11px] text-slate-400">
@@ -672,7 +672,7 @@ export function SettingsTab() {
 
           {/* SECTION 3: DISPLAY & THEME PREFERENCES */}
           {activeSection === 'display' && (
-            <Card variant="default" className="p-6 space-y-6 bg-[#0b152d]/90 border-cyan-500/20">
+            <Card variant="default" className="p-6 space-y-6">
               <div className="flex items-center justify-between pb-2 border-b border-white/5">
                 <div className="space-y-0.5">
                   <h4 className="text-xs font-mono font-bold uppercase text-white flex items-center gap-2">
@@ -702,8 +702,8 @@ export function SettingsTab() {
                     }
                     className={`p-4 rounded-xl border cursor-pointer transition-all ${
                       settings.display.theme === 'dark-navy'
-                        ? 'bg-[#0b152d] border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.3)]'
-                        : 'bg-[#070d1e] border-white/10 hover:border-white/20'
+                        ? 'bg-white dark:bg-[#19272A] border-[#A95636] dark:border-[#C47A52] ring-1 ring-[#A95636] dark:ring-[#C47A52]'
+                        : 'bg-[#F3F1E9] dark:bg-[#101A1D] border-[#D9DED7] dark:border-[#304144] hover:border-[#A95636]/40 dark:hover:border-[#C47A52]/40'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
@@ -711,12 +711,12 @@ export function SettingsTab() {
                       {settings.display.theme === 'dark-navy' && <Check className="w-4 h-4 text-cyan-400" />}
                     </div>
                     <p className="text-[11px] text-slate-400">
-                      Standard Cyber Chakravyuha command center with navy backdrops and cyan/purple accents.
+                      Standard Cyber Chakravyuha command center with navy backdrops and copper/spruce accents.
                     </p>
                     <div className="mt-3 flex gap-1.5">
                       <div className="w-4 h-4 rounded-full bg-[#030712] border border-white/20" />
                       <div className="w-4 h-4 rounded-full bg-cyan-400" />
-                      <div className="w-4 h-4 rounded-full bg-purple-500" />
+                      <div className="w-4 h-4 rounded-full bg-[#A95636]" />
                     </div>
                   </div>
 
@@ -730,8 +730,8 @@ export function SettingsTab() {
                     }
                     className={`p-4 rounded-xl border cursor-pointer transition-all ${
                       settings.display.theme === 'cyber-midnight'
-                        ? 'bg-[#050b18] border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.3)]'
-                        : 'bg-[#070d1e] border-white/10 hover:border-white/20'
+                        ? 'bg-white dark:bg-[#19272A] border-[#A95636] dark:border-[#C47A52] ring-1 ring-[#A95636] dark:ring-[#C47A52]'
+                        : 'bg-[#F3F1E9] dark:bg-[#101A1D] border-[#D9DED7] dark:border-[#304144] hover:border-[#A95636]/40 dark:hover:border-[#C47A52]/40'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
@@ -758,8 +758,8 @@ export function SettingsTab() {
                     }
                     className={`p-4 rounded-xl border cursor-pointer transition-all ${
                       settings.display.theme === 'amoled-matrix'
-                        ? 'bg-black border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]'
-                        : 'bg-[#070d1e] border-white/10 hover:border-white/20'
+                        ? 'bg-white dark:bg-[#19272A] border-[#356D68] dark:border-[#79A99C] ring-1 ring-[#356D68] dark:ring-[#79A99C]'
+                        : 'bg-[#F3F1E9] dark:bg-[#101A1D] border-[#D9DED7] dark:border-[#304144] hover:border-[#356D68]/40 dark:hover:border-[#79A99C]/40'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
@@ -780,7 +780,7 @@ export function SettingsTab() {
 
               {/* Toggles */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                <div className="p-4 rounded-xl bg-slate-900/70 border border-white/5 flex items-start justify-between gap-3">
+                <div className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex items-start justify-between gap-3">
                   <div className="space-y-1">
                     <span className="text-xs font-mono font-bold text-white block">Shannon Entropy Analysis Column</span>
                     <p className="text-[11px] text-slate-400">
@@ -800,7 +800,7 @@ export function SettingsTab() {
                   />
                 </div>
 
-                <div className="p-4 rounded-xl bg-slate-900/70 border border-white/5 flex items-start justify-between gap-3">
+                <div className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex items-start justify-between gap-3">
                   <div className="space-y-1">
                     <span className="text-xs font-mono font-bold text-white block">Subtle Network Particle Background</span>
                     <p className="text-[11px] text-slate-400">
@@ -825,7 +825,7 @@ export function SettingsTab() {
 
           {/* SECTION 4: PRIVACY & ZERO-KNOWLEDGE */}
           {activeSection === 'privacy' && (
-            <Card variant="default" className="p-6 space-y-6 bg-[#0b152d]/90 border-cyan-500/20">
+            <Card variant="default" className="p-6 space-y-6">
               <div className="flex items-center justify-between pb-2 border-b border-white/5">
                 <div className="space-y-0.5">
                   <h4 className="text-xs font-mono font-bold uppercase text-white flex items-center gap-2">
@@ -891,7 +891,7 @@ export function SettingsTab() {
                 </div>
 
                 {/* Zero Knowledge Toggle */}
-                <div className="p-4 rounded-xl bg-slate-900/70 border border-white/5 flex items-start justify-between gap-3">
+                <div className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex items-start justify-between gap-3">
                   <div className="space-y-1">
                     <span className="text-xs font-mono font-bold text-white block">Zero-Knowledge Query Commitments</span>
                     <p className="text-[11px] text-slate-400">
@@ -912,7 +912,7 @@ export function SettingsTab() {
                 </div>
 
                 {/* Anonymize Domains Toggle */}
-                <div className="p-4 rounded-xl bg-slate-900/70 border border-white/5 flex items-start justify-between gap-3">
+                <div className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex items-start justify-between gap-3">
                   <div className="space-y-1">
                     <span className="text-xs font-mono font-bold text-white block">Anonymize Internal FQDNs</span>
                     <p className="text-[11px] text-slate-400">
@@ -934,7 +934,7 @@ export function SettingsTab() {
               </div>
 
               {/* Data Compliance & Export Actions */}
-              <div className="p-4 rounded-xl bg-[#070d1e] border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex flex-col sm:flex-row items-center justify-between gap-3">
                 <div className="space-y-1 text-xs">
                   <span className="font-mono font-bold text-cyan-300 block">NIST CSF & GDPR Article 30 Audit Compliance</span>
                   <p className="text-slate-400 text-[11px]">
@@ -956,7 +956,7 @@ export function SettingsTab() {
           {activeSection === 'security' && (
             <div className="space-y-6">
               {/* API Token Card */}
-              <Card variant="default" className="p-6 space-y-4 bg-[#0b152d]/90 border-cyan-500/20">
+              <Card variant="default" className="p-6 space-y-4">
                 <div className="flex items-center justify-between pb-2 border-b border-white/5">
                   <div className="space-y-0.5">
                     <h4 className="text-xs font-mono font-bold uppercase text-white flex items-center gap-2">
@@ -1004,7 +1004,7 @@ export function SettingsTab() {
                       variant="ghost"
                       size="sm"
                       onClick={handleRegenerateKey}
-                      leftIcon={<RefreshCw className="w-3.5 h-3.5 text-purple-400" />}
+                      leftIcon={<RefreshCw className="w-3.5 h-3.5 text-[#C47A52]" />}
                     >
                       Regenerate
                     </Button>
@@ -1014,13 +1014,13 @@ export function SettingsTab() {
 
               {/* MFA & Authentication Credentials */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card variant="default" className="p-5 space-y-4 bg-[#0b152d]/90 border-cyan-500/20">
+                <Card variant="default" className="p-5 space-y-4">
                   <h4 className="text-xs font-mono font-bold uppercase text-white flex items-center gap-2">
                     <Smartphone className="w-4 h-4 text-emerald-400" />
                     Multi-Factor Authentication (2FA)
                   </h4>
                   <div className="space-y-3 text-xs font-mono">
-                    <div className="p-3 rounded-lg bg-slate-900/60 border border-white/5 flex items-center justify-between">
+                    <div className="p-3 rounded-lg bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex items-center justify-between">
                       <div className="space-y-0.5">
                         <span className="text-white font-bold block">FIDO2 / Hardware Security Key</span>
                         <span className="text-slate-400 text-[11px]">Enrolled: Yubikey 5C NFC</span>
@@ -1028,7 +1028,7 @@ export function SettingsTab() {
                       <Badge variant="emerald" size="sm">ENROLLED</Badge>
                     </div>
 
-                    <div className="p-3 rounded-lg bg-slate-900/60 border border-white/5 flex items-center justify-between">
+                    <div className="p-3 rounded-lg bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex items-center justify-between">
                       <div className="space-y-0.5">
                         <span className="text-white font-bold block">Authenticator App (TOTP)</span>
                         <span className="text-slate-400 text-[11px]">SHA-256 6-digit passcode</span>
@@ -1049,9 +1049,9 @@ export function SettingsTab() {
                 </Card>
 
                 {/* Automated Gateway Sinkhole Threshold */}
-                <Card variant="default" className="p-5 space-y-4 bg-[#0b152d]/90 border-cyan-500/20">
+                <Card variant="default" className="p-5 space-y-4">
                   <h4 className="text-xs font-mono font-bold uppercase text-white flex items-center gap-2">
-                    <Sliders className="w-4 h-4 text-purple-400" />
+                    <Sliders className="w-4 h-4 text-[#C47A52]" />
                     Automated Gateway Intercept Threshold
                   </h4>
                   <div className="space-y-3">
@@ -1080,7 +1080,7 @@ export function SettingsTab() {
               </div>
 
               {/* Active Security Sessions */}
-              <Card variant="default" className="p-6 space-y-4 bg-[#0b152d]/90 border-cyan-500/20">
+              <Card variant="default" className="p-6 space-y-4">
                 <div className="flex items-center justify-between pb-2 border-b border-white/5">
                   <div className="space-y-0.5">
                     <h4 className="text-xs font-mono font-bold uppercase text-white flex items-center gap-2">
@@ -1113,7 +1113,7 @@ export function SettingsTab() {
                   {settings.security.activeSessions.map((session) => (
                     <div
                       key={session.id}
-                      className="p-3.5 rounded-xl bg-slate-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono"
+                      className="p-3.5 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono"
                     >
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">

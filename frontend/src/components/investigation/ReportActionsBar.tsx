@@ -16,7 +16,7 @@ export function ReportActionsBar({ result }: ReportActionsBarProps) {
   // Generate executive markdown summary
   const generateMarkdownSummary = (): string => {
     return [
-      `# CYBER CHAKRAVYUHA — FORENSIC INVESTIGATION REPORT`,
+      `# CYBER CHAKRAVYUH — FORENSIC INVESTIGATION REPORT`,
       `**Investigation ID:** \`${result.investigationId}\``,
       `**Target URL:** \`${result.targetUrl}\``,
       `**Timestamp:** ${result.timestamp}`,
@@ -52,7 +52,6 @@ export function ReportActionsBar({ result }: ReportActionsBarProps) {
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2500);
     } catch {
-      // Fallback
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2500);
     }
@@ -60,7 +59,7 @@ export function ReportActionsBar({ result }: ReportActionsBarProps) {
 
   const handleDownloadReport = () => {
     const exportData = {
-      platform: 'Cyber Chakravyuha Forensic Engine v4.2',
+      platform: 'Cyber Chakravyuh Forensic Engine v4.2',
       exportTimestamp: new Date().toISOString(),
       reportPayload: result,
     };
@@ -71,7 +70,7 @@ export function ReportActionsBar({ result }: ReportActionsBarProps) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `chakravyuha-investigation-${result.investigationId}.json`;
+    link.download = `chakravyuh-investigation-${result.investigationId}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -83,17 +82,17 @@ export function ReportActionsBar({ result }: ReportActionsBarProps) {
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-[#0b162c] border border-cyan-500/30 shadow-lg">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] shadow-sm dark:shadow-2xl">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-cyan-950/80 border border-cyan-500/30 text-cyan-400">
+          <div className="p-2.5 rounded-xl bg-[#A95636]/10 dark:bg-[#C47A52]/15 border border-[#A95636]/20 dark:border-[#C47A52]/30 text-[#A95636] dark:text-[#C47A52]">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-mono font-bold text-white flex items-center gap-2">
+            <h4 className="text-sm font-mono font-bold text-[#182629] dark:text-[#E8E6DC] flex items-center gap-2">
               <span>Investigation Dossier:</span>
-              <span className="text-cyan-300">#{result.investigationId}</span>
+              <span className="text-[#A95636] dark:text-[#C47A52]">#{result.investigationId}</span>
             </h4>
-            <p className="text-xs font-mono text-slate-400">
+            <p className="text-xs font-mono text-[#647477] dark:text-[#A6B3AE]">
               Signed with Ed25519 attestation receipt for SecOps audit log
             </p>
           </div>
@@ -107,7 +106,7 @@ export function ReportActionsBar({ result }: ReportActionsBarProps) {
             size="sm"
             onClick={handleCopySummary}
             className="flex-1 sm:flex-none font-mono text-xs"
-            leftIcon={isCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+            leftIcon={isCopied ? <Check className="w-4 h-4 text-[#36745F] dark:text-[#79B69A]" /> : <Copy className="w-4 h-4" />}
           >
             {isCopied ? 'Summary Copied!' : 'Copy Summary'}
           </Button>
@@ -117,8 +116,8 @@ export function ReportActionsBar({ result }: ReportActionsBarProps) {
             variant="outline"
             size="sm"
             onClick={handleDownloadReport}
-            className="flex-1 sm:flex-none font-mono text-xs border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/10"
-            leftIcon={downloadSuccess ? <Check className="w-4 h-4 text-emerald-400" /> : <Download className="w-4 h-4" />}
+            className="flex-1 sm:flex-none font-mono text-xs border-[#A95636]/40 dark:border-[#C47A52]/40 text-[#A95636] dark:text-[#C47A52] hover:bg-[#A95636]/10"
+            leftIcon={downloadSuccess ? <Check className="w-4 h-4 text-[#36745F] dark:text-[#79B69A]" /> : <Download className="w-4 h-4" />}
           >
             {downloadSuccess ? 'Downloaded!' : 'Download Report'}
           </Button>
@@ -144,43 +143,43 @@ export function ReportActionsBar({ result }: ReportActionsBarProps) {
         subtitle={`Complete cryptographic forensic payload for ${result.targetUrl}`}
         size="xl"
       >
-        <div className="space-y-4 font-mono text-xs">
+        <div className="space-y-4 font-mono text-xs text-[#182629] dark:text-[#E8E6DC]">
           {/* Attestation Header */}
-          <div className="p-3.5 rounded-xl bg-slate-900 border border-white/5 space-y-2">
-            <div className="flex justify-between items-center text-slate-400 text-[11px]">
+          <div className="p-3.5 rounded-xl bg-[#F3F1E9] dark:bg-[#223336] border border-[#D9DED7] dark:border-[#304144] space-y-2">
+            <div className="flex justify-between items-center text-[#647477] dark:text-[#A6B3AE] text-[11px]">
               <span>ED25519 CRYPTOGRAPHIC ATTESTATION SIGNATURE</span>
-              <span className="text-emerald-400">VERIFIED VALID</span>
+              <span className="text-[#36745F] dark:text-[#79B69A]">VERIFIED VALID</span>
             </div>
-            <div className="p-2 rounded bg-black/60 font-mono text-[11px] text-cyan-300 break-all select-all">
+            <div className="p-2.5 rounded-lg bg-white dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] font-mono text-[11px] text-[#A95636] dark:text-[#C47A52] break-all select-all">
               {result.ed25519Signature}
             </div>
           </div>
 
           {/* Quick Metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
-            <div className="p-2.5 rounded-lg bg-slate-900 border border-white/5">
-              <span className="text-slate-400 text-[10px] block">CLASSIFICATION</span>
-              <span className="text-white font-bold">{result.riskClassification}</span>
+            <div className="p-2.5 rounded-xl bg-[#F3F1E9] dark:bg-[#223336] border border-[#D9DED7] dark:border-[#304144]">
+              <span className="text-[#647477] dark:text-[#A6B3AE] text-[10px] block">CLASSIFICATION</span>
+              <span className="text-[#182629] dark:text-[#E8E6DC] font-bold">{result.riskClassification}</span>
             </div>
-            <div className="p-2.5 rounded-lg bg-slate-900 border border-white/5">
-              <span className="text-slate-400 text-[10px] block">SCORE</span>
-              <span className="text-cyan-400 font-bold">{result.riskScore}/100</span>
+            <div className="p-2.5 rounded-xl bg-[#F3F1E9] dark:bg-[#223336] border border-[#D9DED7] dark:border-[#304144]">
+              <span className="text-[#647477] dark:text-[#A6B3AE] text-[10px] block">SCORE</span>
+              <span className="text-[#A95636] dark:text-[#C47A52] font-bold">{result.riskScore}/100</span>
             </div>
-            <div className="p-2.5 rounded-lg bg-slate-900 border border-white/5">
-              <span className="text-slate-400 text-[10px] block">CONFIDENCE</span>
-              <span className="text-purple-400 font-bold">{result.confidenceScore}%</span>
+            <div className="p-2.5 rounded-xl bg-[#F3F1E9] dark:bg-[#223336] border border-[#D9DED7] dark:border-[#304144]">
+              <span className="text-[#647477] dark:text-[#A6B3AE] text-[10px] block">CONFIDENCE</span>
+              <span className="text-[#A95636] dark:text-[#C47A52] font-bold">{result.confidenceScore}%</span>
             </div>
-            <div className="p-2.5 rounded-lg bg-slate-900 border border-white/5">
-              <span className="text-slate-400 text-[10px] block">FINDINGS</span>
-              <span className="text-emerald-400 font-bold">{result.technicalFindings.length}</span>
+            <div className="p-2.5 rounded-xl bg-[#F3F1E9] dark:bg-[#223336] border border-[#D9DED7] dark:border-[#304144]">
+              <span className="text-[#647477] dark:text-[#A6B3AE] text-[10px] block">FINDINGS</span>
+              <span className="text-[#36745F] dark:text-[#79B69A] font-bold">{result.technicalFindings.length}</span>
             </div>
           </div>
 
           {/* Raw JSON Code Block */}
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-slate-400 text-[11px]">
+            <div className="flex items-center justify-between text-[#647477] dark:text-[#A6B3AE] text-[11px]">
               <span className="flex items-center gap-1.5">
-                <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                <Code2 className="w-3.5 h-3.5 text-[#A95636] dark:text-[#C47A52]" />
                 Raw JSON Telemetry Stream
               </span>
               <button
@@ -190,18 +189,18 @@ export function ReportActionsBar({ result }: ReportActionsBarProps) {
                   setIsCopied(true);
                   setTimeout(() => setIsCopied(false), 2000);
                 }}
-                className="text-cyan-400 hover:underline cursor-pointer"
+                className="text-[#A95636] dark:text-[#C47A52] hover:underline cursor-pointer"
               >
                 {isCopied ? 'Copied JSON!' : 'Copy Raw JSON'}
               </button>
             </div>
-            <pre className="p-4 rounded-xl bg-black/80 border border-white/10 text-[11px] text-cyan-200/90 overflow-x-auto max-h-[380px] overflow-y-auto select-all">
+            <pre className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-[11px] text-[#182629] dark:text-[#E8E6DC] overflow-x-auto max-h-[380px] overflow-y-auto select-all">
               {JSON.stringify(result, null, 2)}
             </pre>
           </div>
 
           {/* Modal Footer */}
-          <div className="flex justify-end gap-2 pt-2 border-t border-white/5">
+          <div className="flex justify-end gap-2 pt-2 border-t border-[#D9DED7] dark:border-[#304144]">
             <Button variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
               Close Dossier
             </Button>

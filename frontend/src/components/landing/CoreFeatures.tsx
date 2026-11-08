@@ -21,7 +21,7 @@ export function CoreFeatures({ onLearnMore }: CoreFeaturesProps) {
       case 'url-analysis':
         return <Globe className="w-6 h-6 text-cyan-400" />;
       case 'tls-intelligence':
-        return <Lock className="w-6 h-6 text-purple-400" />;
+        return <Lock className="w-6 h-6 text-[#C47A52]" />;
       case 'ai-scam-detection':
         return <Brain className="w-6 h-6 text-rose-400" />;
       case 'threat-correlation':
@@ -29,7 +29,7 @@ export function CoreFeatures({ onLearnMore }: CoreFeaturesProps) {
       case 'website-security-assessment':
         return <ShieldCheck className="w-6 h-6 text-emerald-400" />;
       case 'decentralized-intel':
-        return <Share2 className="w-6 h-6 text-purple-400" />;
+        return <Share2 className="w-6 h-6 text-[#C47A52]" />;
       default:
         return <Globe className="w-6 h-6 text-cyan-400" />;
     }
@@ -46,7 +46,7 @@ export function CoreFeatures({ onLearnMore }: CoreFeaturesProps) {
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
             Six Pillars of Cyber Defense Intelligence
           </h2>
-          <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
+          <p className="text-sm sm:text-base text-[#647477] dark:text-[#A6B3AE] leading-relaxed">
             Engineered to analyze suspicious URLs, detect sophisticated phishing campaigns, and verify digital trust with mathematical and heuristic certainty.
           </p>
         </div>
@@ -57,11 +57,11 @@ export function CoreFeatures({ onLearnMore }: CoreFeaturesProps) {
             <Card
               key={feature.id}
               variant="interactive"
-              className="p-6 flex flex-col justify-between group bg-[#0b152d]/80 border-cyan-500/15 hover:border-cyan-400/50 hover:shadow-[0_12px_35px_-5px_rgba(6,182,212,0.2)] transition-all duration-300"
+              className="p-6 flex flex-col justify-between group hover:border-[#A95636] dark:hover:border-[#C47A52] transition-all duration-300"
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-xl bg-[#070d1e] border border-cyan-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.2)] group-hover:scale-105 group-hover:border-cyan-400 transition-all">
+                  <div className="w-12 h-12 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex items-center justify-center text-[#A95636] dark:text-[#C47A52] group-hover:scale-105 transition-all">
                     {getFeatureIcon(feature.id)}
                   </div>
                   <span className="text-xs font-mono font-bold text-slate-500 group-hover:text-cyan-400 transition-colors">
@@ -70,20 +70,20 @@ export function CoreFeatures({ onLearnMore }: CoreFeaturesProps) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400/80 font-semibold block">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#A95636] dark:text-[#C47A52] font-semibold block">
                     {feature.category}
                   </span>
-                  <h3 className="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">
+                  <h3 className="text-lg font-bold text-[#182629] dark:text-[#E8E6DC] group-hover:text-[#A95636] dark:group-hover:text-[#C47A52] transition-colors">
                     {feature.title}
                   </h3>
                 </div>
 
-                <p className="text-xs text-slate-400 leading-relaxed line-clamp-3">
+                <p className="text-xs text-[#647477] dark:text-[#A6B3AE] leading-relaxed line-clamp-3">
                   {feature.description}
                 </p>
               </div>
 
-              <div className="pt-6 border-t border-white/[0.06] mt-4 flex items-center justify-between">
+              <div className="pt-6 border-t border-[#D9DED7] dark:border-[#304144] mt-4 flex items-center justify-between">
                 <Badge variant="neutral" size="sm" className="text-[10px]">
                   {feature.architectureLayer.split(':')[0]}
                 </Badge>

@@ -32,31 +32,31 @@ export function LoadingState({
       </div>
 
       <div className="space-y-1">
-        <p className="text-xs font-mono font-bold tracking-widest text-cyan-300 uppercase">
+        <p className="text-xs font-mono font-bold tracking-widest text-[#A95636] dark:text-[#C47A52] uppercase">
           {message}
         </p>
         {submessage && (
-          <p className="text-[11px] font-mono text-slate-400">{submessage}</p>
+          <p className="text-[11px] font-mono text-[#647477] dark:text-[#A6B3AE]">{submessage}</p>
         )}
       </div>
 
       {/* Micro progress indicator */}
-      <div className="w-32 h-1 bg-slate-900 rounded-full overflow-hidden border border-cyan-500/20">
-        <div className="h-full bg-cyan-400 animate-[cyber-pulse_1.5s_infinite] w-full" />
+      <div className="w-32 h-1 bg-[#EAECE6] dark:bg-[#223336] rounded-full overflow-hidden border border-[#D9DED7] dark:border-[#304144]">
+        <div className="h-full bg-[#A95636] dark:bg-[#C47A52] animate-[cyber-pulse_1.5s_infinite] w-full" />
       </div>
     </div>
   );
 
   if (isFullScreen) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#030712]/90 backdrop-blur-xl">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#F3F1E9]/90 dark:bg-[#101A1D]/90 backdrop-blur-xl">
         {content}
       </div>
     );
   }
 
   return (
-    <div className="w-full flex items-center justify-center rounded-2xl border border-cyan-500/15 bg-[#0b152d]/60 backdrop-blur-md">
+    <div className="w-full flex items-center justify-center rounded-2xl border border-[#D9DED7] dark:border-[#304144] bg-white dark:bg-[#19272A] shadow-sm">
       {content}
     </div>
   );

@@ -7,17 +7,17 @@ interface MaliciousDomainsSectionProps {
 
 export function MaliciousDomainsSection({ onInvestigateDomain }: MaliciousDomainsSectionProps) {
   return (
-    <div className="rounded-2xl bg-[#091224] border border-white/10 p-5 md:p-6 space-y-6 shadow-xl">
+    <div className="rounded-2xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] p-5 md:p-6 space-y-6 shadow-sm">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D9DED7] dark:border-[#304144] pb-4">
         <div>
-          <span className="text-[11px] font-mono uppercase tracking-widest text-cyan-400 font-bold">
+          <span className="text-[11px] font-mono uppercase tracking-widest text-[#356D68] dark:text-[#79A99C] font-bold">
             REPORTED MALICIOUS DOMAINS & INGRESS PATHS
           </span>
-          <h3 className="text-lg md:text-xl font-bold font-mono text-white flex items-center gap-2 mt-0.5">
-            <Globe className="w-5 h-5 text-cyan-400" />
+          <h3 className="text-lg md:text-xl font-bold font-mono text-[#182629] dark:text-[#E8E6DC] flex items-center gap-2 mt-0.5">
+            <Globe className="w-5 h-5 text-[#356D68] dark:text-[#79A99C]" />
             <span>Active Adversary Infrastructure Fleet</span>
-            <span className="text-xs font-mono text-slate-400 font-normal">
+            <span className="text-xs font-mono text-[#647477] dark:text-[#A6B3AE] font-normal">
               ({MOCK_MALICIOUS_DOMAINS.length} Hostile Domains)
             </span>
           </h3>
@@ -25,10 +25,10 @@ export function MaliciousDomainsSection({ onInvestigateDomain }: MaliciousDomain
       </div>
 
       {/* Malicious Domains Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-xl border border-[#D9DED7] dark:border-[#304144]">
         <table className="w-full text-left font-mono text-xs border-collapse">
           <thead>
-            <tr className="border-b border-white/10 text-slate-400 text-[11px]">
+            <tr className="bg-[#EAECE6] dark:bg-[#223336] text-[#647477] dark:text-[#A6B3AE] text-[11px] border-b border-[#D9DED7] dark:border-[#304144]">
               <th className="py-2.5 px-3 font-semibold">HOSTILE DOMAIN</th>
               <th className="py-2.5 px-3 font-semibold">THREAT CATEGORY</th>
               <th className="py-2.5 px-3 font-semibold">RISK SCORE</th>
@@ -37,29 +37,29 @@ export function MaliciousDomainsSection({ onInvestigateDomain }: MaliciousDomain
               <th className="py-2.5 px-3 font-semibold text-right">ACTION</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y divide-[#D9DED7] dark:divide-[#304144] bg-white dark:bg-[#19272A]">
             {MOCK_MALICIOUS_DOMAINS.map((domain) => (
-              <tr key={domain.id} className="hover:bg-white/[0.02] transition-colors">
+              <tr key={domain.id} className="hover:bg-[#F3F1E9] dark:hover:bg-[#223336]/40 transition-colors">
                 <td className="py-3 px-3">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
-                    <span className="font-bold text-slate-100">{domain.domain}</span>
+                    <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                    <span className="font-bold text-[#182629] dark:text-[#E8E6DC]">{domain.domain}</span>
                   </div>
-                  <span className="text-[10px] text-slate-500 block pt-0.5">Registrar: {domain.registrar}</span>
+                  <span className="text-[10px] text-[#647477] dark:text-[#A6B3AE] block pt-0.5">Registrar: {domain.registrar}</span>
                 </td>
                 <td className="py-3 px-3">
-                  <span className="px-2 py-0.5 rounded bg-rose-950/60 border border-rose-500/30 text-rose-300 text-[11px]">
+                  <span className="px-2 py-0.5 rounded bg-rose-500/10 dark:bg-rose-950/40 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-[11px]">
                     {domain.threatCategory}
                   </span>
                 </td>
-                <td className="py-3 px-3 font-bold text-rose-400">
+                <td className="py-3 px-3 font-bold text-rose-600 dark:text-rose-400">
                   {domain.riskScore}/100
                 </td>
                 <td className="py-3 px-3">
-                  <div className="text-slate-200">{domain.ipAddress}</div>
-                  <div className="text-[10px] text-slate-500">{domain.asnNumber} • {domain.asnOrg}</div>
+                  <div className="text-[#182629] dark:text-[#E8E6DC]">{domain.ipAddress}</div>
+                  <div className="text-[10px] text-[#647477] dark:text-[#A6B3AE]">{domain.asnNumber} • {domain.asnOrg}</div>
                 </td>
-                <td className="py-3 px-3 text-cyan-300">
+                <td className="py-3 px-3 text-[#356D68] dark:text-[#79A99C]">
                   {domain.associatedCampaignName}
                 </td>
                 <td className="py-3 px-3 text-right">
@@ -67,7 +67,7 @@ export function MaliciousDomainsSection({ onInvestigateDomain }: MaliciousDomain
                     <button
                       type="button"
                       onClick={() => onInvestigateDomain(domain.domain)}
-                      className="inline-flex items-center gap-1 text-[11px] text-cyan-400 hover:text-cyan-300 hover:underline cursor-pointer"
+                      className="inline-flex items-center gap-1 text-[11px] text-[#A95636] dark:text-[#C47A52] hover:underline cursor-pointer font-bold"
                     >
                       <span>Investigate</span>
                       <ArrowRight className="w-3 h-3" />
@@ -81,26 +81,26 @@ export function MaliciousDomainsSection({ onInvestigateDomain }: MaliciousDomain
       </div>
 
       {/* Related Suspicious URLs Sub-Panel */}
-      <div className="rounded-xl bg-[#060b17] border border-white/5 p-4 space-y-3 font-mono text-xs">
-        <h4 className="font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-          <ShieldAlert className="w-4 h-4 text-rose-400" />
+      <div className="rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] p-4 space-y-3 font-mono text-xs">
+        <h4 className="font-bold text-[#182629] dark:text-[#E8E6DC] uppercase tracking-wider flex items-center gap-2">
+          <ShieldAlert className="w-4 h-4 text-rose-600 dark:text-rose-400" />
           Related Suspicious URLs & Weaponized Landing Endpoints ({MOCK_RELATED_URLS.length})
         </h4>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {MOCK_RELATED_URLS.map((rel) => (
-            <div key={rel.id} className="p-3 rounded-lg bg-slate-900 border border-white/5 space-y-1.5">
+            <div key={rel.id} className="p-3 rounded-lg bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 dark:bg-rose-950/30 text-rose-700 dark:text-rose-300 border border-rose-500/30">
                   {rel.detectionType}
                 </span>
-                <span className="text-[10px] text-slate-400">Confidence: {rel.confidence}%</span>
+                <span className="text-[10px] text-[#647477] dark:text-[#A6B3AE]">Confidence: {rel.confidence}%</span>
               </div>
-              <div className="p-2 rounded bg-black/50 text-cyan-300 break-all select-all text-[11px]">
+              <div className="p-2 rounded bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-[#356D68] dark:text-[#79A99C] break-all select-all text-[11px]">
                 {rel.url}
               </div>
               {rel.redirectTarget && (
-                <div className="text-[10px] text-amber-300 italic">
+                <div className="text-[10px] text-amber-700 dark:text-amber-300 italic">
                   Redirects to: {rel.redirectTarget}
                 </div>
               )}
@@ -111,4 +111,3 @@ export function MaliciousDomainsSection({ onInvestigateDomain }: MaliciousDomain
     </div>
   );
 }
-

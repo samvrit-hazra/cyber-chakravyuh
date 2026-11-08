@@ -25,9 +25,9 @@ export function LoadingSkeleton({
   return (
     <div
       className={cn(
-        'relative overflow-hidden bg-slate-800/40 border border-white/[0.04]',
+        'relative overflow-hidden bg-[#EAECE6] dark:bg-[#223336] border border-[#D9DED7]/40 dark:border-[#304144]/40',
         'before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite]',
-        'before:bg-gradient-to-r before:from-transparent before:via-cyan-400/10 before:to-transparent',
+        'before:bg-gradient-to-r before:from-transparent before:via-[#A95636]/10 dark:before:via-[#C47A52]/10 before:to-transparent',
         variantStyles[variant],
         className
       )}
@@ -43,7 +43,7 @@ export function LoadingSkeleton({
 
 export function CardSkeleton() {
   return (
-    <div className="p-5 rounded-xl border border-cyan-500/15 bg-[#0b152d]/60 backdrop-blur-md space-y-4">
+    <div className="p-5 rounded-xl border border-[#D9DED7] dark:border-[#304144] bg-white dark:bg-[#19272A] space-y-4 shadow-sm">
       <div className="flex items-center justify-between">
         <LoadingSkeleton variant="rectangular" width="40%" height={18} />
         <LoadingSkeleton variant="circular" width={24} height={24} />
@@ -60,7 +60,7 @@ export function CardSkeleton() {
 
 export function TableSkeleton({ rows = 4 }: { rows?: number }) {
   return (
-    <div className="rounded-xl border border-cyan-500/15 bg-[#0b152d]/70 p-4 space-y-3">
+    <div className="rounded-xl border border-[#D9DED7] dark:border-[#304144] bg-white dark:bg-[#19272A] p-4 space-y-3 shadow-sm">
       <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
         <LoadingSkeleton variant="rectangular" width="25%" height={16} />
         <LoadingSkeleton variant="rectangular" width="15%" height={16} />

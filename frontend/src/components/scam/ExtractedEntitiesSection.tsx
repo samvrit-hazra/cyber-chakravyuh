@@ -28,77 +28,53 @@ export function ExtractedEntitiesSection({
   };
 
   return (
-    <div className="rounded-2xl bg-[#091224] border border-white/10 p-5 md:p-6 space-y-6 shadow-xl">
+    <div className="rounded-2xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] p-5 md:p-6 space-y-6 shadow-sm">
       {/* Header and Filter Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#D9DED7] dark:border-[#304144] pb-4">
         <div>
-          <span className="text-[11px] font-mono uppercase tracking-widest text-purple-400 font-bold">
+          <span className="text-[11px] font-mono uppercase tracking-widest text-[#A95636] dark:text-[#C47A52] font-bold">
             SECTIONS 6-9 • TECHNICAL ARTIFACTS & ENTITY EXTRACTION
           </span>
-          <h3 className="text-lg md:text-xl font-bold font-mono text-white flex items-center gap-2 mt-0.5">
-            <Layers className="w-5 h-5 text-purple-400" />
+          <h3 className="text-lg md:text-xl font-bold font-mono text-[#182629] dark:text-[#E8E6DC] flex items-center gap-2 mt-0.5">
+            <Layers className="w-5 h-5 text-[#A95636] dark:text-[#C47A52]" />
             <span>Parsed Ingress Telemetry</span>
-            <span className="text-xs font-mono text-slate-400 font-normal">({totalCount} Indicators)</span>
+            <span className="text-xs font-mono text-[#647477] dark:text-[#A6B3AE] font-normal">({totalCount} Indicators)</span>
           </h3>
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-lg border border-white/5 text-xs font-mono">
-          <button
-            onClick={() => setActiveTab('all')}
-            className={`px-2.5 py-1 rounded transition-colors cursor-pointer ${
-              activeTab === 'all'
-                ? 'bg-purple-600/30 text-purple-300 font-bold border border-purple-500/40'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            All ({totalCount})
-          </button>
-          <button
-            onClick={() => setActiveTab('urls')}
-            className={`px-2.5 py-1 rounded transition-colors cursor-pointer ${
-              activeTab === 'urls'
-                ? 'bg-purple-600/30 text-purple-300 font-bold border border-purple-500/40'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            URLs ({extractedUrls.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('emails')}
-            className={`px-2.5 py-1 rounded transition-colors cursor-pointer ${
-              activeTab === 'emails'
-                ? 'bg-purple-600/30 text-purple-300 font-bold border border-purple-500/40'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            Emails ({extractedEmails.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('phones')}
-            className={`px-2.5 py-1 rounded transition-colors cursor-pointer ${
-              activeTab === 'phones'
-                ? 'bg-purple-600/30 text-purple-300 font-bold border border-purple-500/40'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            Phones ({extractedPhones.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('entities')}
-            className={`px-2.5 py-1 rounded transition-colors cursor-pointer ${
-              activeTab === 'entities'
-                ? 'bg-purple-600/30 text-purple-300 font-bold border border-purple-500/40'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            Entities ({suspiciousEntities.length})
-          </button>
+        <div className="flex items-center gap-1 bg-[#F3F1E9] dark:bg-[#101A1D] p-1 rounded-lg border border-[#D9DED7] dark:border-[#304144] text-xs font-mono">
+          {(['all', 'urls', 'emails', 'phones', 'entities'] as const).map((tab) => {
+            const count =
+              tab === 'all'
+                ? totalCount
+                : tab === 'urls'
+                ? extractedUrls.length
+                : tab === 'emails'
+                ? extractedEmails.length
+                : tab === 'phones'
+                ? extractedPhones.length
+                : suspiciousEntities.length;
+            const label = tab === 'all' ? 'All' : tab.charAt(0).toUpperCase() + tab.slice(1);
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-2.5 py-1 rounded transition-colors cursor-pointer ${
+                  activeTab === tab
+                    ? 'bg-white dark:bg-[#223336] text-[#A95636] dark:text-[#C47A52] font-bold shadow-xs border border-[#D9DED7] dark:border-[#304144]'
+                    : 'text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC]'
+                }`}
+              >
+                {label} ({count})
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {totalCount === 0 ? (
-        <div className="p-8 text-center rounded-xl bg-[#060b17] border border-white/5 font-mono text-xs text-slate-400">
+        <div className="p-8 text-center rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] font-mono text-xs text-[#647477] dark:text-[#A6B3AE]">
           No external URLs, email inboxes, telephone routing numbers, or financial tokens parsed in this message.
         </div>
       ) : (
@@ -108,41 +84,41 @@ export function ExtractedEntitiesSection({
             extractedUrls.map((urlItem, idx) => (
               <div
                 key={`url-${idx}`}
-                className="p-4 rounded-xl bg-[#060b17] border border-white/5 space-y-2 font-mono text-xs hover:border-purple-500/30 transition-colors"
+                className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] space-y-2 font-mono text-xs hover:border-[#A95636]/40 transition-colors"
               >
                 <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 font-bold text-cyan-400 text-sm">
+                  <span className="flex items-center gap-1.5 font-bold text-[#356D68] dark:text-[#79A99C] text-sm">
                     <Globe className="w-4 h-4" /> Extracted URL
                   </span>
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
                       urlItem.riskRating === 'Hostile'
-                        ? 'bg-rose-500/20 border-rose-500/40 text-rose-300'
+                        ? 'bg-rose-500/10 dark:bg-rose-950/30 border-rose-500/30 text-rose-700 dark:text-rose-300'
                         : urlItem.riskRating === 'Suspicious'
-                        ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
-                        : 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+                        ? 'bg-amber-500/10 dark:bg-amber-950/30 border-amber-500/30 text-amber-700 dark:text-amber-300'
+                        : 'bg-emerald-500/10 dark:bg-emerald-950/30 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
                     }`}
                   >
                     {urlItem.riskRating}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between bg-black/50 p-2.5 rounded border border-white/5">
-                  <span className="text-slate-200 break-all select-all">{urlItem.url}</span>
+                <div className="flex items-center justify-between bg-white dark:bg-[#19272A] p-2.5 rounded border border-[#D9DED7] dark:border-[#304144]">
+                  <span className="text-[#182629] dark:text-[#E8E6DC] break-all select-all font-mono">{urlItem.url}</span>
                   <button
                     type="button"
                     onClick={() => handleCopy(urlItem.url)}
-                    className="ml-2 text-slate-400 hover:text-cyan-400 shrink-0 cursor-pointer"
+                    className="ml-2 text-[#647477] dark:text-[#A6B3AE] hover:text-[#A95636] dark:hover:text-[#C47A52] shrink-0 cursor-pointer"
                   >
-                    {copiedValue === urlItem.url ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedValue === urlItem.url ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                   </button>
                 </div>
 
-                <div className="flex justify-between text-[11px] text-slate-400 pt-1">
-                  <span>Host: <strong className="text-slate-200">{urlItem.domain}</strong></span>
-                  {urlItem.isShortened && <span className="text-amber-400 font-semibold">Shortened URL</span>}
+                <div className="flex justify-between text-[11px] text-[#647477] dark:text-[#A6B3AE] pt-1">
+                  <span>Host: <strong className="text-[#182629] dark:text-[#E8E6DC]">{urlItem.domain}</strong></span>
+                  {urlItem.isShortened && <span className="text-amber-600 dark:text-amber-400 font-semibold">Shortened URL</span>}
                 </div>
-                {urlItem.notes && <p className="text-[11px] text-slate-400 italic">{urlItem.notes}</p>}
+                {urlItem.notes && <p className="text-[11px] text-[#647477] dark:text-[#A6B3AE] italic">{urlItem.notes}</p>}
               </div>
             ))}
 
@@ -151,37 +127,37 @@ export function ExtractedEntitiesSection({
             extractedEmails.map((emailItem, idx) => (
               <div
                 key={`email-${idx}`}
-                className="p-4 rounded-xl bg-[#060b17] border border-white/5 space-y-2 font-mono text-xs hover:border-purple-500/30 transition-colors"
+                className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] space-y-2 font-mono text-xs hover:border-[#A95636]/40 transition-colors"
               >
                 <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 font-bold text-purple-400 text-sm">
+                  <span className="flex items-center gap-1.5 font-bold text-[#A95636] dark:text-[#C47A52] text-sm">
                     <Mail className="w-4 h-4" /> Extracted Email
                   </span>
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
                       emailItem.isLookalike
-                        ? 'bg-rose-500/20 border-rose-500/40 text-rose-300'
+                        ? 'bg-rose-500/10 dark:bg-rose-950/30 border-rose-500/30 text-rose-700 dark:text-rose-300'
                         : emailItem.isFreeProvider
-                        ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
-                        : 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+                        ? 'bg-amber-500/10 dark:bg-amber-950/30 border-amber-500/30 text-amber-700 dark:text-amber-300'
+                        : 'bg-emerald-500/10 dark:bg-emerald-950/30 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
                     }`}
                   >
                     {emailItem.isLookalike ? 'Lookalike Domain' : emailItem.isFreeProvider ? 'Free Webmail' : 'Enterprise'}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between bg-black/50 p-2.5 rounded border border-white/5">
-                  <span className="text-slate-200 break-all select-all">{emailItem.address}</span>
+                <div className="flex items-center justify-between bg-white dark:bg-[#19272A] p-2.5 rounded border border-[#D9DED7] dark:border-[#304144]">
+                  <span className="text-[#182629] dark:text-[#E8E6DC] break-all select-all">{emailItem.address}</span>
                   <button
                     type="button"
                     onClick={() => handleCopy(emailItem.address)}
-                    className="ml-2 text-slate-400 hover:text-purple-400 shrink-0 cursor-pointer"
+                    className="ml-2 text-[#647477] dark:text-[#A6B3AE] hover:text-[#A95636] dark:hover:text-[#C47A52] shrink-0 cursor-pointer"
                   >
-                    {copiedValue === emailItem.address ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedValue === emailItem.address ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                   </button>
                 </div>
 
-                {emailItem.notes && <p className="text-[11px] text-slate-400 italic">{emailItem.notes}</p>}
+                {emailItem.notes && <p className="text-[11px] text-[#647477] dark:text-[#A6B3AE] italic">{emailItem.notes}</p>}
               </div>
             ))}
 
@@ -190,35 +166,35 @@ export function ExtractedEntitiesSection({
             extractedPhones.map((phoneItem, idx) => (
               <div
                 key={`phone-${idx}`}
-                className="p-4 rounded-xl bg-[#060b17] border border-white/5 space-y-2 font-mono text-xs hover:border-purple-500/30 transition-colors"
+                className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] space-y-2 font-mono text-xs hover:border-[#A95636]/40 transition-colors"
               >
                 <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 font-bold text-amber-400 text-sm">
+                  <span className="flex items-center gap-1.5 font-bold text-amber-600 dark:text-amber-400 text-sm">
                     <Phone className="w-4 h-4" /> Extracted Phone Number
                   </span>
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
                       phoneItem.isTollFreeOrVoip
-                        ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
-                        : 'bg-slate-500/20 border-slate-500/40 text-slate-300'
+                        ? 'bg-amber-500/10 dark:bg-amber-950/30 border-amber-500/30 text-amber-700 dark:text-amber-300'
+                        : 'bg-slate-500/10 dark:bg-slate-800/30 border-slate-400/30 text-slate-700 dark:text-slate-300'
                     }`}
                   >
                     {phoneItem.isTollFreeOrVoip ? 'Toll-Free / VoIP' : 'Direct'}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between bg-black/50 p-2.5 rounded border border-white/5">
-                  <span className="text-slate-200 break-all select-all font-bold">{phoneItem.formatted}</span>
+                <div className="flex items-center justify-between bg-white dark:bg-[#19272A] p-2.5 rounded border border-[#D9DED7] dark:border-[#304144]">
+                  <span className="text-[#182629] dark:text-[#E8E6DC] break-all select-all font-bold">{phoneItem.formatted}</span>
                   <button
                     type="button"
                     onClick={() => handleCopy(phoneItem.formatted)}
-                    className="ml-2 text-slate-400 hover:text-amber-400 shrink-0 cursor-pointer"
+                    className="ml-2 text-[#647477] dark:text-[#A6B3AE] hover:text-[#A95636] dark:hover:text-[#C47A52] shrink-0 cursor-pointer"
                   >
-                    {copiedValue === phoneItem.formatted ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedValue === phoneItem.formatted ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                   </button>
                 </div>
 
-                {phoneItem.notes && <p className="text-[11px] text-slate-400 italic">{phoneItem.notes}</p>}
+                {phoneItem.notes && <p className="text-[11px] text-[#647477] dark:text-[#A6B3AE] italic">{phoneItem.notes}</p>}
               </div>
             ))}
 
@@ -227,37 +203,37 @@ export function ExtractedEntitiesSection({
             suspiciousEntities.map((entity, idx) => (
               <div
                 key={`entity-${idx}`}
-                className="p-4 rounded-xl bg-[#060b17] border border-white/5 space-y-2 font-mono text-xs hover:border-purple-500/30 transition-colors"
+                className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] space-y-2 font-mono text-xs hover:border-[#A95636]/40 transition-colors"
               >
                 <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 font-bold text-rose-400 text-sm">
+                  <span className="flex items-center gap-1.5 font-bold text-rose-600 dark:text-rose-400 text-sm">
                     <ShieldAlert className="w-4 h-4" /> {entity.type}
                   </span>
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
                       entity.riskWeight === 'critical'
-                        ? 'bg-rose-500/20 border-rose-500/40 text-rose-300'
+                        ? 'bg-rose-500/10 dark:bg-rose-950/30 border-rose-500/30 text-rose-700 dark:text-rose-300'
                         : entity.riskWeight === 'high'
-                        ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
-                        : 'bg-blue-500/20 border-blue-500/40 text-blue-300'
+                        ? 'bg-amber-500/10 dark:bg-amber-950/30 border-amber-500/30 text-amber-700 dark:text-amber-300'
+                        : 'bg-[#356D68]/10 dark:bg-[#79A99C]/20 border-[#356D68]/30 text-[#356D68] dark:text-[#79A99C]'
                     }`}
                   >
                     {entity.riskWeight}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between bg-black/50 p-2.5 rounded border border-white/5">
-                  <span className="text-slate-200 break-all select-all font-bold">{entity.name}</span>
+                <div className="flex items-center justify-between bg-white dark:bg-[#19272A] p-2.5 rounded border border-[#D9DED7] dark:border-[#304144]">
+                  <span className="text-[#182629] dark:text-[#E8E6DC] break-all select-all font-bold">{entity.name}</span>
                   <button
                     type="button"
                     onClick={() => handleCopy(entity.name)}
-                    className="ml-2 text-slate-400 hover:text-rose-400 shrink-0 cursor-pointer"
+                    className="ml-2 text-[#647477] dark:text-[#A6B3AE] hover:text-rose-600 dark:hover:text-rose-400 shrink-0 cursor-pointer"
                   >
-                    {copiedValue === entity.name ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedValue === entity.name ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                   </button>
                 </div>
 
-                <p className="text-[11px] text-slate-300 font-sans">{entity.details}</p>
+                <p className="text-[11px] text-[#647477] dark:text-[#A6B3AE] font-sans">{entity.details}</p>
               </div>
             ))}
         </div>
@@ -265,4 +241,3 @@ export function ExtractedEntitiesSection({
     </div>
   );
 }
-

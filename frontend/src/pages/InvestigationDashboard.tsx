@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Shield, ExternalLink, Terminal, AlertCircle, RefreshCw } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Terminal, AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '../components/common/Button.tsx';
 import { Badge } from '../components/common/Badge.tsx';
 import { LoadingState } from '../components/common/LoadingState.tsx';
@@ -71,12 +71,12 @@ export function InvestigationDashboard({
   }, [initialUrl]);
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 flex flex-col relative selection:bg-cyan-500/30 selection:text-cyan-200">
+    <div className="min-h-screen bg-[#F3F1E9] dark:bg-[#101A1D] text-[#182629] dark:text-[#E8E6DC] flex flex-col relative selection:bg-[#A95636]/20 selection:text-[#A95636]">
       {/* Background Animated Constellation */}
       <NetworkBackground opacity={0.3} nodeCount={32} />
 
       {/* Top Header */}
-      <header className="sticky top-0 z-30 bg-[#030712]/90 backdrop-blur-md border-b border-white/[0.08] px-4 sm:px-6 lg:px-8 py-3.5">
+      <header className="sticky top-0 z-30 bg-white/90 dark:bg-[#19272A]/90 backdrop-blur-md border-b border-[#D9DED7] dark:border-[#304144] px-4 sm:px-6 lg:px-8 py-3.5">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Button
@@ -84,20 +84,18 @@ export function InvestigationDashboard({
               size="sm"
               onClick={onBackToLanding}
               leftIcon={<ArrowLeft className="w-4 h-4" />}
-              className="font-mono text-xs border-white/10 text-slate-300 hover:text-white"
+              className="font-mono text-xs border-[#D9DED7] dark:border-[#304144] text-[#182629] dark:text-[#E8E6DC] hover:border-[#A95636] dark:hover:border-[#C47A52]"
             >
               Back to Home
             </Button>
 
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-600 to-purple-600 flex items-center justify-center p-0.5 shadow-[0_0_12px_rgba(6,182,212,0.4)]">
-                <Shield className="w-5 h-5 text-white" />
-              </div>
+              <img src="/logo.png" alt="Cyber Chakravyuh" className="w-8 h-8 object-contain" />
               <div className="hidden sm:block">
-                <span className="font-mono font-bold text-sm tracking-wider text-white">
+                <span className="font-mono font-bold text-sm tracking-wider text-[#182629] dark:text-[#E8E6DC]">
                   CYBER CHAKRAVYUHA
                 </span>
-                <span className="text-[10px] font-mono text-cyan-400 block -mt-0.5">
+                <span className="text-[10px] font-mono text-[#A95636] dark:text-[#C47A52] block -mt-0.5">
                   DEEP FORENSIC INVESTIGATION LAB
                 </span>
               </div>
@@ -191,7 +189,7 @@ export function InvestigationDashboard({
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/[0.06] bg-[#030712]/80 py-4 px-6 text-center text-xs font-mono text-slate-500 relative z-10">
+      <footer className="border-t border-[#D9DED7] dark:border-[#304144] bg-white/80 dark:bg-[#19272A]/80 py-4 px-6 text-center text-xs font-mono text-[#647477] dark:text-[#A6B3AE] relative z-10">
         Cyber Chakravyuha • Multi-Vector Digital Trust Intelligence • Zero-Trust Heuristic Engine
       </footer>
     </div>

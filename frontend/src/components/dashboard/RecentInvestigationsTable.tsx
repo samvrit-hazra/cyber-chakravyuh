@@ -54,7 +54,7 @@ export function RecentInvestigationsTable({
       {/* Search & Filter Toolbar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#647477] dark:text-[#A6B3AE] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={query}
@@ -63,7 +63,7 @@ export function RecentInvestigationsTable({
               setCurrentPage(1);
             }}
             placeholder="Search submitted URL, incident ID, campaign, category..."
-            className="w-full h-9 pl-9 pr-3 rounded-lg bg-[#0b152d]/90 text-xs text-slate-200 placeholder-slate-500 border border-cyan-500/20 focus:outline-none focus:border-cyan-400 font-mono transition-all"
+            className="w-full h-9 pl-9 pr-3 rounded-lg bg-white dark:bg-[#19272A] text-xs text-[#182629] dark:text-[#E8E6DC] placeholder-[#647477] dark:placeholder-[#A6B3AE] border border-[#D9DED7] dark:border-[#304144] focus:outline-none focus:border-[#A95636] dark:focus:border-[#C47A52] font-mono transition-all"
           />
         </div>
 
@@ -109,11 +109,11 @@ export function RecentInvestigationsTable({
       </div>
 
       {/* Cyber Table Frame */}
-      <div className="overflow-hidden rounded-xl border border-cyan-500/15 bg-[#0b152d]/80 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
+      <div className="overflow-hidden rounded-xl border border-[#D9DED7] dark:border-[#304144] bg-white dark:bg-[#19272A] shadow-sm dark:shadow-2xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-white/[0.08] bg-[#070d1e]/90 text-slate-400 uppercase font-mono tracking-wider">
+              <tr className="border-b border-[#D9DED7] dark:border-[#304144] bg-[#EAECE6] dark:bg-[#223336] text-[#647477] dark:text-[#A6B3AE] uppercase font-mono tracking-wider">
                 <th className="p-3.5 font-semibold">Incident ID & URL</th>
                 <th className="p-3.5 font-semibold">Investigation Type</th>
                 <th className="p-3.5 font-semibold">Risk Level</th>
@@ -122,10 +122,10 @@ export function RecentInvestigationsTable({
                 <th className="p-3.5 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.05]">
+            <tbody className="divide-y divide-[#D9DED7] dark:divide-[#304144]">
               {paginatedRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-slate-500 font-mono">
+                  <td colSpan={6} className="p-8 text-center text-[#647477] dark:text-[#A6B3AE] font-mono">
                     No matching investigation records found.
                   </td>
                 </tr>
@@ -140,7 +140,7 @@ export function RecentInvestigationsTable({
                     : isHigh
                     ? 'amber'
                     : isGuarded
-                    ? 'purple'
+                    ? 'copper'
                     : 'emerald';
 
                   const statusBadgeVariant =
@@ -155,22 +155,22 @@ export function RecentInvestigationsTable({
                   return (
                     <tr
                       key={record.id}
-                      className="hover:bg-slate-800/40 transition-colors group cursor-pointer"
+                      className="hover:bg-[#EAECE6] dark:hover:bg-[#223336] transition-colors group cursor-pointer"
                       onClick={() => onViewReport(record)}
                     >
                       {/* URL & ID */}
                       <td className="p-3.5">
                         <div className="space-y-0.5">
                           <div className="flex items-center gap-2">
-                            <span className="font-mono font-bold text-cyan-400 text-xs">
+                            <span className="font-mono font-bold text-[#A95636] dark:text-[#C47A52] text-xs">
                               {record.id}
                             </span>
-                            <span className="text-[10px] text-slate-400 font-mono truncate max-w-[120px]">
+                            <span className="text-[10px] text-[#647477] dark:text-[#A6B3AE] font-mono truncate max-w-[120px]">
                               {record.threatCategory}
                             </span>
                           </div>
                           <div className="flex items-center gap-1.5 max-w-sm">
-                            <span className="text-slate-200 font-mono truncate text-xs group-hover:text-cyan-200">
+                            <span className="text-[#182629] dark:text-[#E8E6DC] font-mono truncate text-xs group-hover:text-[#A95636] dark:group-hover:text-[#C47A52]">
                               {record.url}
                             </span>
                             <button
@@ -179,11 +179,11 @@ export function RecentInvestigationsTable({
                                 e.stopPropagation();
                                 handleCopyUrl(record.url, record.id);
                               }}
-                              className="text-slate-500 hover:text-slate-300 transition-colors p-0.5 cursor-pointer"
+                              className="text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC] transition-colors p-0.5 cursor-pointer"
                               title="Copy URL"
                             >
                               {copiedId === record.id ? (
-                                <Check className="w-3 h-3 text-cyan-400" />
+                                <Check className="w-3 h-3 text-[#36745F] dark:text-[#79B69A]" />
                               ) : (
                                 <Copy className="w-3 h-3" />
                               )}
@@ -193,7 +193,7 @@ export function RecentInvestigationsTable({
                       </td>
 
                       {/* Type */}
-                      <td className="p-3.5 font-mono text-slate-300">
+                      <td className="p-3.5 font-mono text-[#647477] dark:text-[#A6B3AE]">
                         <span className="text-xs">{record.type}</span>
                       </td>
 
@@ -206,10 +206,10 @@ export function RecentInvestigationsTable({
                           <span
                             className={`text-xs font-bold ${
                               isCritical
-                                ? 'text-rose-400'
+                                ? 'text-[#B64B46] dark:text-[#E17B70]'
                                 : isHigh
-                                ? 'text-amber-400'
-                                : 'text-emerald-400'
+                                ? 'text-[#A87532] dark:text-[#D7AA61]'
+                                : 'text-[#36745F] dark:text-[#79B69A]'
                             }`}
                           >
                             {record.riskScore}/100
@@ -225,7 +225,7 @@ export function RecentInvestigationsTable({
                       </td>
 
                       {/* Timestamp */}
-                      <td className="p-3.5 font-mono text-xs text-slate-400 whitespace-nowrap">
+                      <td className="p-3.5 font-mono text-xs text-[#647477] dark:text-[#A6B3AE] whitespace-nowrap">
                         {record.timestamp}
                       </td>
 
@@ -250,10 +250,10 @@ export function RecentInvestigationsTable({
 
         {/* Pagination Bar */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between p-3.5 border-t border-white/[0.06] bg-[#070d1e]/90 text-xs font-mono">
-            <span className="text-slate-400">
-              Showing <strong className="text-slate-200">{paginatedRecords.length}</strong> of{' '}
-              <strong className="text-slate-200">{filteredRecords.length}</strong> records
+          <div className="flex items-center justify-between p-3.5 border-t border-[#D9DED7] dark:border-[#304144] bg-[#EAECE6] dark:bg-[#223336] text-xs font-mono">
+            <span className="text-[#647477] dark:text-[#A6B3AE]">
+              Showing <strong className="text-[#182629] dark:text-[#E8E6DC]">{paginatedRecords.length}</strong> of{' '}
+              <strong className="text-[#182629] dark:text-[#E8E6DC]">{filteredRecords.length}</strong> records
             </span>
 
             <div className="flex items-center gap-2">
@@ -266,7 +266,7 @@ export function RecentInvestigationsTable({
               >
                 Previous
               </Button>
-              <span className="text-slate-300 font-bold px-2">
+              <span className="text-[#182629] dark:text-[#E8E6DC] font-bold px-2">
                 {currentPage} / {totalPages}
               </span>
               <Button

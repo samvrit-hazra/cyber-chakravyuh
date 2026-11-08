@@ -27,7 +27,7 @@ export function OverviewTab({
   const statIcons = [
     <Search key="search" className="w-5 h-5 text-cyan-400" />,
     <ShieldAlert key="alert" className="w-5 h-5 text-rose-400" />,
-    <Globe key="globe" className="w-5 h-5 text-purple-400" />,
+    <Globe key="globe" className="w-5 h-5 text-[#C47A52]" />,
     <FileCheck2 key="check" className="w-5 h-5 text-emerald-400" />,
   ];
 
@@ -54,8 +54,8 @@ export function OverviewTab({
         <div className="w-14 h-14 rounded-2xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400 mx-auto">
           <AlertTriangle className="w-7 h-7" />
         </div>
-        <h3 className="text-lg font-bold text-white">SOC Telemetry Stream Interrupted</h3>
-        <p className="text-xs text-slate-300 leading-relaxed">
+        <h3 className="text-lg font-bold text-[#182629] dark:text-[#E8E6DC]">SOC Telemetry Stream Interrupted</h3>
+        <p className="text-xs text-[#647477] dark:text-[#A6B3AE] leading-relaxed">
           Unable to establish synchronized mTLS handshake with the Saptarishi Invariant stream. Gateway buffer returned status 503.
         </p>
         <Button
@@ -73,12 +73,12 @@ export function OverviewTab({
 
   if (stateMode === 'empty') {
     return (
-      <div className="p-12 text-center rounded-2xl border border-cyan-500/20 bg-[#0b152d]/60 backdrop-blur-xl space-y-4 max-w-lg mx-auto my-12">
-        <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mx-auto">
+      <div className="p-12 text-center rounded-2xl border border-[#D9DED7] dark:border-[#304144] bg-white dark:bg-[#19272A] shadow-sm space-y-4 max-w-lg mx-auto my-12">
+        <div className="w-14 h-14 rounded-2xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] flex items-center justify-center text-[#A95636] dark:text-[#C47A52] mx-auto">
           <Globe className="w-7 h-7" />
         </div>
-        <h3 className="text-lg font-bold text-white">No Telemetry Ingress Recorded</h3>
-        <p className="text-xs text-slate-300 leading-relaxed">
+        <h3 className="text-lg font-bold text-[#182629] dark:text-[#E8E6DC]">No Telemetry Ingress Recorded</h3>
+        <p className="text-xs text-[#647477] dark:text-[#A6B3AE] leading-relaxed">
           All 7 Chakravyuha rings are online, but no target URLs have been submitted for evaluation yet.
         </p>
         <Button
@@ -147,7 +147,7 @@ export function OverviewTab({
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
+            <h3 className="text-base font-bold text-[#182629] dark:text-[#E8E6DC] flex items-center gap-2">
               <FileCheck2 className="w-5 h-5 text-cyan-400" />
               Recent Security Investigations Log
             </h3>

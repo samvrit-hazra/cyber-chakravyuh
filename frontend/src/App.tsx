@@ -1,71 +1,43 @@
-import { useState } from 'react';
+import { NavigationProvider, useNavigation } from './context/NavigationContext.tsx';
 import { LandingPage } from './pages/LandingPage.tsx';
-import { DashboardPage } from './pages/DashboardPage.tsx';
-import { InvestigationDashboard } from './pages/InvestigationDashboard.tsx';
-import { DesignSystemShowcase } from './pages/DesignSystemShowcase.tsx';
-import type { DashboardTabId } from './components/dashboard/DashboardSidebar.tsx';
+import { UrlAnalyzerPage } from './pages/UrlAnalyzerPage.tsx';
+import { TlsInspectorPage } from './pages/TlsInspectorPage.tsx';
+import { SmsScannerPage } from './pages/SmsScannerPage.tsx';
+import { SecurityAuditorPage } from './pages/SecurityAuditorPage.tsx';
+import { ThreatIntelPage } from './pages/ThreatIntelPage.tsx';
+import { ThreatRegistryPage } from './pages/ThreatRegistryPage.tsx';
+import { Web3ThreatPage } from './pages/Web3ThreatPage.tsx';
+
+function AppContent() {
+  const { currentPage } = useNavigation();
+
+  switch (currentPage) {
+    case 'url-analyzer':
+      return <UrlAnalyzerPage />;
+    case 'tls-inspector':
+      return <TlsInspectorPage />;
+    case 'sms-scanner':
+      return <SmsScannerPage />;
+    case 'security-auditor':
+      return <SecurityAuditorPage />;
+    case 'threat-intel':
+      return <ThreatIntelPage />;
+    case 'web3-threat':
+      return <Web3ThreatPage />;
+    case 'threat-registry':
+    case 'analyst-console':
+      return <ThreatRegistryPage />;
+    case 'home':
+    default:
+      return <LandingPage />;
+  }
+}
 
 export function App() {
-  const [currentPage, setCurrentPage] = useState<'landing' | 'dashboard' | 'investigation' | 'design-system'>('landing');
-  const [dashboardTab, setDashboardTab] = useState<DashboardTabId>('overview');
-  const [targetUrl, setTargetUrl] = useState<string>('https://security-verify.paypal.account-update.phish-alert.net/login');
-
-  const handleStartInvestigation = (url?: string) => {
-    if (url) {
-      setTargetUrl(url);
-    }
-    setDashboardTab('url-investigation');
-    setCurrentPage('dashboard');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleLaunchDashboard = () => {
-    setDashboardTab('overview');
-    setCurrentPage('dashboard');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleBackToLanding = () => {
-    setCurrentPage('landing');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleOpenDesignSystem = () => {
-    setCurrentPage('design-system');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
-    <>
-      {currentPage === 'landing' && (
-        <LandingPage
-          onStartInvestigation={handleStartInvestigation}
-          onLaunchDashboard={handleLaunchDashboard}
-          onOpenDesignSystem={handleOpenDesignSystem}
-        />
-      )}
-
-      {currentPage === 'dashboard' && (
-        <DashboardPage
-          onBackToLanding={handleBackToLanding}
-          onOpenDesignSystem={handleOpenDesignSystem}
-          initialTab={dashboardTab}
-          initialUrl={targetUrl}
-        />
-      )}
-
-      {currentPage === 'investigation' && (
-        <InvestigationDashboard
-          initialUrl={targetUrl}
-          onBackToLanding={handleBackToLanding}
-          onOpenDesignSystem={handleOpenDesignSystem}
-        />
-      )}
-
-      {currentPage === 'design-system' && (
-        <DesignSystemShowcase onBackToLanding={handleBackToLanding} />
-      )}
-    </>
+    <NavigationProvider>
+      <AppContent />
+    </NavigationProvider>
   );
 }
 
