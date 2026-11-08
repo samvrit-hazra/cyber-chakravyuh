@@ -1,7 +1,7 @@
 import { performUrlInvestigation } from '../utils/investigationEngine.ts';
-import { performScamAnalysis, SCAM_EXAMPLE_PRESETS } from '../utils/scamAnalysisEngine.ts';
-import { performTlsInvestigation, TLS_PRESET_SCENARIOS } from '../utils/tlsAnalysisEngine.ts';
-import { performWebsiteSecurityAssessment, WEBSITE_PRESET_SCENARIOS } from '../utils/websiteSecurityEngine.ts';
+import { performScamAnalysis } from '../utils/scamAnalysisEngine.ts';
+import { performTlsInvestigation } from '../utils/tlsAnalysisEngine.ts';
+import { performWebsiteSecurityAssessment } from '../utils/websiteSecurityEngine.ts';
 import { ThreatApiService } from '../services/threatApi.ts';
 
 declare const process: { exit: (code: number) => void };
@@ -51,7 +51,7 @@ async function runAudit() {
 
   // TEST 2: Scam & Message Analysis Engine
   console.log('\n--- 2. Testing AI-Powered Scam Analysis Engine ---');
-  const urgentPhishMsg = SCAM_EXAMPLE_PRESETS[0].sampleText; // Bank KYC freeze lure
+  const urgentPhishMsg = 'CHASE BANK ALERT: Unrecognized transaction of $1,429.99 attempted at Target NY. Verify identity at https://chase-security-resolver.online/unlock?case=9412 or debit card will be permanently canceled within 2 hours.';
   const scamRes = await performScamAnalysis(urgentPhishMsg);
   assert(
     scamRes.riskClassification === 'Confirmed Scam / Fraud' || scamRes.riskClassification === 'High Risk / Likely Deceptive',
@@ -64,7 +64,7 @@ async function runAudit() {
   assert(scamRes.urgencyAndManipulation.indicators.length > 0, 'Detects artificial countdown and urgency pressure');
 
   // Test that urgency alone is NOT automatically classified as fraud (Requirement from Phase 5)
-  const benignUrgent = SCAM_EXAMPLE_PRESETS[5].sampleText;
+  const benignUrgent = '[P1 INCIDENT ALERT] Production Cluster us-east-4 CPU threshold exceeded 94% on worker node pool k8s-prd-09. Automated replica scaling triggered. SRE on-call review Grafana https://monitoring.internal.acme-corp.com/d/cluster-health';
   const benignUrgentRes = await performScamAnalysis(benignUrgent);
   assert(
     benignUrgentRes.riskClassification === 'Low Risk / Likely Legitimate',
@@ -77,7 +77,7 @@ async function runAudit() {
 
   // TEST 3: TLS Certificate Intelligence
   console.log('\n--- 3. Testing TLS Certificate Engine ---');
-  const tlsDomain = TLS_PRESET_SCENARIOS[0].domain;
+  const tlsDomain = 'accounts.google.com';
   const tlsResult = await performTlsInvestigation(tlsDomain);
   assert(
     tlsResult.certificateStatus === 'Valid & Trusted' || tlsResult.daysRemaining > 0,
@@ -88,7 +88,7 @@ async function runAudit() {
 
   // TEST 4: Website Security Assessment (Passive & Non-Exploitative)
   console.log('\n--- 4. Testing Website Security Assessment Engine ---');
-  const siteUrl = WEBSITE_PRESET_SCENARIOS[0].url;
+  const siteUrl = 'https://accounts.google.com';
   const secResult = await performWebsiteSecurityAssessment(siteUrl);
   assert(secResult.securityScore >= 0 && secResult.securityScore <= 100, 'Computes security hygiene score in [0, 100]');
   assert(secResult.categoryScores.length === 7, 'Audits all 7 mandatory security assessment categories');

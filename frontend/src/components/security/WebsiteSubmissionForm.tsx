@@ -2,11 +2,8 @@ import { useState, type KeyboardEvent } from 'react';
 import { Globe, ArrowRight, X, Sparkles, AlertCircle } from 'lucide-react';
 import { Button } from '../common/Button.tsx';
 import {
-  WEBSITE_PRESET_SCENARIOS,
   normalizeTargetUrl,
-  type WebsitePresetScenario,
 } from '../../utils/websiteSecurityEngine.ts';
-import type { SecurityGrade } from '../../types/websiteSecurity.ts';
 
 interface WebsiteSubmissionFormProps {
   onAssess: (url: string) => void;
@@ -17,7 +14,7 @@ interface WebsiteSubmissionFormProps {
 export function WebsiteSubmissionForm({
   onAssess,
   isLoading = false,
-  initialUrl = 'https://paypal-security-verification.phish-login.net',
+  initialUrl = '',
 }: WebsiteSubmissionFormProps) {
   const [urlInput, setUrlInput] = useState(initialUrl);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -43,27 +40,6 @@ export function WebsiteSubmissionForm({
   const handleClear = () => {
     setUrlInput('');
     setValidationError(null);
-  };
-
-  const handleSelectPreset = (preset: WebsitePresetScenario) => {
-    setUrlInput(preset.url);
-    setValidationError(null);
-    onAssess(preset.url);
-  };
-
-  const getPillStyle = (grade: SecurityGrade) => {
-    switch (grade) {
-      case 'A+':
-      case 'A':
-        return 'border-[#36745F]/30 dark:border-[#79B69A]/30 text-[#36745F] dark:text-[#79B69A] bg-[#36745F]/10 dark:bg-[#79B69A]/10';
-      case 'B':
-      case 'C':
-        return 'border-[#A87532]/30 dark:border-[#D7AA61]/30 text-[#A87532] dark:text-[#D7AA61] bg-[#A87532]/10 dark:bg-[#D7AA61]/10';
-      case 'D':
-      case 'F':
-      default:
-        return 'border-[#B64B46]/30 dark:border-[#E17B70]/30 text-[#B64B46] dark:text-[#E17B70] bg-[#B64B46]/10 dark:bg-[#E17B70]/10';
-    }
   };
 
   return (
@@ -145,25 +121,10 @@ export function WebsiteSubmissionForm({
           </div>
         )}
 
-        {/* Preset Scenarios Selector */}
-        <div className="pt-2 border-t border-[#D9DED7] dark:border-[#304144] flex flex-col md:flex-row md:items-center gap-2 text-xs font-mono">
-          <span className="text-[#647477] dark:text-[#A6B3AE] font-semibold shrink-0">Hygiene Archetypes:</span>
-          <div className="flex flex-wrap items-center gap-1.5">
-            {WEBSITE_PRESET_SCENARIOS.map((preset) => (
-              <button
-                key={preset.id}
-                type="button"
-                onClick={() => handleSelectPreset(preset)}
-                disabled={isLoading}
-                className={`px-2.5 py-1 rounded text-[11px] font-mono border transition-all cursor-pointer ${getPillStyle(
-                  preset.expectedGrade
-                )}`}
-              >
-                <span className="text-[#647477] dark:text-[#A6B3AE] mr-1">[{preset.categoryLabel}]</span>
-                <span className="font-semibold">{preset.title.split('(')[0].trim()}</span>
-              </button>
-            ))}
-          </div>
+        {/* Real-time Hygiene status */}
+        <div className="pt-2 border-t border-[#D9DED7] dark:border-[#304144] flex flex-col md:flex-row md:items-center justify-between gap-2 text-xs font-mono text-[#647477] dark:text-[#A6B3AE]">
+          <span>Passive HTTP headers audit • Content-Security-Policy & HSTS enforcement • DNSSEC validation</span>
+          <span className="text-[11px] text-[#36745F] dark:text-[#79B69A]">Defensive Rings Active</span>
         </div>
       </div>
     </div>

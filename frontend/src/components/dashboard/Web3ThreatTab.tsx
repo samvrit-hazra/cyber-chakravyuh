@@ -12,16 +12,15 @@ import { MLFeaturesBreakdown } from '../web3Threat/MLFeaturesBreakdown.tsx';
 import { AMLHeuristicsAndAttribution } from '../web3Threat/AMLHeuristicsAndAttribution.tsx';
 import {
   web3ThreatService,
-  DEMO_WALLETS,
 } from '../../services/web3ThreatService.ts';
-import type { Web3ThreatAnalysisResult, DemoWallet } from '../../types/web3Threat.ts';
+import type { Web3ThreatAnalysisResult } from '../../types/web3Threat.ts';
 
 interface Web3ThreatTabProps {
   initialAddress?: string;
 }
 
 export const Web3ThreatTab: React.FC<Web3ThreatTabProps> = ({
-  initialAddress = '0x098b716b8aaf21512996dc57eb0615e2383e2f96',
+  initialAddress = '',
 }) => {
   const [addressInput, setAddressInput] = useState(initialAddress);
   const [hopDepth, setHopDepth] = useState<number>(2);
@@ -58,15 +57,12 @@ export const Web3ThreatTab: React.FC<Web3ThreatTabProps> = ({
     }
   };
 
-  // Load initial analysis on mount
+  // Load initial analysis on mount if address provided
   useEffect(() => {
-    handleRunAnalysis(initialAddress);
-  }, []);
-
-  const handleSelectDemo = (demo: DemoWallet) => {
-    setAddressInput(demo.address);
-    handleRunAnalysis(demo.address);
-  };
+    if (initialAddress && initialAddress.trim() !== '') {
+      handleRunAnalysis(initialAddress);
+    }
+  }, [initialAddress]);
 
   return (
     <div className="space-y-6">
@@ -92,58 +88,6 @@ export const Web3ThreatTab: React.FC<Web3ThreatTabProps> = ({
           </div>
         </div>
       </Card>
-
-      {/* Quick-Test Scenario Presets */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs font-mono text-slate-400">
-          <span className="uppercase text-[11px] font-bold text-slate-300">
-            One-Click Intelligence Presets (Real & Simulated Testbeds):
-          </span>
-          <span className="hidden sm:inline text-[10px]">
-            Click any wallet to launch instant ML inspection
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-          {DEMO_WALLETS.map((demo) => {
-            const isSelected = addressInput.toLowerCase() === demo.address.toLowerCase();
-            const isCritical = demo.expected_risk.includes('CRITICAL');
-            const isHigh = demo.expected_risk.includes('HIGH');
-
-            return (
-              <button
-                key={demo.address}
-                onClick={() => handleSelectDemo(demo)}
-                className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                  isSelected
-                    ? 'bg-cyan-500/20 border-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.3)]'
-                    : 'bg-[#081226]/80 hover:bg-[#0c1b38] border-white/5 hover:border-white/20'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <span
-                    className={`text-[9px] font-mono px-1.5 py-0.2 rounded font-bold uppercase ${
-                      isCritical
-                        ? 'bg-rose-500/20 text-rose-300'
-                        : isHigh
-                        ? 'bg-amber-500/20 text-amber-300'
-                        : 'bg-emerald-500/20 text-emerald-300'
-                    }`}
-                  >
-                    {isCritical ? 'CRITICAL' : isHigh ? 'HIGH' : 'SAFE'}
-                  </span>
-                </div>
-                <div className="text-xs font-bold text-white truncate font-mono">
-                  {demo.label}
-                </div>
-                <div className="text-[10px] text-slate-400 font-mono truncate mt-0.5">
-                  {demo.address.slice(0, 6)}...{demo.address.slice(-4)}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
 
       {/* Wallet Search & Configuration Bar */}
       <Card variant="glass" className="p-5 bg-[#070e22]/90 border-white/10 space-y-4">
@@ -241,6 +185,23 @@ export const Web3ThreatTab: React.FC<Web3ThreatTabProps> = ({
           </div>
         )}
       </Card>
+
+      {/* Empty State */}
+      {!analysisResult && !isLoading && !error && (
+        <Card variant="glass" className="p-12 text-center border-dashed border-cyan-500/20 bg-[#070d1e]/50">
+          <div className="max-w-md mx-auto space-y-3">
+            <div className="w-12 h-12 mx-auto rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+              <Brain className="w-6 h-6" />
+            </div>
+            <h3 className="text-sm font-mono font-bold text-white uppercase tracking-wider">
+              No Web3 Entity or Hash Analyzed
+            </h3>
+            <p className="text-xs text-slate-400 font-sans leading-relaxed">
+              Provide an Ethereum wallet address (0x...) or transaction hash (0x...) above and click &quot;Run Forensic Trace&quot; to inspect live on-chain counterparty flows, structuring heuristics, and ML threat scores.
+            </p>
+          </div>
+        </Card>
+      )}
 
       {/* Main Analysis Display */}
       {analysisResult && (

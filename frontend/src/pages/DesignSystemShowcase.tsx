@@ -40,69 +40,8 @@ import {
 import { colors } from '../styles/tokens.ts';
 import type { ThreatAlert } from '../types/threats.ts';
 
-// Initial Mock Security Threats
-const initialThreats: ThreatAlert[] = [
-  {
-    id: 'THR-8902',
-    timestamp: '2026-11-07 16:32:14',
-    title: 'Anomalous Zero-Day Payload Detected',
-    description: 'Heuristic deep packet inspection identified unverified polymorphic shellcode directed at API gateway.',
-    severity: 'critical',
-    layer: 'Perimeter (Saptarishi)',
-    sourceIp: '194.26.29.112',
-    targetAsset: 'api.chakravyuha.internal',
-    status: 'investigating',
-    riskScore: 94,
-  },
-  {
-    id: 'THR-8901',
-    timestamp: '2026-11-07 16:28:40',
-    title: 'Distributed Credential Stuffing Surge',
-    description: 'High velocity token minting failure across 18 foreign ASN clusters.',
-    severity: 'high',
-    layer: 'Identity & Access',
-    sourceIp: '45.154.255.89',
-    targetAsset: 'auth.chakravyuha.internal',
-    status: 'active',
-    riskScore: 78,
-  },
-  {
-    id: 'THR-8898',
-    timestamp: '2026-11-07 16:15:02',
-    title: 'DNS Tunneling Probe Suppressed',
-    description: 'Exfiltration pattern detected on DNS queries containing base64 fragments.',
-    severity: 'medium',
-    layer: 'Network (Vyuha Gateway)',
-    sourceIp: '185.220.101.5',
-    targetAsset: 'ns1.chakravyuha.internal',
-    status: 'mitigated',
-    riskScore: 48,
-  },
-  {
-    id: 'THR-8895',
-    timestamp: '2026-11-07 15:58:33',
-    title: 'S3/GCS IAM Privilege Escalation Vector',
-    description: 'Automated policy auditor detected unauthorized service account key generation request.',
-    severity: 'high',
-    layer: 'Data Vault',
-    sourceIp: '10.240.12.44',
-    targetAsset: 'vault-lake-prod',
-    status: 'mitigated',
-    riskScore: 72,
-  },
-  {
-    id: 'THR-8891',
-    timestamp: '2026-11-07 15:42:19',
-    title: 'Continuous TLS Certificate Telemetry',
-    description: 'Edge nodes auto-renewed elliptic curve root certificates with zero jitter.',
-    severity: 'low',
-    layer: 'Application Shield',
-    sourceIp: '127.0.0.1',
-    targetAsset: 'edge-saptarishi-01',
-    status: 'mitigated',
-    riskScore: 12,
-  },
-];
+// Empty Initial Threats (No synthetic data)
+const initialThreats: ThreatAlert[] = [];
 
 interface DesignSystemShowcaseProps {
   onBackToLanding: () => void;

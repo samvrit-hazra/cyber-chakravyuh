@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import {
   performScamAnalysis,
-  SCAM_EXAMPLE_PRESETS,
 } from '../../utils/scamAnalysisEngine.ts';
 import type { ScamAnalysisResult } from '../../types/scam.ts';
 
@@ -17,16 +16,9 @@ interface ScamMessageScannerProps {
 }
 
 export function ScamMessageScanner({ onScanUrl }: ScamMessageScannerProps) {
-  const [messageText, setMessageText] = useState(SCAM_EXAMPLE_PRESETS[0].sampleText);
-  const [selectedPresetId, setSelectedPresetId] = useState(SCAM_EXAMPLE_PRESETS[0].id);
+  const [messageText, setMessageText] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<ScamAnalysisResult | null>(null);
-
-  const handleSelectPreset = (preset: (typeof SCAM_EXAMPLE_PRESETS)[0]) => {
-    setSelectedPresetId(preset.id);
-    setMessageText(preset.sampleText);
-    runAnalysis(preset.sampleText);
-  };
 
   const runAnalysis = async (textToAnalyze: string) => {
     if (!textToAnalyze.trim()) return;
@@ -45,7 +37,6 @@ export function ScamMessageScanner({ onScanUrl }: ScamMessageScannerProps) {
     try {
       const clip = await navigator.clipboard.readText();
       if (clip.trim()) {
-        setSelectedPresetId('');
         setMessageText(clip);
         runAnalysis(clip);
       }
@@ -71,24 +62,6 @@ export function ScamMessageScanner({ onScanUrl }: ScamMessageScannerProps) {
           </p>
         </div>
 
-        {/* Preset Selector */}
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {SCAM_EXAMPLE_PRESETS.slice(0, 5).map((preset) => (
-            <button
-              key={preset.id}
-              type="button"
-              onClick={() => handleSelectPreset(preset)}
-              className={`px-3 py-1.5 rounded border text-xs font-mono transition-all cursor-pointer active:scale-[0.97] ${
-                selectedPresetId === preset.id
-                  ? 'bg-[#A95636]/10 dark:bg-[#C47A52]/20 border-[#A95636] dark:border-[#C47A52] text-[#A95636] dark:text-[#C47A52] font-semibold'
-                  : 'bg-white dark:bg-[#19272A] border-[#D9DED7] dark:border-[#304144] text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC]'
-              }`}
-            >
-              {preset.title}
-            </button>
-          ))}
-        </div>
-
         {/* Input & Inspection Workspace */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left Column: Text Input */}
@@ -110,10 +83,7 @@ export function ScamMessageScanner({ onScanUrl }: ScamMessageScannerProps) {
             <textarea
               rows={6}
               value={messageText}
-              onChange={(e) => {
-                setMessageText(e.target.value);
-                setSelectedPresetId('');
-              }}
+              onChange={(e) => setMessageText(e.target.value)}
               placeholder="Paste suspicious text message, email content, or chat excerpt..."
               className="w-full bg-[#EAECE6]/50 dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] rounded-md p-3.5 text-xs sm:text-sm text-[#182629] dark:text-[#E8E6DC] placeholder-[#647477] dark:placeholder-[#A6B3AE]/60 focus:outline-none focus:border-[#A95636] dark:focus:border-[#C47A52] focus:ring-1 focus:ring-[#A95636]/30 leading-relaxed font-sans"
             />
@@ -240,7 +210,7 @@ export function ScamMessageScanner({ onScanUrl }: ScamMessageScannerProps) {
               <div className="h-full min-h-[220px] rounded-md border border-dashed border-[#D9DED7] dark:border-[#304144] flex flex-col items-center justify-center p-6 text-center text-[#647477] dark:text-[#A6B3AE] space-y-2">
                 <MessageSquare className="w-8 h-8 opacity-40" />
                 <p className="text-xs font-mono">
-                  Select a common phishing SMS preset above or paste text to audit manipulation indicators.
+                  Paste an SMS notification, email body, or wire request on the left to audit manipulation cues.
                 </p>
               </div>
             )}

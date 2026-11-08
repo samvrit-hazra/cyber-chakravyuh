@@ -16,72 +16,7 @@ export interface ExampleScamPreset {
   sampleText: string;
 }
 
-export const SCAM_EXAMPLE_PRESETS: ExampleScamPreset[] = [
-  {
-    id: 'bank-sms',
-    categoryLabel: 'SMS Notification',
-    title: 'Bank Fraud Alert (Fake Chase SMS)',
-    description: 'Classic Smishing tactic impersonating a major financial institution to harvest login credentials.',
-    expectedClassification: 'Confirmed Scam / Fraud',
-    sampleText: `CHASE BANK ALERT: Unrecognized transaction of $1,429.99 attempted at Target NY. Your online banking access has been restricted to prevent loss. Please verify your identity immediately at https://chase-security-resolver.online/unlock?case=9412 or your debit card will be permanently canceled within 2 hours. Reply STOP to opt out.`,
-  },
-  {
-    id: 'crypto-investment',
-    categoryLabel: 'Investment Message',
-    title: 'Guaranteed 400% Crypto Arbitrage',
-    description: 'High-yield investment fraud (Ponzi/Pig Butchering) offering guaranteed daily ROI via USDT deposit.',
-    expectedClassification: 'Confirmed Scam / Fraud',
-    sampleText: `Hello esteemed investor! Our quantitative trading bot algorithm on Binance & Uniswap delivers guaranteed 450% weekly returns with zero risk. Minimum entry capital is only 500 USDT (TRC-20 network). Send funds directly to our automated liquidity pool wallet: TQr6Z8pLkM9vNx4w1kQe7yRs3bT9vNx4w and send screenshot of transaction hash to Telegram @VIP_Quantum_Admin. Limited slots available for first 10 participants today only!`,
-  },
-  {
-    id: 'job-offer',
-    categoryLabel: 'Job Offer',
-    title: 'Remote App Optimization Freelance',
-    description: 'Work-from-home task scam requiring deposit payments to unlock accrued commission earnings.',
-    expectedClassification: 'High Risk / Likely Deceptive',
-    sampleText: `Dear candidate, I am Sarah from Global Talents HR. We reviewed your resume on LinkedIn and are pleased to offer you an online remote data processing role. You only need to spend 45-60 minutes daily rating e-commerce products and earn $250 - $600 per day deposited to your wallet. No prior experience necessary. Contact our recruitment coordinator immediately on WhatsApp at +1 (555) 912-3847 to activate your employee ID and training stipend.`,
-  },
-  {
-    id: 'executive-wire',
-    categoryLabel: 'Payment Request',
-    title: 'Urgent CEO Apple Gift Card Wire',
-    description: 'Business Email Compromise (BEC) masquerading as internal executive needing urgent offline payment.',
-    expectedClassification: 'High Risk / Likely Deceptive',
-    sampleText: `Subject: Quick favor - Are you at your desk right now?
-
-Hi, I am currently locked in an unannounced board meeting with external counsel and cannot take phone calls. I need you to purchase 6 Apple Gift Cards ($100 each) for an urgent client presentation reward before 3 PM today. Scratch the pins on the back and email the photos directly to my private inbox: ceo.board-executive@consultant-vip.net. Treat this with strict confidentiality. I will sign off on your expense reimbursement voucher first thing tomorrow morning.
-
-Thanks,
-Chief Executive Officer`,
-  },
-  {
-    id: 'tech-support',
-    categoryLabel: 'Customer Support',
-    title: 'Windows Security Warning Extortion',
-    description: 'Fake tech support pop-up scareware demanding an immediate phone call to a toll-free number.',
-    expectedClassification: 'Confirmed Scam / Fraud',
-    sampleText: `**CRITICAL ALERT: VIRUS DETECTED ON WINDOWS OS**
-Your computer has been infected with Trojan.Spyware.Banker.32. Your social security number, passwords, and banking sessions are actively being transmitted to an offshore server. Do not restart your computer or close this window or system files will be corrupted.
-
-Call Microsoft Certified Network Engineers immediately at Toll-Free: 1-888-555-0199 (Reference Code: MS-89104). Technicians will remotely assist in wiping the malware payload.`,
-  },
-  {
-    id: 'benign-urgent',
-    categoryLabel: 'DevOps / Server Alert (Benign)',
-    title: 'Urgent Infrastructure Alert (Legitimate)',
-    description: 'Demonstrates that urgent language alone does NOT classify a message as fraudulent.',
-    expectedClassification: 'Low Risk / Likely Legitimate',
-    sampleText: `[P1 INCIDENT ALERT] Production Cluster us-east-4 CPU threshold exceeded 94% on worker node pool k8s-prd-09. Automated replica scaling triggered. On-call Site Reliability Engineers please review the Grafana telemetry dashboard on corporate VPN (https://monitoring.internal.acme-corp.com/d/cluster-health) and join the incident bridge Slack channel #incident-8492. Do not enter credentials on non-SSO endpoints.`,
-  },
-  {
-    id: 'vague-message',
-    categoryLabel: 'Vague Communication',
-    title: 'Ambiguous Informal Note (Inconclusive)',
-    description: 'Demonstrates zero-trust safeguard: insufficient evidence yields an Inconclusive assessment.',
-    expectedClassification: 'Inconclusive',
-    sampleText: `Hey, just checking in to see if you received the files I mentioned yesterday. Let me know when you have time to look over the numbers. Talk soon.`,
-  },
-];
+export const SCAM_EXAMPLE_PRESETS: ExampleScamPreset[] = [];
 
 /**
  * Extracts URLs, emails, phone numbers, and potential crypto/financial tokens from message text

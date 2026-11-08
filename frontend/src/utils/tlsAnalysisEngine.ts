@@ -16,64 +16,7 @@ export interface TlsPresetScenario {
   expectedStatus: TlsCertificateStatus;
 }
 
-export const TLS_PRESET_SCENARIOS: TlsPresetScenario[] = [
-  {
-    id: 'phish-valid-cert',
-    categoryLabel: 'Phishing with Valid DV Cert',
-    title: 'Phishing Site with Valid DV Certificate',
-    domain: 'paypal-security-verification.phish-login.net',
-    description: 'Demonstrates critical warning: A valid TLS certificate does NOT prove a website is safe.',
-    expectedStatus: 'Valid & Trusted',
-  },
-  {
-    id: 'expired-cert',
-    categoryLabel: 'Expired Certificate',
-    title: 'Expired Certificate (Renewal Oversight)',
-    domain: 'expired.badssl.com',
-    description: 'Expired X.509 certificate. Demonstrates a benign configuration problem vs compromised trust.',
-    expectedStatus: 'Expired Certificate',
-  },
-  {
-    id: 'hostname-mismatch',
-    categoryLabel: 'Hostname Mismatch',
-    title: 'Subject Alternative Name (SAN) Mismatch',
-    domain: 'wrong.host.badssl.com',
-    description: 'Certificate valid for different domain. Potential misconfiguration or multi-tenant CDN routing error.',
-    expectedStatus: 'Hostname Mismatch',
-  },
-  {
-    id: 'self-signed',
-    categoryLabel: 'Self-Signed / Untrusted CA',
-    title: 'Untrusted Private / Self-Signed Root CA',
-    domain: 'self-signed.badssl.com',
-    description: 'Root certificate is not present in standard Mozilla / Microsoft browser trust stores.',
-    expectedStatus: 'Untrusted / Self-Signed',
-  },
-  {
-    id: 'revoked-cert',
-    categoryLabel: 'Revoked Certificate',
-    title: 'Active OCSP Certificate Revocation',
-    domain: 'revoked.badssl.com',
-    description: 'Certificate explicitly revoked by issuing CA due to private key compromise.',
-    expectedStatus: 'Revoked Certificate',
-  },
-  {
-    id: 'weak-crypto',
-    categoryLabel: 'Weak Cryptography',
-    title: 'Deprecated SHA-1 & 1024-bit RSA Key',
-    domain: 'sha1-intermediate.badssl.com',
-    description: 'Vulnerable cryptographic primitives susceptible to collision attacks.',
-    expectedStatus: 'Weak Cryptography',
-  },
-  {
-    id: 'enterprise-clean',
-    categoryLabel: 'Enterprise Grade A+',
-    title: 'Google Cloud Infrastructure (Grade A+)',
-    domain: 'accounts.google.com',
-    description: 'Modern TLS 1.3, ECDSA P-256, verified Certificate Transparency logs, and OCSP stapling.',
-    expectedStatus: 'Valid & Trusted',
-  },
-];
+export const TLS_PRESET_SCENARIOS: TlsPresetScenario[] = [];
 
 export function normalizeDomain(raw: string): string {
   let cleaned = raw.trim();

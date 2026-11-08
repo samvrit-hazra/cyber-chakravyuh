@@ -12,6 +12,22 @@ export function ThreatRelationshipGraph() {
     'all' | 'campaign' | 'domain' | 'url' | 'incident' | 'indicator'
   >('all');
 
+  if (!THREAT_GRAPH_NODES || THREAT_GRAPH_NODES.length === 0) {
+    return (
+      <div className="rounded-2xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] p-8 text-center space-y-3 shadow-sm font-mono">
+        <div className="w-12 h-12 mx-auto rounded-full bg-[#356D68]/10 flex items-center justify-center text-[#356D68] dark:text-[#79A99C]">
+          <Share2 className="w-6 h-6" />
+        </div>
+        <h4 className="text-sm font-bold text-[#182629] dark:text-[#E8E6DC] uppercase">
+          Threat Relationship Nexus
+        </h4>
+        <p className="text-xs text-[#647477] dark:text-[#A6B3AE] max-w-md mx-auto">
+          No correlated adversarial clusters detected. New threat reports and discovered malicious domains will dynamically map here.
+        </p>
+      </div>
+    );
+  }
+
   const selectedNode =
     THREAT_GRAPH_NODES.find((n) => n.id === selectedNodeId) || THREAT_GRAPH_NODES[0];
 

@@ -18,12 +18,21 @@ export function CampaignsListSection() {
           </h3>
         </div>
 
-        <span className="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-rose-500/10 dark:bg-rose-950/30 border border-rose-500/30 text-rose-700 dark:text-rose-300">
-          ALL CAMPAIGNS ACTIVE
+        <span className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold ${
+          MOCK_CAMPAIGNS.length > 0
+            ? 'bg-rose-500/10 dark:bg-rose-950/30 border border-rose-500/30 text-rose-700 dark:text-rose-300'
+            : 'bg-emerald-500/10 dark:bg-emerald-950/30 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+        }`}>
+          {MOCK_CAMPAIGNS.length > 0 ? 'ALL CAMPAIGNS ACTIVE' : 'NO ACTIVE CAMPAIGNS'}
         </span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 font-mono text-xs">
+      {MOCK_CAMPAIGNS.length === 0 ? (
+        <div className="py-10 text-center font-mono text-xs text-[#647477] dark:text-[#A6B3AE]">
+          No active adversarial campaigns detected. Threat telemetry streams are clean.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 font-mono text-xs">
         {MOCK_CAMPAIGNS.map((camp) => (
           <div
             key={camp.id}
@@ -92,6 +101,7 @@ export function CampaignsListSection() {
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 }

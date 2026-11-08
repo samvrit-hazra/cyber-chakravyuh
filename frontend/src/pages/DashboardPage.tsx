@@ -44,7 +44,7 @@ export function DashboardPage({
 
   // Target URL passed into URL Investigation tab
   const [targetInvestigationUrl, setTargetInvestigationUrl] = useState<string>(
-    initialUrl || 'https://security-verify.paypal.account-update.phish-alert.net/login'
+    initialUrl || ''
   );
 
   // Target Hash passed into Blockchain Verification tab
@@ -194,25 +194,31 @@ export function DashboardPage({
         }
       >
         <div className="space-y-2.5 max-h-[60vh] overflow-y-auto">
-          {mockInvestigations.slice(0, 6).map((item) => (
-            <div
-              key={item.id}
-              onClick={() => {
-                setIsNotificationsOpen(false);
-                handleViewReport(item);
-              }}
-              className="p-3 rounded-xl bg-[#F3F1E9] dark:bg-[#223336] border border-[#D9DED7] dark:border-[#304144] hover:border-[#A95636] dark:hover:border-[#C47A52] transition-colors cursor-pointer space-y-1"
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold text-[#A95636] dark:text-[#C47A52]">{item.id}</span>
-                <Badge variant={item.riskLevel === 'critical' ? 'rose' : item.riskLevel === 'high' ? 'amber' : 'copper'} size="sm">
-                  {item.riskLevel.toUpperCase()}
-                </Badge>
-              </div>
-              <p className="text-xs text-[#182629] dark:text-[#E8E6DC] truncate font-mono">{item.url}</p>
-              <p className="text-[11px] text-[#647477] dark:text-[#A6B3AE] truncate">{item.details}</p>
+          {mockInvestigations.length === 0 ? (
+            <div className="py-8 text-center text-xs font-mono text-[#647477] dark:text-[#A6B3AE]">
+              No active security alerts. Operational telemetry is clean.
             </div>
-          ))}
+          ) : (
+            mockInvestigations.slice(0, 6).map((item) => (
+              <div
+                key={item.id}
+                onClick={() => {
+                  setIsNotificationsOpen(false);
+                  handleViewReport(item);
+                }}
+                className="p-3 rounded-xl bg-[#F3F1E9] dark:bg-[#223336] border border-[#D9DED7] dark:border-[#304144] hover:border-[#A95636] dark:hover:border-[#C47A52] transition-colors cursor-pointer space-y-1"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs font-bold text-[#A95636] dark:text-[#C47A52]">{item.id}</span>
+                  <Badge variant={item.riskLevel === 'critical' ? 'rose' : item.riskLevel === 'high' ? 'amber' : 'copper'} size="sm">
+                    {item.riskLevel.toUpperCase()}
+                  </Badge>
+                </div>
+                <p className="text-xs text-[#182629] dark:text-[#E8E6DC] truncate font-mono">{item.url}</p>
+                <p className="text-[11px] text-[#647477] dark:text-[#A6B3AE] truncate">{item.details}</p>
+              </div>
+            ))
+          )}
         </div>
       </Modal>
     </div>

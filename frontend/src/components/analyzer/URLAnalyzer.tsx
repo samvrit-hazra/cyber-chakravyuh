@@ -15,13 +15,11 @@ import {
   AlertTriangle,
   Code2,
   Radar,
-  ShieldCheck,
   Sparkles,
 } from 'lucide-react';
 import {
   performUrlInvestigation,
   extractDomain,
-  EXAMPLE_URL_SUGGESTIONS,
 } from '../../utils/investigationEngine.ts';
 import type { UrlInvestigationResult } from '../../types/investigation.ts';
 import { ScanHistoryService } from '../../services/scanHistoryService.ts';
@@ -112,11 +110,6 @@ export function URLAnalyzer({
     }
   };
 
-  const handleSelectPreset = (presetUrl: string) => {
-    setUrl(presetUrl);
-    setValidationError(null);
-    executeScan(presetUrl);
-  };
 
   const handlePaste = async () => {
     try {
@@ -243,38 +236,10 @@ Do not enter credentials, financial information, or execute downloads.`;
                 </p>
               )}
 
-              {/* Try Scenario Presets */}
+              {/* Footer info & history */}
               <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-[#647477] dark:text-[#A6B3AE] font-mono text-xs">
-                    Try:
-                  </span>
-                  {EXAMPLE_URL_SUGGESTIONS.map((preset, idx) => {
-                    const isMalicious = preset.expectedClassification === 'Confirmed Malicious';
-                    const isHigh = preset.expectedClassification === 'High Risk';
-                    const isSuspicious = preset.expectedClassification === 'Suspicious';
-                    const isClean = preset.expectedClassification === 'Low Risk';
-
-                    return (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => handleSelectPreset(preset.url)}
-                        disabled={isScanning}
-                        className={`px-3 py-1 rounded border text-xs font-sans transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 active:scale-[0.96] ${
-                          url === preset.url
-                            ? 'bg-[#A95636]/10 dark:bg-[#C47A52]/20 border-[#A95636] dark:border-[#C47A52] text-[#A95636] dark:text-[#C47A52] font-semibold'
-                            : 'bg-[#EAECE6] dark:bg-[#223336] border-[#D9DED7] dark:border-[#304144] text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC] hover:border-[#A95636]/40 dark:hover:border-[#C47A52]/40'
-                        }`}
-                      >
-                        {isMalicious && <ShieldAlert className="w-3 h-3 text-[#B64B46] dark:text-[#E17B70]" />}
-                        {isHigh && <AlertTriangle className="w-3 h-3 text-[#B64B46] dark:text-[#E17B70]" />}
-                        {isSuspicious && <Globe className="w-3 h-3 text-[#A87532] dark:text-[#D7AA61]" />}
-                        {isClean && <ShieldCheck className="w-3 h-3 text-[#36745F] dark:text-[#79B69A]" />}
-                        <span>{preset.label.split('(')[0].trim()}</span>
-                      </button>
-                    );
-                  })}
+                <div className="text-[11px] font-mono text-[#647477] dark:text-[#A6B3AE]">
+                  RFC 3986 lexical inspection • Autonomous System routing • Zero synthetic telemetry
                 </div>
 
                 {onOpenHistory && (

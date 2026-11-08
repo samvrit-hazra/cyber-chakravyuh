@@ -1,8 +1,6 @@
 import { useState, type KeyboardEvent } from 'react';
 import { Search, X, Sparkles, AlertCircle, ArrowRight } from 'lucide-react';
 import { Button } from '../common/Button.tsx';
-import { EXAMPLE_URL_SUGGESTIONS } from '../../utils/investigationEngine.ts';
-import type { RiskClassification } from '../../types/investigation.ts';
 
 interface UrlSubmissionFormProps {
   onInvestigate: (url: string) => void;
@@ -54,27 +52,7 @@ export function UrlSubmissionForm({
     setValidationError(null);
   };
 
-  const handleSelectPreset = (presetUrl: string) => {
-    setUrl(presetUrl);
-    setValidationError(null);
-    onInvestigate(presetUrl);
-  };
 
-  const getPillBadgeStyle = (classification: RiskClassification) => {
-    switch (classification) {
-      case 'Confirmed Malicious':
-        return 'border-[#B64B46]/40 text-[#B64B46] dark:text-[#E17B70] hover:bg-[#B64B46]/10';
-      case 'High Risk':
-        return 'border-[#A87532]/40 text-[#A87532] dark:text-[#D7AA61] hover:bg-[#A87532]/10';
-      case 'Suspicious':
-        return 'border-[#A95636]/40 text-[#A95636] dark:text-[#C47A52] hover:bg-[#A95636]/10';
-      case 'Low Risk':
-        return 'border-[#36745F]/40 text-[#36745F] dark:text-[#79B69A] hover:bg-[#36745F]/10';
-      case 'Inconclusive':
-      default:
-        return 'border-[#D9DED7] dark:border-[#304144] text-[#647477] dark:text-[#A6B3AE] hover:bg-[#EAECE6] dark:hover:bg-[#223336]';
-    }
-  };
 
   return (
     <div className="relative rounded-2xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] p-5 md:p-7 shadow-sm dark:shadow-2xl">
@@ -154,24 +132,10 @@ export function UrlSubmissionForm({
           </div>
         )}
 
-        {/* Example URL Suggestions */}
-        <div className="pt-2 border-t border-[#D9DED7] dark:border-[#304144] flex flex-col md:flex-row md:items-center gap-2 text-xs font-mono">
-          <span className="text-[#647477] dark:text-[#A6B3AE] font-semibold shrink-0">Sample Telemetry Dossiers:</span>
-          <div className="flex flex-wrap items-center gap-1.5">
-            {EXAMPLE_URL_SUGGESTIONS.map((suggestion) => (
-              <button
-                key={suggestion.label}
-                type="button"
-                onClick={() => handleSelectPreset(suggestion.url)}
-                disabled={isLoading}
-                className={`px-2.5 py-1 rounded-lg text-[11px] font-mono border transition-all cursor-pointer bg-[#EAECE6] dark:bg-[#223336] ${getPillBadgeStyle(
-                  suggestion.expectedClassification
-                )}`}
-              >
-                <span className="font-semibold">{suggestion.label}</span>
-              </button>
-            ))}
-          </div>
+        {/* Engine Status Note */}
+        <div className="pt-2 border-t border-[#D9DED7] dark:border-[#304144] flex flex-col md:flex-row md:items-center justify-between gap-2 text-xs font-mono text-[#647477] dark:text-[#A6B3AE]">
+          <span>Lexical entropy, BGP routing, homoglyph detection, and redirect unshortening active.</span>
+          <span className="text-[11px] text-[#A95636] dark:text-[#C47A52]">Live Input Mode</span>
         </div>
       </div>
     </div>

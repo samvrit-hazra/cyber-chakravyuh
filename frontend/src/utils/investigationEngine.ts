@@ -3,38 +3,12 @@ import type {
   RiskClassification,
 } from '../types/investigation.ts';
 
-export const EXAMPLE_URL_SUGGESTIONS = [
-  {
-    label: 'PayPal Phish (Confirmed Malicious)',
-    url: 'https://security-verify.paypal.account-update.phish-alert.net/login',
-    expectedClassification: 'Confirmed Malicious' as RiskClassification,
-    color: 'rose',
-  },
-  {
-    label: 'Web3 Drainer (High Risk)',
-    url: 'https://metamask-claim-airdrop-rewards.finance.io/connect',
-    expectedClassification: 'High Risk' as RiskClassification,
-    color: 'amber',
-  },
-  {
-    label: 'Okta SSO Lure (Suspicious)',
-    url: 'https://internal-sso.okta.enterprise-auth.cloud/step2',
-    expectedClassification: 'Suspicious' as RiskClassification,
-    color: 'copper',
-  },
-  {
-    label: 'Google Auth (Low Risk)',
-    url: 'https://accounts.google.com/signin/v2/identifier',
-    expectedClassification: 'Low Risk' as RiskClassification,
-    color: 'emerald',
-  },
-  {
-    label: 'Unknown Staging (Inconclusive)',
-    url: 'https://unknown-staging-temp-domain-9281.xyz/auth',
-    expectedClassification: 'Inconclusive' as RiskClassification,
-    color: 'neutral',
-  },
-];
+export const EXAMPLE_URL_SUGGESTIONS: Array<{
+  label: string;
+  url: string;
+  expectedClassification: RiskClassification;
+  color: string;
+}> = [];
 
 /**
  * Heuristically evaluates a URL or fetches from API if online

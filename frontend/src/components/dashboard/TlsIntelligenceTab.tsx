@@ -7,7 +7,6 @@ import {
   TlsImportantWarningsBanner,
   TlsReportActionsBar,
 } from '../tls/index.ts';
-import { TLS_PRESET_SCENARIOS } from '../../utils/tlsAnalysisEngine.ts';
 import { ThreatApiService } from '../../services/threatApi.ts';
 import type { TlsInvestigationResult } from '../../types/tls.ts';
 import { LoadingState } from '../common/LoadingState.tsx';
@@ -19,13 +18,14 @@ interface TlsIntelligenceTabProps {
 }
 
 export function TlsIntelligenceTab({ initialDomain }: TlsIntelligenceTabProps) {
-  const defaultDomain = initialDomain || TLS_PRESET_SCENARIOS[0].domain;
+  const defaultDomain = initialDomain || '';
   const [currentDomain, setCurrentDomain] = useState<string>(defaultDomain);
   const [result, setResult] = useState<TlsInvestigationResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const executeInvestigation = async (target: string) => {
+    if (!target || !target.trim()) return;
     setIsLoading(true);
     setError(null);
     try {
@@ -41,6 +41,7 @@ export function TlsIntelligenceTab({ initialDomain }: TlsIntelligenceTabProps) {
   };
 
   useEffect(() => {
+    if (!defaultDomain || !defaultDomain.trim()) return;
     let isMounted = true;
     const run = async () => {
       try {
@@ -97,6 +98,20 @@ export function TlsIntelligenceTab({ initialDomain }: TlsIntelligenceTabProps) {
           >
             Retry PKI Investigation
           </Button>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && !error && !result && (
+        <div className="p-12 text-center rounded-2xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] shadow-xs">
+          <div className="max-w-md mx-auto space-y-3">
+            <h3 className="text-sm font-mono font-bold text-[#182629] dark:text-[#E8E6DC] uppercase tracking-wider">
+              No Domain Inspected
+            </h3>
+            <p className="text-xs text-[#647477] dark:text-[#A6B3AE] font-sans leading-relaxed">
+              Enter a fully-qualified domain name (e.g. google.com or badssl.com) above and click &quot;ANALYZE TLS&quot; to inspect cryptographic suites, OCSP status, and Certificate Transparency entries.
+            </p>
+          </div>
         </div>
       )}
 

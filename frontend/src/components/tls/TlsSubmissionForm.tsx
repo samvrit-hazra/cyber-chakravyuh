@@ -2,11 +2,8 @@ import { useState, type KeyboardEvent } from 'react';
 import { Lock, ArrowRight, X, Sparkles, AlertCircle } from 'lucide-react';
 import { Button } from '../common/Button.tsx';
 import {
-  TLS_PRESET_SCENARIOS,
   normalizeDomain,
-  type TlsPresetScenario,
 } from '../../utils/tlsAnalysisEngine.ts';
-import type { TlsCertificateStatus } from '../../types/tls.ts';
 
 interface TlsSubmissionFormProps {
   onAnalyze: (domain: string) => void;
@@ -17,7 +14,7 @@ interface TlsSubmissionFormProps {
 export function TlsSubmissionForm({
   onAnalyze,
   isLoading = false,
-  initialDomain = 'paypal-security.phish-alert.net',
+  initialDomain = '',
 }: TlsSubmissionFormProps) {
   const [domainInput, setDomainInput] = useState(initialDomain);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -43,27 +40,6 @@ export function TlsSubmissionForm({
   const handleClear = () => {
     setDomainInput('');
     setValidationError(null);
-  };
-
-  const handleSelectPreset = (preset: TlsPresetScenario) => {
-    setDomainInput(preset.domain);
-    setValidationError(null);
-    onAnalyze(preset.domain);
-  };
-
-  const getPillStyle = (status: TlsCertificateStatus) => {
-    switch (status) {
-      case 'Valid & Trusted':
-        return 'border-[#36745F]/30 dark:border-[#79B69A]/30 text-[#36745F] dark:text-[#79B69A] bg-[#36745F]/10 dark:bg-[#79B69A]/10';
-      case 'Expired Certificate':
-      case 'Revoked Certificate':
-      case 'Untrusted / Self-Signed':
-        return 'border-[#B64B46]/30 dark:border-[#E17B70]/30 text-[#B64B46] dark:text-[#E17B70] bg-[#B64B46]/10 dark:bg-[#E17B70]/10';
-      case 'Hostname Mismatch':
-      case 'Weak Cryptography':
-      default:
-        return 'border-[#A87532]/30 dark:border-[#D7AA61]/30 text-[#A87532] dark:text-[#D7AA61] bg-[#A87532]/10 dark:bg-[#D7AA61]/10';
-    }
   };
 
   return (
@@ -145,25 +121,10 @@ export function TlsSubmissionForm({
           </div>
         )}
 
-        {/* Preset Scenarios Selector */}
-        <div className="pt-2 border-t border-[#D9DED7] dark:border-[#304144] flex flex-col md:flex-row md:items-center gap-2 text-xs font-mono">
-          <span className="text-[#647477] dark:text-[#A6B3AE] font-semibold shrink-0">PKI Test Scenarios:</span>
-          <div className="flex flex-wrap items-center gap-1.5">
-            {TLS_PRESET_SCENARIOS.map((preset: TlsPresetScenario) => (
-              <button
-                key={preset.id}
-                type="button"
-                onClick={() => handleSelectPreset(preset)}
-                disabled={isLoading}
-                className={`px-2.5 py-1 rounded text-[11px] font-mono border transition-all cursor-pointer ${getPillStyle(
-                  preset.expectedStatus
-                )}`}
-              >
-                <span className="text-[#647477] dark:text-[#A6B3AE] mr-1">[{preset.categoryLabel}]</span>
-                <span className="font-semibold">{preset.domain}</span>
-              </button>
-            ))}
-          </div>
+        {/* Real-time PKI status */}
+        <div className="pt-2 border-t border-[#D9DED7] dark:border-[#304144] flex flex-col md:flex-row md:items-center justify-between gap-2 text-xs font-mono text-[#647477] dark:text-[#A6B3AE]">
+          <span>X.509 chain hierarchy • Certificate Transparency log audit • OCSP revocation verification</span>
+          <span className="text-[11px] text-[#356D68] dark:text-[#79A99C]">PKI Live</span>
         </div>
       </div>
     </div>

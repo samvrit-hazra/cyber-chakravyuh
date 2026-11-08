@@ -325,159 +325,8 @@ class Web3ThreatService:
             except Exception as e:
                 logger.info(f"Etherscan query fallback: {e}")
 
-        # 3. Fallback: realistic deterministic simulation based on address hash
-        return self._generate_synthetic_transactions(norm_addr)
-
-    def _generate_known_entity_transactions(self, norm_addr: str) -> List[Dict[str, Any]]:
-        """Generates real-world scenario transaction batches for demonstration and testing."""
-        now = datetime.now(timezone.utc)
-        txs = []
-
-        if norm_addr == "0x098b716b8aaf21512996dc57eb0615e2383e2f96":
-            # Ronin exploiter: bridge drain -> splitting -> Tornado Cash
-            txs.append({
-                "hash": "0xronin_exploit_drain_tx_001",
-                "from": "0x1a2a1c938ce3ec39b6d47113c7955ba9be814f91",  # Ronin Bridge contract
-                "to": norm_addr,
-                "value_eth": 173600.0,
-                "timestamp": now - timedelta(days=20),
-                "is_error": False,
-            })
-            for i in range(1, 8):
-                txs.append({
-                    "hash": f"0xronin_tornado_wash_tx_{i:03d}",
-                    "from": norm_addr,
-                    "to": "0x722122df12d4e14e13ac3b6895a86e84145b6967",  # Tornado Cash
-                    "value_eth": 100.0,  # Classic 100 ETH mixer denomination
-                    "timestamp": now - timedelta(days=19) + timedelta(hours=i * 2),
-                    "is_error": False,
-                })
-            for i in range(1, 6):
-                dest_mule = f"0x333333333333333333333333333333333333300{i}"
-                txs.append({
-                    "hash": f"0xronin_fanout_layer_tx_{i:03d}",
-                    "from": norm_addr,
-                    "to": dest_mule,
-                    "value_eth": 500.0,
-                    "timestamp": now - timedelta(days=18) + timedelta(hours=i * 3),
-                    "is_error": False,
-                })
-
-        elif norm_addr == "0x722122df12d4e14e13ac3b6895a86e84145b6967":
-            # Tornado Cash: lots of round 100 ETH and 10 ETH deposits/withdrawals
-            for i in range(1, 15):
-                txs.append({
-                    "hash": f"0xtornado_anonymity_pool_tx_{i:03d}",
-                    "from": f"0xfeedbeef{i:032x}",
-                    "to": norm_addr,
-                    "value_eth": 100.0 if i % 2 == 0 else 10.0,
-                    "timestamp": now - timedelta(hours=i * 4),
-                    "is_error": False,
-                })
-
-        elif norm_addr == "0x7777777777777777777777777777777777777777":
-            # Fan-out bot: sends to 12 distinct addresses in 2 hours
-            for i in range(1, 13):
-                txs.append({
-                    "hash": f"0xfanout_burst_tx_{i:03d}",
-                    "from": norm_addr,
-                    "to": f"0x22222222222222222222222222222222222220{i:02d}",
-                    "value_eth": 1.25,
-                    "timestamp": now - timedelta(hours=2) + timedelta(minutes=i * 7),
-                    "is_error": False,
-                })
-
-        elif norm_addr == "0x8888888888888888888888888888888888888888":
-            # Rapid pass-through mule: receives 50 ETH, forwards 48.5 ETH in 3 mins
-            source_acc = "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            dest_acc = "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-            txs.append({
-                "hash": "0xpassthrough_incoming_funding",
-                "from": source_acc,
-                "to": norm_addr,
-                "value_eth": 50.0,
-                "timestamp": now - timedelta(minutes=15),
-                "is_error": False,
-            })
-            txs.append({
-                "hash": "0xpassthrough_outgoing_layering",
-                "from": norm_addr,
-                "to": dest_acc,
-                "value_eth": 48.5,
-                "timestamp": now - timedelta(minutes=12),
-                "is_error": False,
-            })
-
-        elif norm_addr == "0xd8da6bf26964af9d7eed9e03e53415d37aa96045":
-            # Vitalik: organic donation, staking, and diverse counterparty transfers
-            txs.append({
-                "hash": "0xvitalik_charity_donation_01",
-                "from": norm_addr,
-                "to": "0x4baf63db37f635548c772c676fdf21c81881b94e",
-                "value_eth": 30.5,
-                "timestamp": now - timedelta(days=2),
-                "is_error": False,
-            })
-            txs.append({
-                "hash": "0xvitalik_ecosystem_grant_02",
-                "from": norm_addr,
-                "to": "0x28c6c06298d514db089934071355e5743bf21d60",
-                "value_eth": 12.34,
-                "timestamp": now - timedelta(days=5),
-                "is_error": False,
-            })
-            txs.append({
-                "hash": "0xvitalik_contract_deploy_03",
-                "from": norm_addr,
-                "to": "0x000000000000000000000000000000000000dead",
-                "value_eth": 0.5,
-                "timestamp": now - timedelta(days=10),
-                "is_error": False,
-            })
-
-        else:
-            # Default Binance Hot wallet
-            for i in range(1, 8):
-                txs.append({
-                    "hash": f"0xcex_liquidity_batch_{i:03d}",
-                    "from": f"0xuser_deposit_{i:030x}",
-                    "to": norm_addr,
-                    "value_eth": 0.85 * i,
-                    "timestamp": now - timedelta(hours=i * 2),
-                    "is_error": False,
-                })
-
-        return txs
-
-    def _generate_synthetic_transactions(self, norm_addr: str) -> List[Dict[str, Any]]:
-        """Generates realistic deterministic transaction history based on address hex seed."""
-        seed_val = int(norm_addr[2:10], 16)
-        tx_count = (seed_val % 15) + 6
-        now = datetime.now(timezone.utc)
-        txs = []
-
-        is_suspicious_seed = (seed_val % 4 == 0)
-
-        for i in range(tx_count):
-            is_outgoing = (i % 2 == 0)
-            amount = (seed_val % 7) * 0.45 + (i * 0.3) + 0.1
-            if is_suspicious_seed and i % 3 == 0:
-                amount = round(amount)  # Round amount pattern
-
-            counterparty = f"0x{(seed_val + i * 9999):040x}"[:42]
-            tx_from = norm_addr if is_outgoing else counterparty
-            tx_to = counterparty if is_outgoing else norm_addr
-
-            txs.append({
-                "hash": f"0x{seed_val:x}{i:04d}abcdef1234567890",
-                "from": tx_from,
-                "to": tx_to,
-                "value_eth": round(amount, 4),
-                "timestamp": now - timedelta(hours=i * 5 + (seed_val % 60)),
-                "is_error": False,
-            })
-
-        return txs
+        # 3. If no live transactions found on Blockscout or Etherscan, return empty list
+        return []
 
     def compute_ml_features(self, address: str, transactions: List[Dict[str, Any]]) -> Tuple[List[float], List[FeatureItem]]:
         """
@@ -880,19 +729,11 @@ class Web3ThreatService:
         target_tx = None
         if is_hash:
             target_tx = await self.fetch_tx_info(raw_query)
-            if target_tx:
-                norm_addr = target_tx["from"]
-            else:
-                seed_val = int(raw_query[2:10], 16)
-                norm_addr = f"0x{raw_query[2:42]}"
-                target_tx = {
-                    "hash": raw_query.lower(),
-                    "from": norm_addr,
-                    "to": f"0x{(seed_val * 777):040x}"[:42],
-                    "value_eth": 2.5,
-                    "timestamp": datetime.now(timezone.utc),
-                    "is_error": False,
-                }
+            if not target_tx:
+                raise ValueError(
+                    f"Transaction hash '{raw_query}' was not found on Ethereum mainnet via public indexers. Please verify the hash."
+                )
+            norm_addr = target_tx["from"]
         else:
             norm_addr = normalize_address(raw_query)
 
@@ -956,7 +797,19 @@ class Web3ThreatService:
                 n.is_flagged = overall_flagged
 
         # 8. Generate Summary & Recommendations
-        if overall_score >= 0.80:
+        if not transactions:
+            overall_score = 0.0
+            risk_level = "LOW"
+            overall_flagged = False
+            summary = (
+                f"Address {short_addr(norm_addr)} has zero detected on-chain transactions on Ethereum mainnet. "
+                "No adverse structuring indicators or high-risk counterparties observed."
+            )
+            recs = [
+                "Zero on-chain history found; no immediate risk indicated.",
+                "Continue passive perimeter monitoring if this address initiates fund flows.",
+            ]
+        elif overall_score >= 0.80:
             summary = (
                 f"HIGH-SEVERITY ALERT: Wallet {short_addr(norm_addr)} is strongly associated with malicious on-chain activity "
                 f"({attribution.category}). ML Structuring Classifier computed a risk score of {round(overall_score * 100, 1)}%. "

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, CheckCircle2, AlertOctagon, HelpCircle, Shield, ArrowRight } from 'lucide-react';
+import { Shield, CheckCircle2, AlertOctagon, HelpCircle, ArrowRight } from 'lucide-react';
 import { Button } from '../common/Button.tsx';
 import { verifyReportOnChain } from '../../utils/blockchainRegistryEngine.ts';
 import type { BlockchainReportRecord, VerificationStatus } from '../../types/blockchainVerification.ts';
@@ -13,16 +13,20 @@ interface ReportVerificationProverProps {
 export function ReportVerificationProver({
   records,
   onViewRecordDetails,
-  initialQuery = '0x8f49b1a20c384df9e7591e0a84519bc82e345109f284b12384a92c0192840192',
+  initialQuery = '',
 }: ReportVerificationProverProps) {
   const [queryInput, setQueryInput] = useState(initialQuery);
   const [proverResult, setProverResult] = useState<{
     status: VerificationStatus;
     matchedRecord: BlockchainReportRecord | null;
     computedFingerprint: string;
-  } | null>(() => verifyReportOnChain(initialQuery, records));
+  } | null>(() => (initialQuery ? verifyReportOnChain(initialQuery, records) : null));
 
   const handleVerify = () => {
+    if (!queryInput.trim()) {
+      setProverResult(null);
+      return;
+    }
     const res = verifyReportOnChain(queryInput, records);
     setProverResult(res);
   };
@@ -73,60 +77,55 @@ export function ReportVerificationProver({
       </div>
 
       {/* Prover Input */}
-      <div className="space-y-2">
-        <label className="text-[#647477] dark:text-[#A6B3AE] block uppercase font-bold text-[11px]">
-          Enter Report Fingerprint (Hash), Transaction Hash, Report ID, or Raw JSON Payload:
+      <div className="space-y-3">
+        <label className="text-[11px] uppercase tracking-widest text-[#647477] dark:text-[#A6B3AE] font-semibold block">
+          QUERY REPORT FINGERPRINT / TX HASH / REPORT ID
         </label>
         <div className="flex flex-col sm:flex-row gap-2">
           <input
             type="text"
             value={queryInput}
             onChange={(e) => setQueryInput(e.target.value)}
-            placeholder="0x8f49b1a20c384df9e... or REP-941029..."
-            className="flex-1 p-3 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-[#182629] dark:text-[#E8E6DC] font-mono text-xs outline-none focus:border-[#A95636] dark:focus:border-[#C47A52]"
+            placeholder="Paste SHA-256 fingerprint (0x...) or Report ID to audit ledger authenticity"
+            className="flex-1 px-3.5 py-2.5 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-[#182629] dark:text-[#E8E6DC] placeholder:text-[#647477] dark:placeholder:text-[#A6B3AE] text-xs font-mono focus:outline-hidden focus:border-[#A95636] dark:focus:border-[#C47A52]"
           />
           <Button
             variant="primary"
+            size="md"
             onClick={handleVerify}
-            leftIcon={<Search className="w-4 h-4" />}
-            className="px-6 font-bold uppercase text-xs"
+            className="whitespace-nowrap font-mono text-xs"
           >
-            PROVE INTEGRITY
+            Prove Authenticity
           </Button>
         </div>
       </div>
 
-      {/* Prover Result Box */}
+      {/* Prover Results Card */}
       {proverResult && (
-        <div className="space-y-4 pt-1">
+        <div className="space-y-4 pt-2 border-t border-[#D9DED7] dark:border-[#304144]">
           {(() => {
-            const meta = getStatusBadge(proverResult.status);
-            const Icon = meta.icon;
-
+            const badge = getStatusBadge(proverResult.status);
+            const Icon = badge.icon;
             return (
-              <div
-                className={`p-4 rounded-xl border space-y-3 ${
-                  proverResult.status === 'Verified On-Chain'
-                    ? 'bg-emerald-500/10 dark:bg-emerald-950/20 border-emerald-500/30'
-                    : proverResult.status === 'Tamper Detected'
-                    ? 'bg-rose-500/10 dark:bg-rose-950/30 border-rose-500/40'
-                    : 'bg-amber-500/10 dark:bg-amber-950/20 border-amber-500/30'
-                }`}
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <Icon className="w-5 h-5 text-emerald-400 shrink-0" />
-                    <span className="font-bold text-sm text-[#182629] dark:text-[#E8E6DC]">{meta.text}</span>
-                  </div>
-
-                  <span className={`px-2.5 py-0.5 rounded text-[11px] font-bold uppercase border ${meta.pill}`}>
-                    {proverResult.status}
+              <div className="space-y-3 p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144]">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded text-[11px] font-bold border ${badge.pill}`}>
+                    <Icon className="w-3.5 h-3.5" />
+                    <span>{badge.text}</span>
                   </span>
                 </div>
 
-                {/* If Verified, show detailed metrics */}
+                <div className="space-y-1">
+                  <span className="text-[#647477] dark:text-[#A6B3AE] text-[10px] uppercase tracking-wider block">
+                    COMPUTED INQUIRY FINGERPRINT
+                  </span>
+                  <div className="font-mono text-xs text-[#182629] dark:text-[#E8E6DC] break-all bg-white dark:bg-[#19272A] p-2 rounded border border-[#D9DED7] dark:border-[#304144]">
+                    {proverResult.computedFingerprint || 'None'}
+                  </div>
+                </div>
+
                 {proverResult.matchedRecord && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-2 text-[11px]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 pt-2">
                     <div className="p-2.5 rounded bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] space-y-0.5">
                       <span className="text-[#647477] dark:text-[#A6B3AE] block text-[10px]">REPORT ID</span>
                       <span className="text-[#182629] dark:text-[#E8E6DC] font-bold">{proverResult.matchedRecord.reportId}</span>
@@ -172,4 +171,3 @@ export function ReportVerificationProver({
     </div>
   );
 }
-

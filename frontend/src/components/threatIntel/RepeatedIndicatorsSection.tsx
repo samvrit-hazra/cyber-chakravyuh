@@ -19,47 +19,53 @@ export function RepeatedIndicatorsSection() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-        {MOCK_REPEATED_INDICATORS.map((ind) => (
-          <div
-            key={ind.id}
-            className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] space-y-2.5 hover:border-[#A95636]/40 transition-colors"
-          >
-            <div className="flex items-center justify-between">
-              <span className="font-bold text-[#182629] dark:text-[#E8E6DC] flex items-center gap-1.5">
-                <Layers className="w-4 h-4 text-[#A95636] dark:text-[#C47A52]" />
-                {ind.indicatorType}
-              </span>
-              <span
-                className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
-                  ind.severity === 'critical'
-                    ? 'bg-rose-500/10 dark:bg-rose-950/30 border-rose-500/30 text-rose-700 dark:text-rose-300'
-                    : 'bg-amber-500/10 dark:bg-amber-950/30 border-amber-500/30 text-amber-700 dark:text-amber-300'
-                }`}
-              >
-                {ind.frequency} Reoccurrences
-              </span>
-            </div>
+      {MOCK_REPEATED_INDICATORS.length === 0 ? (
+        <div className="py-8 text-center font-mono text-xs text-[#647477] dark:text-[#A6B3AE]">
+          No repeating adversarial fingerprints or AS cluster anomalies detected.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
+          {MOCK_REPEATED_INDICATORS.map((ind) => (
+            <div
+              key={ind.id}
+              className="p-4 rounded-xl bg-[#F3F1E9] dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] space-y-2.5 hover:border-[#A95636]/40 transition-colors"
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-[#182629] dark:text-[#E8E6DC] flex items-center gap-1.5">
+                  <Layers className="w-4 h-4 text-[#A95636] dark:text-[#C47A52]" />
+                  {ind.indicatorType}
+                </span>
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
+                    ind.severity === 'critical'
+                      ? 'bg-rose-500/10 dark:bg-rose-950/30 border-rose-500/30 text-rose-700 dark:text-rose-300'
+                      : 'bg-amber-500/10 dark:bg-amber-950/30 border-amber-500/30 text-amber-700 dark:text-amber-300'
+                  }`}
+                >
+                  {ind.frequency} Reoccurrences
+                </span>
+              </div>
 
-            <div className="p-2.5 rounded-lg bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] text-[#A95636] dark:text-[#C47A52] font-bold text-xs select-all">
-              {ind.value}
-            </div>
+              <div className="p-2.5 rounded-lg bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] text-[#A95636] dark:text-[#C47A52] font-bold text-xs select-all">
+                {ind.value}
+              </div>
 
-            <p className="text-[#647477] dark:text-[#A6B3AE] font-sans text-xs">{ind.notes}</p>
+              <p className="text-[#647477] dark:text-[#A6B3AE] font-sans text-xs">{ind.notes}</p>
 
-            <div className="space-y-1 pt-1 text-[11px]">
-              <span className="text-[#647477] dark:text-[#A6B3AE] uppercase text-[10px] block font-semibold">CORRELATED DOMAINS:</span>
-              <div className="flex flex-wrap gap-1">
-                {ind.connectedDomains.map((dom) => (
-                  <span key={dom} className="px-2 py-0.5 rounded bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] text-[#182629] dark:text-[#E8E6DC] text-[10px]">
-                    {dom}
-                  </span>
-                ))}
+              <div className="space-y-1 pt-1 text-[11px]">
+                <span className="text-[#647477] dark:text-[#A6B3AE] uppercase text-[10px] block font-semibold">CORRELATED DOMAINS:</span>
+                <div className="flex flex-wrap gap-1">
+                  {ind.connectedDomains.map((dom) => (
+                    <span key={dom} className="px-2 py-0.5 rounded bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] text-[#182629] dark:text-[#E8E6DC] text-[10px]">
+                      {dom}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

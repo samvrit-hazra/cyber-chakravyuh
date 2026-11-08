@@ -20,7 +20,7 @@ interface UrlInvestigationTabProps {
 }
 
 export function UrlInvestigationTab({
-  initialUrl = 'https://security-verify.paypal.account-update.phish-alert.net/login',
+  initialUrl = '',
 }: UrlInvestigationTabProps) {
   const [currentUrl, setCurrentUrl] = useState<string>(initialUrl);
   const [result, setResult] = useState<UrlInvestigationResult | null>(null);
@@ -28,6 +28,7 @@ export function UrlInvestigationTab({
   const [error, setError] = useState<string | null>(null);
 
   const executeInvestigation = async (target: string) => {
+    if (!target || !target.trim()) return;
     setIsLoading(true);
     setError(null);
     try {
@@ -42,8 +43,9 @@ export function UrlInvestigationTab({
     }
   };
 
-  // Run initial investigation on mount if initialUrl is present
+  // Run initial investigation on mount ONLY if initialUrl is present
   useEffect(() => {
+    if (!initialUrl || !initialUrl.trim()) return;
     let isMounted = true;
     const run = async () => {
       try {
@@ -100,6 +102,20 @@ export function UrlInvestigationTab({
           >
             Retry Investigation
           </Button>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && !error && !result && (
+        <div className="p-12 text-center rounded-2xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] shadow-xs">
+          <div className="max-w-md mx-auto space-y-3">
+            <h3 className="text-sm font-mono font-bold text-[#182629] dark:text-[#E8E6DC] uppercase tracking-wider">
+              No URL Currently Investigated
+            </h3>
+            <p className="text-xs text-[#647477] dark:text-[#A6B3AE] font-sans leading-relaxed">
+              Enter any URL in the field above and click &quot;INVESTIGATE&quot; to inspect Shannon entropy, DNS records, homoglyphs, and SSL trust indicators in real-time.
+            </p>
+          </div>
         </div>
       )}
 

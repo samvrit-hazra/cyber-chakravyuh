@@ -9,7 +9,7 @@ export const API_BASE_URL = RAW_BASE_URL.replace(/\/+$/, '');
 
 export class ApiClient {
   private static getHeaders(isFormData = false): HeadersInit {
-    const token = localStorage.getItem('cyber_chakravyuha_auth_token');
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('cyber_chakravyuha_auth_token') : null;
     const headers: Record<string, string> = {};
 
     if (!isFormData) {

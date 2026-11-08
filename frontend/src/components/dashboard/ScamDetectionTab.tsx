@@ -10,7 +10,6 @@ import {
   RecommendedPrecautionsSection,
   ScamReportActionsBar,
 } from '../scam/index.ts';
-import { SCAM_EXAMPLE_PRESETS } from '../../utils/scamAnalysisEngine.ts';
 import { ThreatApiService } from '../../services/threatApi.ts';
 import type { ScamAnalysisResult } from '../../types/scam.ts';
 import { LoadingState } from '../common/LoadingState.tsx';
@@ -22,13 +21,14 @@ interface ScamDetectionTabProps {
 }
 
 export function ScamDetectionTab({ initialText }: ScamDetectionTabProps) {
-  const defaultText = initialText || SCAM_EXAMPLE_PRESETS[0].sampleText;
+  const defaultText = initialText || '';
   const [currentText, setCurrentText] = useState<string>(defaultText);
   const [result, setResult] = useState<ScamAnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const executeAnalysis = async (messageText: string) => {
+    if (!messageText || !messageText.trim()) return;
     setIsLoading(true);
     setError(null);
     try {
@@ -43,8 +43,9 @@ export function ScamDetectionTab({ initialText }: ScamDetectionTabProps) {
     }
   };
 
-  // Run initial analysis on mount
+  // Run initial analysis on mount ONLY if defaultText is provided
   useEffect(() => {
+    if (!defaultText || !defaultText.trim()) return;
     let isMounted = true;
     const run = async () => {
       try {
@@ -108,6 +109,20 @@ export function ScamDetectionTab({ initialText }: ScamDetectionTabProps) {
           >
             Retry Analysis
           </Button>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && !error && !result && (
+        <div className="p-12 text-center rounded-2xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] shadow-xs">
+          <div className="max-w-md mx-auto space-y-3">
+            <h3 className="text-sm font-mono font-bold text-[#182629] dark:text-[#E8E6DC] uppercase tracking-wider">
+              No Message Body Analyzed
+            </h3>
+            <p className="text-xs text-[#647477] dark:text-[#A6B3AE] font-sans leading-relaxed">
+              Paste suspicious SMS text, email content, or executive wire requests in the field above and click &quot;ANALYZE MESSAGE CONTENT&quot; to inspect manipulation signals and financial extraction cues.
+            </p>
+          </div>
         </div>
       )}
 

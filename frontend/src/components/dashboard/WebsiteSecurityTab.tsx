@@ -6,9 +6,6 @@ import {
   PassiveSafetyNoticeBanner,
   SecurityReportActionsBar,
 } from '../security/index.ts';
-import {
-  WEBSITE_PRESET_SCENARIOS,
-} from '../../utils/websiteSecurityEngine.ts';
 import { ThreatApiService } from '../../services/threatApi.ts';
 import type { WebsiteSecurityAssessmentResult } from '../../types/websiteSecurity.ts';
 import { LoadingState } from '../common/LoadingState.tsx';
@@ -20,13 +17,14 @@ interface WebsiteSecurityTabProps {
 }
 
 export function WebsiteSecurityTab({ initialUrl }: WebsiteSecurityTabProps) {
-  const defaultUrl = initialUrl || WEBSITE_PRESET_SCENARIOS[1].url;
+  const defaultUrl = initialUrl || '';
   const [currentUrl, setCurrentUrl] = useState<string>(defaultUrl);
   const [result, setResult] = useState<WebsiteSecurityAssessmentResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const executeAssessment = async (target: string) => {
+    if (!target || !target.trim()) return;
     setIsLoading(true);
     setError(null);
     try {
@@ -42,6 +40,7 @@ export function WebsiteSecurityTab({ initialUrl }: WebsiteSecurityTabProps) {
   };
 
   useEffect(() => {
+    if (!defaultUrl || !defaultUrl.trim()) return;
     let isMounted = true;
     const run = async () => {
       try {
@@ -98,6 +97,20 @@ export function WebsiteSecurityTab({ initialUrl }: WebsiteSecurityTabProps) {
           >
             Retry Assessment
           </Button>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && !error && !result && (
+        <div className="p-12 text-center rounded-2xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] shadow-xs">
+          <div className="max-w-md mx-auto space-y-3">
+            <h3 className="text-sm font-mono font-bold text-[#182629] dark:text-[#E8E6DC] uppercase tracking-wider">
+              No Website Posture Audited
+            </h3>
+            <p className="text-xs text-[#647477] dark:text-[#A6B3AE] font-sans leading-relaxed">
+              Enter a website URL above and click &quot;Analyze Posture&quot; to evaluate HTTP security headers, HSTS preloading, cookie flags, and DNSSEC defenses.
+            </p>
+          </div>
         </div>
       )}
 

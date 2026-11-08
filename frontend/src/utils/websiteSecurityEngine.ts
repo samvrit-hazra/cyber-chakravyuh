@@ -14,40 +14,7 @@ export interface WebsitePresetScenario {
   expectedGrade: SecurityGrade;
 }
 
-export const WEBSITE_PRESET_SCENARIOS: WebsitePresetScenario[] = [
-  {
-    id: 'vulnerable-legacy',
-    categoryLabel: 'Critical Hygiene Deficiencies',
-    title: 'Misconfigured Legacy Webhost (Grade F)',
-    url: 'http://vulnerable-legacy-host.lab',
-    description: 'Unencrypted HTTP, missing all defense-in-depth headers, exposed .git repository, active mixed content.',
-    expectedGrade: 'F',
-  },
-  {
-    id: 'phishing-host',
-    categoryLabel: 'Phishing Landing Ingress',
-    title: 'Phishing Portal Infrastructure (Grade D-)',
-    url: 'https://paypal-security-verification.phish-login.net',
-    description: 'Missing Content-Security-Policy, iframe framing allowed, open redirect parameter, cloaking gates.',
-    expectedGrade: 'D',
-  },
-  {
-    id: 'corporate-cms',
-    categoryLabel: 'Standard Corporate CMS',
-    title: 'Typical Corporate WordPress (Grade C+)',
-    url: 'https://sample-wordpress-portal.org',
-    description: 'Has HTTPS and basic HSTS, but leaks PHP/WordPress versions and exposes user enumeration endpoints.',
-    expectedGrade: 'C',
-  },
-  {
-    id: 'hardened-enterprise',
-    categoryLabel: 'Hardened Defense-in-Depth',
-    title: 'Hardened Enterprise Fortress (Grade A+)',
-    url: 'https://accounts.google.com',
-    description: 'Strict CSP with cryptographic nonces, HSTS preloaded, TLS 1.3, masked banners, zero exposure.',
-    expectedGrade: 'A+',
-  },
-];
+export const WEBSITE_PRESET_SCENARIOS: WebsitePresetScenario[] = [];
 
 export function normalizeTargetUrl(raw: string): { url: string; host: string } {
   let cleaned = raw.trim();
