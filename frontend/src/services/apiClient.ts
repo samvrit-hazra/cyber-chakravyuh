@@ -1,6 +1,6 @@
-// Base API Client configured for isolated frontend development
+// Base API Client configured for Cyber Chakravyuh backend
 
-const API_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) || 'http://localhost:5000/api/v1';
+const API_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) || 'http://localhost:8000/api';
 
 export class ApiClient {
   private static getHeaders(): HeadersInit {
@@ -38,4 +38,3 @@ export class ApiClient {
     return response.json() as Promise<T>;
   }
 }
-

@@ -14,7 +14,6 @@ import { useNavigation, type PageId } from '../context/NavigationContext.tsx';
 
 interface ToolCard {
   id: PageId;
-  module: string;
   title: string;
   description: string;
   icon: typeof Globe;
@@ -28,7 +27,6 @@ interface ToolCard {
 const TOOLS: ToolCard[] = [
   {
     id: 'url-analyzer',
-    module: 'Module 1',
     title: 'URL Scanner',
     description:
       'Inspect suspicious web addresses for phishing traps, deceptive redirects, homoglyph domain impersonation, and malicious downloads.',
@@ -41,7 +39,6 @@ const TOOLS: ToolCard[] = [
   },
   {
     id: 'tls-inspector',
-    module: 'Module 2',
     title: 'SSL Certificate Analyzer',
     description:
       'Validate HTTPS certificate chains, issuing Certificate Authority trust, revocation status, expiration dates, and cryptographic cipher strength.',
@@ -54,7 +51,6 @@ const TOOLS: ToolCard[] = [
   },
   {
     id: 'sms-scanner',
-    module: 'Module 3',
     title: 'Scam Message Detector',
     description:
       'Analyze SMS texts, WhatsApp messages, and emails with AI to detect urgency manipulation, fake bank alerts, and dangerous payment requests.',
@@ -67,7 +63,6 @@ const TOOLS: ToolCard[] = [
   },
   {
     id: 'security-auditor',
-    module: 'Module 5',
     title: 'Website Security Auditor',
     description:
       'Passive website hygiene assessment inspecting defensive HTTP headers (CSP, HSTS, X-Frame-Options), cookie protections, and exposed ports.',
@@ -80,7 +75,6 @@ const TOOLS: ToolCard[] = [
   },
   {
     id: 'threat-intel',
-    module: 'Module 4',
     title: 'Threat Intelligence Radar',
     description:
       'Monitor real-time adversary infrastructure, active phishing campaigns, MITRE ATT&CK mapping, and cross-correlated Indicators of Compromise.',
@@ -93,7 +87,6 @@ const TOOLS: ToolCard[] = [
   },
   {
     id: 'threat-registry',
-    module: 'Module 6',
     title: 'Web3 Threat Registry',
     description:
       'Decentralized immutable threat incident ledger and cryptographic attestation console anchored on-chain with SHA-256 evidence validation.',
@@ -127,7 +120,7 @@ export function LandingPage() {
           </p>
         </div>
 
-        {/* 6 Clean, Distinct Boxes / Cards */}
+        {/* 6 Clean, Distinct Boxes / Cards without module numbering */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {TOOLS.map((tool) => {
             const Icon = tool.icon;
@@ -139,17 +132,13 @@ export function LandingPage() {
                 className={`group rounded-2xl bg-white dark:bg-[#19272A] border-2 border-[#D9DED7] dark:border-[#304144] ${tool.accentBorder} p-6 shadow-sm hover:shadow-md transition-all duration-150 cursor-pointer flex flex-col justify-between space-y-4 active:scale-[0.99]`}
               >
                 <div className="space-y-3.5">
-                  {/* Top: Icon + Module Label */}
+                  {/* Top: Icon */}
                   <div className="flex items-center justify-between">
                     <div
                       className={`w-12 h-12 rounded-xl ${tool.iconBg} flex items-center justify-center shrink-0 border border-[#D9DED7]/40 dark:border-[#304144]/40 group-hover:scale-105 transition-transform`}
                     >
                       <Icon className={`w-6 h-6 ${tool.iconColor}`} />
                     </div>
-
-                    <span className="text-[11px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-[#EAECE6] dark:bg-[#223336] text-[#647477] dark:text-[#A6B3AE] border border-[#D9DED7] dark:border-[#304144]">
-                      {tool.module}
-                    </span>
                   </div>
 
                   {/* Title & Description */}

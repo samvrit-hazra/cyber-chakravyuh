@@ -75,7 +75,7 @@ export function ThreatIntelPage() {
           </button>
 
           <span className="text-[11px] font-mono uppercase tracking-wider text-[#B64B46] dark:text-[#E17B70] font-bold">
-            Module 4: Threat Intelligence Radar
+            Threat Intelligence Radar
           </span>
         </div>
 

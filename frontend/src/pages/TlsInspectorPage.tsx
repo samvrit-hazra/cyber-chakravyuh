@@ -26,7 +26,7 @@ export function TlsInspectorPage() {
           </button>
 
           <span className="text-[11px] font-mono uppercase tracking-wider text-[#356D68] dark:text-[#79A99C] font-bold">
-            Module 2: SSL Certificate Analyzer
+            SSL Certificate Analyzer
           </span>
         </div>
 

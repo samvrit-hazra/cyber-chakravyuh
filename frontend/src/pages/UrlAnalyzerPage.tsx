@@ -26,7 +26,7 @@ export function UrlAnalyzerPage() {
           </button>
 
           <span className="text-[11px] font-mono uppercase tracking-wider text-[#A95636] dark:text-[#C47A52] font-bold">
-            Module 1: URL Scanner
+            URL Scanner
           </span>
         </div>
 

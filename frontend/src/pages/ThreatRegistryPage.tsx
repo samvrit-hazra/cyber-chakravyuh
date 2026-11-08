@@ -26,7 +26,7 @@ export function ThreatRegistryPage() {
           </button>
 
           <span className="text-[11px] font-mono uppercase tracking-wider text-[#2A5753] dark:text-[#669387] font-bold">
-            Module 6: Web3 Threat Registry
+            Web3 Threat Registry
           </span>
         </div>
 

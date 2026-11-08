@@ -30,7 +30,7 @@ export function SmsScannerPage() {
           </button>
 
           <span className="text-[11px] font-mono uppercase tracking-wider text-[#A87532] dark:text-[#D7AA61] font-bold">
-            Module 3: Scam Message Detector
+            Scam Message Detector
           </span>
         </div>
 

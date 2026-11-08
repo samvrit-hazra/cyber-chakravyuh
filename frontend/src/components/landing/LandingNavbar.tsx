@@ -66,29 +66,19 @@ export function LandingNavbar({ onOpenHistory }: LandingNavbarProps) {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-        {/* Left: Brand / Logo */}
+        {/* Left: Clean Brand Text (No body logo image) */}
         <button
           type="button"
           onClick={() => handleNavClick('home')}
-          className="flex items-center gap-3 select-none active:scale-[0.98] transition-transform cursor-pointer shrink-0"
+          className="flex flex-col text-left select-none active:scale-[0.98] transition-transform cursor-pointer shrink-0"
           title="Cyber Chakravyuh - Home"
         >
-          <div className="w-8 h-8 rounded-lg bg-[#182629] dark:bg-white flex items-center justify-center p-1.5 shrink-0 shadow-xs">
-            <img
-              src="/logo.png"
-              alt="Cyber Chakravyuh Logo"
-              className="w-full h-full object-contain filter invert dark:invert-0"
-            />
-          </div>
-
-          <div className="flex flex-col text-left">
-            <span className="font-bold text-sm sm:text-base font-heading text-[#182629] dark:text-[#E8E6DC] tracking-tight leading-tight">
-              Cyber Chakravyuh
-            </span>
-            <span className="text-[11px] text-[#647477] dark:text-[#A6B3AE] hidden sm:inline leading-tight font-sans">
-              Threat Detection & Trust Intelligence
-            </span>
-          </div>
+          <span className="font-extrabold text-base sm:text-lg font-heading text-[#182629] dark:text-[#E8E6DC] tracking-tight leading-tight">
+            Cyber Chakravyuh
+          </span>
+          <span className="text-[11px] text-[#647477] dark:text-[#A6B3AE] hidden sm:inline leading-tight font-sans">
+            Threat Detection & Trust Intelligence
+          </span>
         </button>
 
         {/* Center: Clean Direct Navigation */}
@@ -129,7 +119,6 @@ export function LandingNavbar({ onOpenHistory }: LandingNavbarProps) {
 
         {/* Right Controls: Home Shortcut, Past Scans, Theme */}
         <div className="flex items-center gap-2 shrink-0">
-          {/* Quick Back to Tools button if inside a tool page */}
           {currentPage !== 'home' && (
             <button
               type="button"

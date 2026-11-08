@@ -1,4 +1,3 @@
-import { ApiClient } from './apiClient.ts';
 import { performUrlInvestigation } from '../utils/investigationEngine.ts';
 import { performScamAnalysis } from '../utils/scamAnalysisEngine.ts';
 import { performTlsInvestigation } from '../utils/tlsAnalysisEngine.ts';
@@ -22,12 +21,12 @@ export class ThreatApiService {
    * Never fabricates success if the backend server is offline.
    */
   static async checkHealth(): Promise<ApiHealthStatus> {
-    const endpoint = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) || 'http://localhost:5000/api/v1';
+    const endpoint = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) || 'http://localhost:8000/api';
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 2000);
 
-      const response = await fetch(`${endpoint}/health`, {
+      const response = await fetch(`http://localhost:8000/health`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         signal: controller.signal,
@@ -64,59 +63,34 @@ export class ThreatApiService {
   }
 
   /**
-   * URL Investigation: Attempts real backend API call; if unavailable,
-   * falls back to the deterministic client-side lexical engine.
+   * URL Investigation: Evaluates URL with live Groq AI & threat feeds
    */
   static async investigateUrl(url: string): Promise<{ result: UrlInvestigationResult; source: 'api' | 'heuristic' }> {
-    try {
-      const apiResult = await ApiClient.post<UrlInvestigationResult>('/investigate/url', { url });
-      return { result: apiResult, source: 'api' };
-    } catch {
-      // Backend unavailable; execute local deterministic engine
-      const fallback = await performUrlInvestigation(url);
-      return { result: fallback, source: 'heuristic' };
-    }
+    const result = await performUrlInvestigation(url);
+    return { result, source: result.isDemoState ? 'heuristic' : 'api' };
   }
 
   /**
-   * Scam & Message Analysis: Attempts real backend API call; if unavailable,
-   * falls back to the deterministic client-side NLP engine.
+   * Scam & Message Analysis: Evaluates message with live Groq AI NLP engine
    */
   static async analyzeMessage(content: string): Promise<{ result: ScamAnalysisResult; source: 'api' | 'heuristic' }> {
-    try {
-      const apiResult = await ApiClient.post<ScamAnalysisResult>('/investigate/message', { content });
-      return { result: apiResult, source: 'api' };
-    } catch {
-      const fallback = await performScamAnalysis(content);
-      return { result: fallback, source: 'heuristic' };
-    }
+    const result = await performScamAnalysis(content);
+    return { result, source: result.isDemoState ? 'heuristic' : 'api' };
   }
 
   /**
-   * TLS Certificate Investigation: Attempts real backend API call; if unavailable,
-   * falls back to the deterministic client-side PKI engine.
+   * TLS Certificate Investigation: Evaluates certificate trust with live TLS socket + Groq AI
    */
   static async analyzeTls(target: string): Promise<{ result: TlsInvestigationResult; source: 'api' | 'heuristic' }> {
-    try {
-      const apiResult = await ApiClient.post<TlsInvestigationResult>('/investigate/tls', { target });
-      return { result: apiResult, source: 'api' };
-    } catch {
-      const fallback = await performTlsInvestigation(target);
-      return { result: fallback, source: 'heuristic' };
-    }
+    const result = await performTlsInvestigation(target);
+    return { result, source: result.isDemoState ? 'heuristic' : 'api' };
   }
 
   /**
-   * Website Security Assessment: Attempts real backend API call; if unavailable,
-   * falls back to the deterministic client-side security assessment engine.
+   * Website Security Assessment: Evaluates posture with live HTTP audits + Groq AI
    */
   static async assessWebsiteSecurity(url: string): Promise<{ result: WebsiteSecurityAssessmentResult; source: 'api' | 'heuristic' }> {
-    try {
-      const apiResult = await ApiClient.post<WebsiteSecurityAssessmentResult>('/investigate/website-security', { url });
-      return { result: apiResult, source: 'api' };
-    } catch {
-      const fallback = await performWebsiteSecurityAssessment(url);
-      return { result: fallback, source: 'heuristic' };
-    }
+    const result = await performWebsiteSecurityAssessment(url);
+    return { result, source: result.isDemoState ? 'heuristic' : 'api' };
   }
 }

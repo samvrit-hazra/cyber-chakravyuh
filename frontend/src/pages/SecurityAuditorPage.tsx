@@ -26,7 +26,7 @@ export function SecurityAuditorPage() {
           </button>
 
           <span className="text-[11px] font-mono uppercase tracking-wider text-[#36745F] dark:text-[#79B69A] font-bold">
-            Module 5: Website Security Auditor
+            Website Security Auditor
           </span>
         </div>
 
