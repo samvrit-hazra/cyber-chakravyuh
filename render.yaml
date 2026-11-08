@@ -36,12 +36,11 @@ services:
 
   # -------------------------------------------------------------
   # 2. React + Vite Frontend Static Site
+  # (Static sites are CDN-hosted: no region or plan allowed)
   # -------------------------------------------------------------
   - type: web
     name: cyber-chakravyuh-frontend
     runtime: static
-    region: oregon
-    plan: free
     rootDir: frontend
     buildCommand: "npm install && npm run build"
     staticPublishPath: "./dist"
