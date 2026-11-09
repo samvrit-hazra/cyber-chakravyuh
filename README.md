@@ -245,16 +245,6 @@ npm run build
 
 ---
 
-## 👥 Hackathon Team & Acknowledgements
-
-Developed with passion for the **48-Hour Web Threat Detection & Digital Trust Hackathon**.
-
-- **Lead Architecture & Engineering**: [Samvrit Hazra](https://github.com/samvrit-hazra)
-- **Threat Research & Heuristics**: Cyber Chakravyuh Defense Core
-- **Public Datasets & Feeds**: crt.sh (Sectigo), BadSSL, VirusTotal, Ethereum Sepolia
-
----
-
 <div align="center">
   <sub>Built to defend users and restore trust to the open web. 🛡️</sub>
 </div>
