@@ -1,8 +1,16 @@
-import { AlertTriangle, ShieldCheck, Lock } from 'lucide-react';
+import { AlertTriangle, ShieldCheck, Lock, Construction } from 'lucide-react';
 
 export function BlockchainRegistryBanner() {
   return (
     <div className="rounded-2xl bg-white dark:bg-[#19272A] border border-[#D9DED7] dark:border-[#304144] p-5 md:p-6 space-y-4 shadow-sm relative overflow-hidden font-mono text-xs">
+      {/* Work In Progress Banner */}
+      <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 flex items-center gap-2.5 text-xs font-sans">
+        <Construction className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+        <span>
+          <strong>Notice:</strong> Work is in progress. Live blockchain anchoring has not been fully implemented yet; this interface is operating in prototype simulation mode.
+        </span>
+      </div>
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D9DED7] dark:border-[#304144] pb-3">
         <div className="flex items-center gap-2 text-[#356D68] dark:text-[#79A99C]">
           <ShieldCheck className="w-5 h-5 shrink-0" />
@@ -10,8 +18,8 @@ export function BlockchainRegistryBanner() {
             DECENTRALIZED THREAT REGISTRY & CRYPTOGRAPHIC ATTESTATION
           </h3>
         </div>
-        <span className="px-2 py-0.5 rounded text-[10px] bg-[#356D68]/10 dark:bg-[#79A99C]/20 border border-[#356D68]/30 text-[#356D68] dark:text-[#79A99C] font-bold uppercase">
-          Zero-PII On-Chain Commitments
+        <span className="px-2 py-0.5 rounded text-[10px] bg-amber-500/15 border border-amber-500/30 text-amber-800 dark:text-amber-300 font-bold uppercase">
+          Work In Progress
         </span>
       </div>
 

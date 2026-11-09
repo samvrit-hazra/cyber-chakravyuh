@@ -6,7 +6,6 @@ import {
   Share2,
   Fingerprint,
   ArrowRight,
-  ExternalLink,
 } from 'lucide-react';
 import { LandingNavbar } from '../components/landing/LandingNavbar.tsx';
 import { ScanHistoryView } from '../components/analyzer/ScanHistoryView.tsx';
@@ -89,13 +88,13 @@ const TOOLS: ToolCard[] = [
     id: 'threat-registry',
     title: 'Decentralized Threat Intelligence',
     description:
-      'Web3 tamper-evident security repository with cryptographic commitments on Ethereum Sepolia, independent integrity verification, and dispute tracking.',
+      '(Work in progress • Live blockchain pending) Web3 tamper-evident security repository with cryptographic commitments, independent integrity verification, and dispute tracking.',
     icon: Fingerprint,
     iconBg: 'bg-[#356D68]/10 dark:bg-[#79A99C]/15',
     iconColor: 'text-[#356D68] dark:text-[#79A99C]',
     accentBorder: 'hover:border-[#356D68] dark:hover:border-[#79A99C]',
-    tags: ['Ethereum Sepolia', 'Zero-PII Commitments', 'Independent Integrity Prover'],
-    ctaText: 'Open Threat Registry',
+    tags: ['Work In Progress', 'Blockchain Pending', 'Zero-PII Commitments'],
+    ctaText: 'Preview Threat Registry (WIP)',
   },
 ];
 
@@ -116,7 +115,7 @@ export function LandingPage() {
           </h1>
 
           <p className="text-sm sm:text-base text-[#647477] dark:text-[#A6B3AE] max-w-2xl mx-auto leading-relaxed">
-            Select an investigation tool below to analyze web addresses, inspect SSL certificates, evaluate scam messages, audit website security, correlate threat infrastructure, or verify decentralized threat intelligence.
+            Select an investigation tool below to analyze web addresses, inspect SSL certificates, evaluate scam messages, audit website security, correlate threat infrastructure, or preview decentralized threat intelligence.
           </p>
         </div>
 
@@ -139,12 +138,20 @@ export function LandingPage() {
                     >
                       <Icon className={`w-6 h-6 ${tool.iconColor}`} />
                     </div>
+
+                    {tool.id === 'threat-registry' && (
+                      <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-amber-500/15 text-amber-800 dark:text-amber-300 font-bold border border-amber-500/30">
+                        WIP • Pending
+                      </span>
+                    )}
                   </div>
 
                   {/* Title & Description */}
                   <div>
                     <h2 className="text-xl font-bold font-heading text-[#182629] dark:text-[#E8E6DC] tracking-tight group-hover:text-[#A95636] dark:group-hover:text-[#C47A52] transition-colors flex items-center justify-between">
-                      <span>{tool.title}</span>
+                      <div className="flex items-center gap-2">
+                        <span>{tool.title}</span>
+                      </div>
                       <ArrowRight className="w-4 h-4 text-[#647477] dark:text-[#A6B3AE] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                     </h2>
                     <p className="text-xs sm:text-sm text-[#647477] dark:text-[#A6B3AE] leading-relaxed mt-1.5 font-sans">
@@ -159,7 +166,11 @@ export function LandingPage() {
                     {tool.tags.map((tag, idx) => (
                       <span
                         key={idx}
-                        className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#EAECE6]/80 dark:bg-[#223336]/80 text-[#647477] dark:text-[#A6B3AE]"
+                        className={`text-[10px] font-mono px-2 py-0.5 rounded ${
+                          tag.includes('WIP') || tag.includes('Pending')
+                            ? 'bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30 font-semibold'
+                            : 'bg-[#EAECE6]/80 dark:bg-[#223336]/80 text-[#647477] dark:text-[#A6B3AE]'
+                        }`}
                       >
                         {tag}
                       </span>
@@ -176,31 +187,22 @@ export function LandingPage() {
           })}
         </div>
 
-        {/* Minimal Footer */}
-        <footer className="pt-8 border-t border-[#D9DED7] dark:border-[#304144] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#647477] dark:text-[#A6B3AE]">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-[#182629] dark:text-[#E8E6DC]">Cyber Chakravyuh</span>
-            <span>•</span>
-            <span>Digital Threat & Web Trust Platform</span>
+        {/* Global Security Disclaimer Footer Banner */}
+        <div className="rounded-xl p-4 bg-[#EAECE6]/60 dark:bg-[#101A1D] border border-[#D9DED7] dark:border-[#304144] text-xs font-sans text-[#647477] dark:text-[#A6B3AE] flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div>
+            <span className="font-semibold text-[#182629] dark:text-[#E8E6DC]">Zero Data Retention Guarantee:</span>{' '}
+            All heuristic scans and text investigations are evaluated in volatile memory. No credentials, tokens, or personal identifiers are stored.
           </div>
-
-          <div className="flex items-center gap-4">
-            <a
-              href="http://localhost:8000/docs"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline flex items-center gap-1"
-            >
-              <span>API Documentation</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
-            <span>•</span>
-            <span>Zero Data Retention</span>
+          <div className="flex items-center gap-3 shrink-0 font-mono text-[11px]">
+            <span className="inline-flex items-center gap-1 text-[#356D68] dark:text-[#79A99C]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#356D68] dark:bg-[#79A99C] animate-pulse" />
+              RFC 3986 Deterministic Engine
+            </span>
           </div>
-        </footer>
+        </div>
       </main>
 
-      {/* History Slide-over */}
+      {/* Persistent Scan History Drawer */}
       <ScanHistoryView
         isOpen={isHistoryOpen}
         onClose={closeHistory}

@@ -6,6 +6,8 @@ import {
   Search,
   Scale,
   Database,
+  Construction,
+  AlertTriangle,
 } from 'lucide-react';
 import { LandingNavbar } from '../components/landing/LandingNavbar.tsx';
 import { ScanHistoryView } from '../components/analyzer/ScanHistoryView.tsx';
@@ -92,6 +94,29 @@ export function ThreatRegistryPage() {
           </span>
         </div>
 
+        {/* Prominent Work in Progress / Blockchain Pending Banner */}
+        <div className="p-4 sm:p-5 rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border-2 border-dashed border-amber-500/40 text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-sans shadow-xs">
+          <div className="flex items-start sm:items-center gap-3">
+            <div className="p-2.5 rounded-lg bg-amber-500/20 text-amber-700 dark:text-amber-400 shrink-0 mt-0.5 sm:mt-0">
+              <Construction className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-800 dark:text-amber-300">
+                  Work in Progress • Concept Preview
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm font-medium leading-relaxed">
+                <strong>Decentralized Threat Intelligence is currently under active development.</strong> Full smart-contract integration with the live blockchain has not been implemented yet. The records and attestation proofs shown below are running on simulated cryptographic hashing and prototype ledger state.
+              </p>
+            </div>
+          </div>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-amber-500/20 text-amber-900 dark:text-amber-200 text-xs font-mono font-semibold shrink-0">
+            <AlertTriangle className="w-3.5 h-3.5" />
+            <span>Blockchain Pending</span>
+          </div>
+        </div>
+
         {/* Minimal Header */}
         <div className="space-y-1.5 text-left border-b border-[#D9DED7] dark:border-[#304144] pb-4">
           <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-[#182629] dark:text-[#E8E6DC] tracking-tight flex items-center gap-2.5">
@@ -100,7 +125,7 @@ export function ThreatRegistryPage() {
           </h1>
 
           <p className="text-xs sm:text-sm text-[#647477] dark:text-[#A6B3AE] max-w-3xl leading-relaxed">
-            Transparent, tamper-evident sharing and verification of security intelligence anchored to Ethereum blockchain commitments. Submit indicators, verify integrity, audit provenance, and track revisions with zero on-chain PII.
+            Transparent, tamper-evident sharing and verification of security intelligence designed for Ethereum blockchain commitments. Submit indicators, verify integrity, audit provenance, and track revisions with zero on-chain PII. <em className="text-amber-700 dark:text-amber-300 font-semibold">(Notice: Work in progress — live blockchain integration is pending).</em>
           </p>
         </div>
 
@@ -121,8 +146,8 @@ export function ThreatRegistryPage() {
             <div className="text-sm font-extrabold font-mono text-[#182629] dark:text-[#E8E6DC] truncate" title={CHAKRAVYUHA_SMART_CONTRACT_ADDRESS}>
               {CHAKRAVYUHA_SMART_CONTRACT_ADDRESS.slice(0, 10)}...{CHAKRAVYUHA_SMART_CONTRACT_ADDRESS.slice(-6)}
             </div>
-            <p className="text-[11px] text-[#647477] dark:text-[#A6B3AE] font-mono">
-              Sepolia Testnet (EVM)
+            <p className="text-[11px] text-amber-700 dark:text-amber-300 font-mono">
+              Sepolia (Simulated / Pending)
             </p>
           </div>
 
@@ -158,11 +183,11 @@ export function ThreatRegistryPage() {
             className={`pb-3 px-3.5 font-bold flex items-center gap-2 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'submit'
                 ? 'border-[#356D68] dark:border-[#79A99C] text-[#356D68] dark:text-[#79A99C]'
-                : 'border-transparent text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-white'
+                : 'border-transparent text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC]'
             }`}
           >
-            <FileText className="w-4 h-4" />
-            <span>1. Submit Threat Report</span>
+            <FileText className="w-3.5 h-3.5" />
+            <span>1. Register New Threat</span>
           </button>
 
           <button
@@ -171,11 +196,11 @@ export function ThreatRegistryPage() {
             className={`pb-3 px-3.5 font-bold flex items-center gap-2 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'prover'
                 ? 'border-[#356D68] dark:border-[#79A99C] text-[#356D68] dark:text-[#79A99C]'
-                : 'border-transparent text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-white'
+                : 'border-transparent text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC]'
             }`}
           >
-            <Search className="w-4 h-4" />
-            <span>2. Integrity Prover</span>
+            <Search className="w-3.5 h-3.5" />
+            <span>2. Independent Integrity Prover</span>
           </button>
 
           <button
@@ -184,11 +209,14 @@ export function ThreatRegistryPage() {
             className={`pb-3 px-3.5 font-bold flex items-center gap-2 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'ledger'
                 ? 'border-[#356D68] dark:border-[#79A99C] text-[#356D68] dark:text-[#79A99C]'
-                : 'border-transparent text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-white'
+                : 'border-transparent text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC]'
             }`}
           >
-            <Database className="w-4 h-4" />
-            <span>3. Verifiable Ledger ({records.length})</span>
+            <Database className="w-3.5 h-3.5" />
+            <span>3. On-Chain Ledger & History</span>
+            <span className="px-1.5 py-0.2 rounded text-[10px] bg-[#EAECE6] dark:bg-[#101A1D] text-[#647477] dark:text-[#A6B3AE]">
+              {records.length}
+            </span>
           </button>
 
           <button
@@ -197,67 +225,112 @@ export function ThreatRegistryPage() {
             className={`pb-3 px-3.5 font-bold flex items-center gap-2 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'disputes'
                 ? 'border-[#356D68] dark:border-[#79A99C] text-[#356D68] dark:text-[#79A99C]'
-                : 'border-transparent text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-white'
+                : 'border-transparent text-[#647477] dark:text-[#A6B3AE] hover:text-[#182629] dark:hover:text-[#E8E6DC]'
             }`}
           >
-            <Scale className="w-4 h-4" />
-            <span>4. Revisions & Disputes ({totalDisputes})</span>
+            <Scale className="w-3.5 h-3.5" />
+            <span>4. Revisions & Dispute Tracker</span>
+            {totalDisputes > 0 && (
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold">
+                {totalDisputes}
+              </span>
+            )}
           </button>
         </div>
 
-        {/* Tab 1: Submit Threat Report */}
-        {activeTab === 'submit' && (
-          <div className="space-y-6">
-            <ReportSubmissionCard onReportRegistered={handleReportRegistered} />
-          </div>
-        )}
+        {/* Tab Content Panes */}
+        <div className="space-y-6">
+          {/* Tab 1: Submit New Report */}
+          {activeTab === 'submit' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="text-[#647477] dark:text-[#A6B3AE]">
+                  Step 1 • Create Cryptographic Commitment
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('prover')}
+                  className="text-[#356D68] dark:text-[#79A99C] hover:underline cursor-pointer"
+                >
+                  Already have a hash? Verify in Prover →
+                </button>
+              </div>
+              <ReportSubmissionCard onReportRegistered={handleReportRegistered} />
+            </div>
+          )}
 
-        {/* Tab 2: Independent Integrity Prover */}
-        {activeTab === 'prover' && (
-          <div className="space-y-6">
-            <ReportVerificationProver
-              records={records}
-              onViewRecordDetails={handleOpenDetails}
-            />
-          </div>
-        )}
+          {/* Tab 2: Independent Integrity Prover */}
+          {activeTab === 'prover' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="text-[#647477] dark:text-[#A6B3AE]">
+                  Step 2 • Mathematical Proof Verification
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('ledger')}
+                  className="text-[#356D68] dark:text-[#79A99C] hover:underline cursor-pointer"
+                >
+                  Browse all ledger records →
+                </button>
+              </div>
+              <ReportVerificationProver records={records} onViewRecordDetails={handleOpenDetails} />
+            </div>
+          )}
 
-        {/* Tab 3: Verifiable On-Chain Ledger */}
-        {activeTab === 'ledger' && (
-          <div className="space-y-6">
-            <OnChainRegistryTable
-              records={records}
-              onViewDetails={handleOpenDetails}
-            />
-          </div>
-        )}
+          {/* Tab 3: On-Chain Ledger & History */}
+          {activeTab === 'ledger' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="text-[#647477] dark:text-[#A6B3AE]">
+                  Step 3 • Immutable Ledger Records ({records.length} Registered)
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('submit')}
+                  className="text-[#356D68] dark:text-[#79A99C] hover:underline cursor-pointer"
+                >
+                  + Submit New Report
+                </button>
+              </div>
+              <OnChainRegistryTable records={records} onViewDetails={handleOpenDetails} />
+            </div>
+          )}
 
-        {/* Tab 4: Revisions & Disputes Tracker */}
-        {activeTab === 'disputes' && (
-          <div className="space-y-6">
-            <DisputeTrackerPanel
-              records={records}
-              onFileDispute={handleFileDispute}
-              onValidateReport={handleValidateReport}
-              onViewDetails={handleOpenDetails}
-            />
-          </div>
-        )}
-
-        {/* Comprehensive Report Dossier Modal */}
-        <ReportDetailModal
-          record={selectedRecord}
-          isOpen={isDetailModalOpen}
-          onClose={() => setIsDetailModalOpen(false)}
-          onFileDispute={handleFileDispute}
-        />
+          {/* Tab 4: Revisions & Dispute Tracker */}
+          {activeTab === 'disputes' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="text-[#647477] dark:text-[#A6B3AE]">
+                  Step 4 • Peer Review, Revisions & Challenges
+                </span>
+                <span className="text-xs text-[#647477] dark:text-[#A6B3AE]">
+                  Decentralized Consensus Status
+                </span>
+              </div>
+              <DisputeTrackerPanel
+                records={records}
+                onFileDispute={handleFileDispute}
+                onValidateReport={handleValidateReport}
+                onViewDetails={handleOpenDetails}
+              />
+            </div>
+          )}
+        </div>
       </main>
 
-      {/* History Slide-over */}
+      {/* Report Dossier Detail Modal */}
+      <ReportDetailModal
+        record={selectedRecord}
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+      />
+
+      {/* Scan History Slide-over */}
       <ScanHistoryView
         isOpen={isHistoryOpen}
         onClose={closeHistory}
-        onSelectScan={(url) => navigateTo('url-analyzer', url)}
+        onSelectScan={(target) => navigateTo('url-analyzer', target)}
       />
     </div>
   );
